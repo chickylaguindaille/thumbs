@@ -1,24 +1,29 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import Header from './components/Header';
+import EventsPage from './pages/EventsPage';
+import EventPage from './pages/EventPage';
+import MessagesPage from './pages/MessagesPage';
+import ProfilePage from './pages/ProfilePage';
+import Footer from './components/Footer';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <Router>
+    <div className="flex flex-col min-h-screen">
+      <Header/>
+      <Routes>
+          <Route path="/events" element={<EventsPage />} />
+          <Route path="/events/:id" element={<EventPage />} />
+
+          <Route path="/messages" element={<MessagesPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          {/* Ajoutez ici d'autres routes si nécessaire */}
+        </Routes>
+      {/* <Footer /> */}
     </div>
+    </Router>
   );
 }
 

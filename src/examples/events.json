@@ -1,0 +1,30 @@
+[
+    {
+      "id": 1,
+      "headerImage": "/images/Bowling.png",
+      "title": "Bowling",
+      "subtitle": "Bowling entre jeunes.",
+      "category": "Sport",
+      "location": "Paris, France",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vel lectus in lorem pharetra varius. Sed nec erat non quam bibendum condimentum."
+    },
+    {
+      "id": 2,
+      "headerImage": "/images/Peinture.png",
+      "title": "Atelier peinture",
+      "subtitle": "Cours de peinture pour séniors.",
+      "category": "Art",
+      "location": "Paris, France",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vel lectus in lorem pharetra varius. Sed nec erat non quam bibendum condimentum."
+    },
+    {
+      "id": 3,
+      "headerImage": "/images/Tennis.png",
+      "title": "Tournoi de Tennis",
+      "subtitle": "Tournoi de Tennis Junior",
+      "category": "Sport",
+      "location": "Paris, France",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vel lectus in lorem pharetra varius. Sed nec erat non quam bibendum condimentum."
+    }
+  ]
+  
