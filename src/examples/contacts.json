@@ -1,20 +1,19 @@
 [
     {
       "id": 2,
-      "name": "Alice Dupont",
-      "lastMessageDate": "2024-09-05T08:30:00Z",
+      "name": "Johnny Doe",
       "profileImage": "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg",
       "hasUnreadMessage": false
     },
     {
       "id": 3,
-      "name": "Bob Martin",
+      "name": "Joe Doe",
       "profileImage": "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg",
       "hasUnreadMessage": true
     },
     {
       "id": 4,
-      "name": "Claire Lefèvre",
+      "name": "Jonathan Doe",
       "profileImage": "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg",
       "hasUnreadMessage": true
     }

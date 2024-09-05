@@ -34,7 +34,7 @@ const MessagesPage = () => {
   };
 
   return (
-    <div className="flex">
+    <div className="flex pt-[56px]">
       {/* Liste des contacts */}
       <div className="w-full p-4">
         <ul>

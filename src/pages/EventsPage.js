@@ -4,18 +4,20 @@ import eventsData from '../examples/events.json';
 
 const EventsPage = () => {
   return (
-    <div className="p-4 space-y-4">
-      {eventsData.map((event) => (
-        <EventCard
-          key={event.id}
-          id={event.id}
-          headerImage={event.headerImage}
-          title={event.title}
-          subtitle={event.subtitle}
-          category={event.category}
-          location={event.location}
-        />
-      ))}
+    <div className="pt-[56px]">
+      <div className="px-4 space-y-4 py-4">
+        {eventsData.map((event) => (
+          <EventCard
+            key={event.id}
+            id={event.id}
+            headerImage={event.headerImage}
+            title={event.title}
+            subtitle={event.subtitle}
+            category={event.category}
+            location={event.location}
+          />
+        ))}
+      </div>
     </div>
   );
 };

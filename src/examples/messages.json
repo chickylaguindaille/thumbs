@@ -2,21 +2,39 @@
     "2": [
       {
         "id": 1,
-        "sender": 2,
-        "text": "Bonjour, comment ça va ?",
-        "date": "2024-09-05T08:30:00Z"
+        "sender": 1,
+        "content": "Bonjour, comment ça va ?",
+        "date": "2024-09-04T08:30:00Z"
       },
       {
         "id": 2,
-        "sender": 1,
+        "sender": 2,
         "content": "Ça va bien, merci ! Et vous ?",
         "date": "2024-09-05T08:32:00Z"
       },
       {
-        "id": 1,
+        "id": 3,
         "sender": 1,
         "content": "Très bien !",
-        "date": "2024-09-05T08:30:00Z"
+        "date": "2024-09-05T08:34:00Z"
+      },
+      {
+        "id": 4,
+        "sender": 2,
+        "content": "Tu deviens quoi?",
+        "date": "2024-09-06T08:32:00Z"
+      },
+      {
+        "id": 5,
+        "sender": 2,
+        "content": "Tu m'as oublié :( ?",
+        "date": "2024-09-07T08:34:00Z"
+      },
+      {
+        "id": 5,
+        "sender": 2,
+        "content": "Snif",
+        "date": "2024-09-07T08:35:00Z"
       }
     ],
     "3": [
@@ -31,13 +49,19 @@
         "sender": 3,
         "content": "Oui, à quelle heure ?",
         "date": "2024-09-04T16:02:00Z"
+      },
+      {
+        "id": 3,
+        "sender": 3,
+        "content": "Ohohohoh",
+        "date": "2024-09-04T16:04:00Z"
       }
     ],
     "4": [
       {
         "id": 1,
         "sender": 1,
-        "content": "Je vous enverrai les documents demain.",
+        "content": "Je vous enverrai les documents demain. Avez vous bien la date du rdv?",
         "date": "2024-09-03T14:15:00Z"
       },
       {

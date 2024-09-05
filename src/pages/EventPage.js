@@ -16,7 +16,7 @@ const EventPage = () => {
   if (!event) return <div>Chargement...</div>;
 
   return (
-    <div>
+    <div className="pt-[56px]">
       <div>
         {/* Chevron pour revenir en arrière */}
         <button
