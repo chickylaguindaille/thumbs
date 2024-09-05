@@ -95,8 +95,12 @@ const ChatPage = () => {
 
   return (
     <div className="flex flex-col h-screen pt-[56px]">
-      <Header contactName={contact ? contact.name : ''} showBackButton={true} />
-
+      <Header 
+        contactName={contact ? contact.name : ''} 
+        showBackButton={true}
+        contactId={contact ? contact.id : null} // Passer l'ID du contact ici
+      />
+      
       <div className="flex-grow overflow-y-auto px-4 pt-4">
         {messages.map((message, index) => (
           <div key={message.id}>

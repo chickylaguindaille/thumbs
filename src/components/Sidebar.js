@@ -73,7 +73,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             </a>
 
             {/* Ligne 1 : Mon profil */}
-            <a href="/profile" className="flex items-center justify-between space-x-2 text-white hover:bg-gray-700 p-2 rounded">
+            <a href="/profile/1" className="flex items-center justify-between space-x-2 text-white hover:bg-gray-700 p-2 rounded">
               <div class="flex space-x-3 items-center justify-center">
                 <div className="w-8 h-8 flex items-center justify-center bg-blue-500 rounded-full">
                   <FaUser size={16} />

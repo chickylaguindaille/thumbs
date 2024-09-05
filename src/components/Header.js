@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { FaBars, FaSearch, FaTimes, FaChevronLeft } from 'react-icons/fa';
+import { FaBars, FaSearch, FaTimes, FaChevronLeft, FaUser, FaEnvelope } from 'react-icons/fa'; // Ajoutez FaEnvelope
 import { useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import SearchBar from './Searchbar';
 
-const Header = ({ contactName, showBackButton }) => {
+const Header = ({ contactName, contactId }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false);
   const [title, setTitle] = useState('Événements');
@@ -23,65 +23,136 @@ const Header = ({ contactName, showBackButton }) => {
 
   // Fonction pour retourner en arrière
   const handleBackButtonClick = () => {
-    navigate(-1);
+    navigate('/messages');
+  };
+
+  // Fonction pour naviguer vers la page de profil
+  const handleProfileButtonClick = () => {
+    if (contactId) {
+      navigate(`/profile/${contactId}`);
+    } else {
+      navigate('/profile');
+    }
+  };
+
+  // Fonction pour naviguer vers la page de chat
+  const handleChatButtonClick = () => {
+    if (contactId) {
+      navigate(`/messages/${contactId}`);
+    }
+  };
+
+  // Fonction pour naviguer vers la page de messages
+  const handleMessageButtonClick = () => {
+    if (contactId) {
+      navigate(`/messages/${contactId}`);
+    }
   };
 
   // Mettre à jour le titre en fonction de la route
   useEffect(() => {
     const path = location.pathname;
-    if (path.startsWith('/events/')) {
+    if (path === '/messages') {
+      setTitle('Messagerie');
+    } else if (path.startsWith('/messages/') && path.split('/').length === 3) {
+      setTitle(contactName || 'Messagerie');
+    } else if (path.startsWith('/events/')) {
       setTitle('Événement');
+    } else if (path.startsWith('/events')) {
+      setTitle('Événements');
+    } else if (path.startsWith('/profile/')) {
+      setTitle('Profil');
     } else {
-      switch (location.pathname) {
-        case '/events':
-          setTitle('Événements');
-          break;
-        case '/messages':
-          setTitle('Messagerie');
-          break;
-        case '/profile':
-          setTitle('Mon Profil');
-          break;
-        default:
-          setTitle('?');
-      }
+      setTitle('?');
     }
-  }, [location.pathname]);
+  }, [location.pathname, contactName]);
 
-  return (
-    <header className="fixed top-0 left-0 right-0 bg-customPurple text-white py-2 px-2 flex items-center justify-between z-50" style={{ height: '56px' }}>
-      {/* Bouton de retour en arrière ou bouton pour la sidebar */}
-      {showBackButton ? (
+  // Déterminer le titre affiché
+  const getTitle = () => {
+    const path = location.pathname;
+    if (path === '/messages') {
+      return 'Messagerie';
+    } else if (path.startsWith('/messages/') && path.split('/').length === 3) {
+      return contactName || 'Messagerie';
+    }
+    return title;
+  };
+
+  // Déterminer le bouton à afficher en fonction de la route
+  const renderActionButton = () => {
+    const path = location.pathname;
+    if (path.startsWith('/profile/')) {
+      return (
+        <button
+          onClick={handleMessageButtonClick}
+          className="text-white p-2 rounded"
+        >
+          <FaEnvelope size={24} />
+        </button>
+      );
+    } else if (path.startsWith('/messages/')) {
+      return (
+        <button
+          onClick={handleProfileButtonClick}
+          className="text-white p-2 rounded"
+        >
+          <FaUser size={24} />
+        </button>
+      );
+    } else {
+      return (
+        <button
+          onClick={toggleSearchBar}
+          className="text-white p-2 rounded"
+        >
+          {isSearchBarVisible ? <FaTimes size={24} /> : <FaSearch size={24} />}
+        </button>
+      );
+    }
+  };
+
+  // Déterminer quel bouton afficher en fonction de la route
+  const renderHeaderButton = () => {
+    const path = location.pathname;
+    // Vérifie si la route contient /messages/ et est suivie d'un paramètre (i.e., /messages/:id)
+    if (path.startsWith('/messages/') && path.split('/').length === 3) {
+      return (
         <button
           onClick={handleBackButtonClick}
           className="text-white p-2 rounded"
         >
           <FaChevronLeft size={24} />
         </button>
-      ) : (
+      );
+    } else if (!path.startsWith('/messages/')) {
+      return (
         <button
           onClick={toggleSidebar}
           className="text-white p-2 rounded"
         >
           <FaBars size={24} />
         </button>
-      )}
+      );
+    }
+  };
+
+  return (
+    <header className="fixed top-0 left-0 right-0 bg-customPurple text-white py-2 px-2 flex items-center justify-between z-50" style={{ height: '56px' }}>
+      {/* Afficher le bouton de retour en arrière sur les pages de messages/:id et le bouton pour la sidebar sur les autres pages */}
+      {renderHeaderButton()}
 
       {/* Titre au milieu */}
       <h1 className="text-xl md:text-3xl text-center font-bold flex-grow">
-        {contactName || title}
+        {getTitle()}
       </h1>
 
-      {/* Bouton pour afficher la barre de recherche */}
-      <button
-        onClick={toggleSearchBar}
-        className="text-white p-2 rounded"
-      >
-        {isSearchBarVisible ? <FaTimes size={24} /> : <FaSearch size={24} />}
-      </button>
+      {/* Bouton de recherche, message ou profil */}
+      {renderActionButton()}
 
       {/* Utilisation du composant Sidebar */}
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      {!location.pathname.startsWith('/messages/') && (
+        <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      )}
 
       {/* Barre de recherche */}
       <SearchBar

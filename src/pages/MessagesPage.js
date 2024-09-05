@@ -38,31 +38,33 @@ const MessagesPage = () => {
       {/* Liste des contacts */}
       <div className="w-full p-4">
         <ul>
-          {contacts.map((contact, index) => (
-            <Link to={`/messages/${contact.id}`} key={contact.id} className="block">
-              <li className={`flex items-center bg-white hover:bg-gray-200 rounded-lg h-16 ${index < contacts.length - 1 ? 'border-b border-gray-300' : ''}`}>
-                <img
-                  src={contact.profileImage}
-                  alt={contact.name}
-                  className="w-12 h-12 rounded-full mr-3"
-                />
-                <div className="flex-grow min-w-0">
-                  <p className="font-semibold">{contact.name}</p>
-                  <p
-                    className={`text-gray-600 text-ellipsis overflow-hidden whitespace-nowrap ${
-                      contact.hasUnreadMessage ? 'font-bold' : ''
-                    }`}
-                  >
-                    {getLastMessage(contact.id)}
-                  </p>
-                </div>
-                <div className="flex items-center ml-2">
-                  {contact.hasUnreadMessage && <FaCircle className="text-blue-500 text-xs mr-1" />}
-                  {/* <FaChevronRight className="text-gray-500" /> */}
-                </div>
-              </li>
-            </Link>
-          ))}
+          {contacts
+            .filter(contact => contact.id !== 1) // Exclure le contact avec l'ID 1
+            .map((contact, index) => (
+              <Link to={`/messages/${contact.id}`} key={contact.id} className="block">
+                <li className={`flex items-center bg-white hover:bg-gray-200 rounded-lg h-16 ${index < contacts.length - 1 ? 'border-b border-gray-300' : ''}`}>
+                  <img
+                    src={contact.profileImage}
+                    alt={contact.name}
+                    className="w-12 h-12 rounded-full mr-3"
+                  />
+                  <div className="flex-grow min-w-0">
+                    <p className="font-semibold">{contact.name}</p>
+                    <p
+                      className={`text-gray-600 text-ellipsis overflow-hidden whitespace-nowrap ${
+                        contact.hasUnreadMessage ? 'font-bold' : ''
+                      }`}
+                    >
+                      {getLastMessage(contact.id)}
+                    </p>
+                  </div>
+                  <div className="flex items-center ml-2">
+                    {contact.hasUnreadMessage && <FaCircle className="text-blue-500 text-xs mr-1" />}
+                    {/* <FaChevronRight className="text-gray-500" /> */}
+                  </div>
+                </li>
+              </Link>
+            ))}
         </ul>
       </div>
     </div>

@@ -1,20 +1,34 @@
 [
     {
+    "id": 1,
+      "name": "John Doe",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur at magna porttitor lorem mollis ornare. Fusce varius varius massa.",
+      "profileImage": "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg",
+      "location": "Paris, France",
+      "hasUnreadMessage": false
+    },
+    {
       "id": 2,
       "name": "Johnny Doe",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur at magna porttitor lorem mollis ornare. Fusce varius varius massa.",
       "profileImage": "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg",
+      "location": "Paris, France",
       "hasUnreadMessage": false
     },
     {
       "id": 3,
       "name": "Joe Doe",
+      "description": "",
       "profileImage": "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg",
+      "location": "Paris, France",
       "hasUnreadMessage": true
     },
     {
       "id": 4,
       "name": "Jonathan Doe",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur at magna porttitor lorem mollis ornare. Fusce varius varius massa.",
       "profileImage": "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg",
+      "location": "",
       "hasUnreadMessage": true
     }
   ]

@@ -21,7 +21,7 @@ function App() {
           <Route path="/messages" element={<MessagesPage />} />
           <Route path="/messages/:id" element={<ChatPage />} />
 
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/:id" element={<ProfilePage />} />
           {/* Ajoutez ici d'autres routes si nécessaire */}
         </Routes>
       {/* <Footer /> */}
