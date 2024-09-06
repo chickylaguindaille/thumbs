@@ -22,7 +22,6 @@ function App() {
           <Route path="/messages/:id" element={<ChatPage />} />
 
           <Route path="/profile/:id" element={<ProfilePage />} />
-          {/* Ajoutez ici d'autres routes si nécessaire */}
         </Routes>
       {/* <Footer /> */}
     </div>

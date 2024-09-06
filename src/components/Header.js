@@ -49,6 +49,13 @@ const Header = ({ contactName, contactId }) => {
     }
   };
 
+  // Fonction pour naviguer vers la page de tous messages
+  const handleMessagesButtonClick = () => {
+    if (contactId) {
+      navigate(`/messages`);
+    }
+  };
+
   // Mettre à jour le titre en fonction de la route
   useEffect(() => {
     const path = location.pathname;
@@ -81,7 +88,7 @@ const Header = ({ contactName, contactId }) => {
   // Déterminer le bouton à afficher en fonction de la route
   const renderActionButton = () => {
     const path = location.pathname;
-    if (path.startsWith('/profile/')) {
+    if (path.startsWith('/profile/') && contactId !== 1) {
       return (
         <button
           onClick={handleMessageButtonClick}
@@ -90,7 +97,17 @@ const Header = ({ contactName, contactId }) => {
           <FaEnvelope size={24} />
         </button>
       );
-    } else if (path.startsWith('/messages/')) {
+    } else if (path.startsWith('/profile/') && contactId === 1) {
+      return (
+        <button
+          onClick={handleMessagesButtonClick}
+          className="text-white p-2 rounded"
+        >
+          <FaEnvelope size={24} />
+        </button>
+      );
+    }
+    else if (path.startsWith('/messages/')) {
       return (
         <button
           onClick={handleProfileButtonClick}

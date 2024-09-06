@@ -1,0 +1,34 @@
+{
+    "sports": [
+      {
+        "id": 1,
+        "name": "Tennis",
+        "image": "https://sportsogood.fr/wp-content/uploads/2021/10/sportsogood-tennis.png"
+      },
+      {
+        "id": 2,
+        "name": "Football",
+        "image": "https://a.storyblok.com/f/112937/568x464/82f66c3a21/all_the_english-_football_terms_you_need_to_know_blog-hero-low.jpg/m/620x0/filters:quality(70)/"
+      },
+      {
+        "id": 3,
+        "name": "Natation",
+        "image": "https://dicodusport.fr/wp-content/uploads/2016/02/Definition-Natation.png"
+      }
+    ],
+    "arts": [
+      {
+        "id": 1,
+        "name": "Peinture",
+        "image": "https://www.avalokita.net/wp-content/uploads/2021/05/Tableau-peinture-Oeil-1024x768.jpeg"
+      }
+    ],
+    "loisirs": [
+      {
+        "id": 1,
+        "name": "Bowling",
+        "image": "https://cdn.sortiraparis.com/images/80/66131/771256-ou-jouer-au-bowling-a-paris-et-en-ile-de-france.jpg"
+      }
+    ]
+  }
+  

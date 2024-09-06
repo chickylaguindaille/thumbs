@@ -1,35 +1,62 @@
 [
     {
-    "id": 1,
-      "name": "John Doe",
+      "id": 1,
+      "name": "John",
+      "lastName": "Doe",
+      "age": 18,
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur at magna porttitor lorem mollis ornare. Fusce varius varius massa.",
       "profileImage": "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg",
       "location": "Paris, France",
+      "activities": {
+        "sports": [1, 2],
+        "arts": [1],
+        "loisirs": [1]
+      },
       "hasUnreadMessage": false
     },
     {
       "id": 2,
-      "name": "Johnny Doe",
+      "name": "Johnny",
+      "lastName": "Doe",
+      "age": 28,
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur at magna porttitor lorem mollis ornare. Fusce varius varius massa.",
       "profileImage": "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg",
       "location": "Paris, France",
+      "activities": {
+        "sports": [],
+        "arts": [1],
+        "loisirs": [1]
+      },
       "hasUnreadMessage": false
     },
     {
       "id": 3,
-      "name": "Joe Doe",
+      "name": "Joe",
+      "lastName": "Doe",
+      "age": 10,
       "description": "",
       "profileImage": "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg",
       "location": "Paris, France",
+      "activities": {
+        "sports": [],
+        "arts": [],
+        "loisirs": [1]
+      },
       "hasUnreadMessage": true
     },
     {
       "id": 4,
-      "name": "Jonathan Doe",
+      "name": "Jonathan",
+      "lastName": "Doe",
+      "age": 18,
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur at magna porttitor lorem mollis ornare. Fusce varius varius massa.",
       "profileImage": "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg",
       "location": "",
+      "activities": {
+        "sports": [],
+        "arts": [3],
+        "loisirs": []
+      },
       "hasUnreadMessage": true
     }
-  ]
-  
+]
