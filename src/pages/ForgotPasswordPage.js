@@ -20,7 +20,7 @@ function ForgotPasswordPage() {
       </div>
 
       {/* Titre */}
-      <h1 className="text-3xl font-bold mb-6">Mot de passe oublié</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">Réinitialiser mot de passe</h1>
 
       {/* Description */}
       <p className="mb-4 text-gray-600 text-center">
@@ -31,9 +31,9 @@ function ForgotPasswordPage() {
       <form className="w-full max-w-sm">
         {/* Adresse e-mail */}
         <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+          {/* <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
             Adresse e-mail
-          </label>
+          </label> */}
           <input
             id="email"
             type="email"
@@ -46,7 +46,7 @@ function ForgotPasswordPage() {
         <div className="flex items-center justify-center">
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className=" w-full bg-customPurple bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           >
             Envoyer le lien
           </button>

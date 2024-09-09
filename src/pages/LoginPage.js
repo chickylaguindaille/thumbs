@@ -2,7 +2,7 @@ import React from 'react';
 
 function LoginPage() {
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100 p-6">
+    <div className="flex flex-col items-center justify-center h-screen p-6">
       {/* Logo */}
       <div className="mb-6">
         <img src="/images/Thumbs.webp" alt="Logo" className="w-40 h-40" />
@@ -12,15 +12,15 @@ function LoginPage() {
       <h1 className="text-3xl font-bold mb-4">Thumbs</h1>
 
       {/* Description */}
-      <p className="mb-6 text-gray-600">Remplis le formulaire pour te connecter</p>
+      <p className="mb-8 text-gray-600">Remplis le formulaire pour te connecter</p>
 
       {/* Formulaire */}
       <form className="w-full max-w-sm">
         {/* Adresse e-mail */}
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+          {/* <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
             Adresse e-mail
-          </label>
+          </label> */}
           <input
             id="email"
             type="email"
@@ -31,28 +31,28 @@ function LoginPage() {
 
         {/* Mot de passe */}
         <div className="">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+          {/* <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
             Mot de passe
-          </label>
+          </label> */}
           <input
             id="password"
             type="password"
             placeholder="Mot de passe"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-2 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>
 
         {/* Liens inscription et mot de passe oublié */}
         <div className="flex justify-between mb-6">
-          <a href="/signup" className="text-blue-500 hover:underline">Inscription</a>
-          <a href="/forgot-password" className="text-blue-500 hover:underline">Mot de passe oublié</a>
+          <a href="/signup" className="text-sm hover:underline">Inscription</a>
+          <a href="/forgot-password" className="text-sm hover:underline">Mot de passe oublié</a>
         </div>
 
         {/* Bouton de connexion */}
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center bg-customPurple rounded">
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           >
             Connexion
           </button>

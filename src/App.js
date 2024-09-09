@@ -8,13 +8,14 @@ import ChatPage from './pages/ChatPage';
 import ProfilePage from './pages/ProfilePage';
 import LoginPage from './pages/LoginPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import SignupPage from './pages/SignupPage';
 
 function MainLayout() {
   const location = useLocation(); // Obtenir l'URL actuelle
 
   return (
     <div className="flex flex-col">
-      {location.pathname !== '/login' && location.pathname !== '/forgot-password' && <Header />}
+      {location.pathname !== '/login' && location.pathname !== '/forgot-password'  && location.pathname !== '/signup' && <Header />}
       
       <Routes>
         <Route path="/events" element={<EventsPage />} />
@@ -27,7 +28,7 @@ function MainLayout() {
 
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        {/* <Route path="/signup" element={<SignupPage />} /> */}
+        <Route path="/signup" element={<SignupPage />} />
 
 
       </Routes>
