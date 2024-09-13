@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const animatedComponents = makeAnimated();
 
@@ -20,9 +22,16 @@ const UserForm = ({ onBack, onNext }) => {
     gender: '',
     age: '',
     location: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
     hobbies: [],
-    acceptTerms: false
+    acceptTerms: false,
+    about: '',
+    more: ''
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -32,19 +41,38 @@ const UserForm = ({ onBack, onNext }) => {
     });
   };
 
-  const handleNext = () => {
-    if (step === 1) {
-      setStep(2); // Passe à l'étape suivante
-    } else if (step === 2) {
-      onNext();
-    }
-  };
-
   const handleSelectChange = (selectedOptions) => {
     setFormData({
       ...formData,
       hobbies: selectedOptions
     });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (formData.password !== formData.confirmPassword) {
+      alert('Les mots de passe ne correspondent pas');
+      return;
+    }
+  
+    try {
+      await axios.post('https://back-thumbs.vercel.app/auth/register', {
+        email: formData.email,
+        password: formData.password
+      });
+        navigate('/events');
+    } catch (error) {
+      console.error('Erreur lors de l\'inscription:', error);
+    }
+  };
+  
+  const handleNext = () => {
+    if (step === 1) {
+      setStep(2); // Passe à l'étape suivante
+    } else if (step === 2) {
+      document.getElementById('user-form').requestSubmit(); // Soumettre le formulaire
+    }
   };
 
   const renderForm = () => {
@@ -60,7 +88,36 @@ const UserForm = ({ onBack, onNext }) => {
               <input
                 type="file"
                 name="photo"
-                value={formData.photo}
+                onChange={handleChange}
+                className="w-full border rounded-lg p-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full border rounded-lg p-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Mot de passe</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full border rounded-lg p-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Confirmer le mot de passe</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
               />
@@ -109,8 +166,8 @@ const UserForm = ({ onBack, onNext }) => {
           <h1 className="text-2xl font-bold mb-2 text-center">On veut en savoir plus sur vous</h1>
           <div className="space-y-4">
             <div>
-                <label className="block text-sm font-medium">Loisirs</label>
-                <Select
+              <label className="block text-sm font-medium">Loisirs</label>
+              <Select
                 closeMenuOnSelect={false}
                 components={animatedComponents}
                 isMulti
@@ -118,23 +175,23 @@ const UserForm = ({ onBack, onNext }) => {
                 value={formData.hobbies}
                 onChange={handleSelectChange}
                 placeholder=""
-                />
+              />
             </div>
             <div>
-              <label className="block text-sm font-medium">Dites nous pourquoi êtes vous là</label>
+              <label className="block text-sm font-medium">Dites-nous pourquoi êtes-vous là</label>
               <textarea
-                name="more"
-                value={formData.location}
+                name="about"
+                value={formData.about}
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
                 rows="2"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Présentez vous</label>
+              <label className="block text-sm font-medium">Présentez-vous</label>
               <textarea
                 name="more"
-                value={formData.location}
+                value={formData.more}
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
                 rows="4"
@@ -148,7 +205,7 @@ const UserForm = ({ onBack, onNext }) => {
 
   return (
     <div className="w-full max-w-md p-6 bg-white rounded-lg">
-      <form className="space-y-4">
+      <form id="user-form" className="space-y-4" onSubmit={handleSubmit}>
         {renderForm()}
         <div className="flex justify-between">
           <button

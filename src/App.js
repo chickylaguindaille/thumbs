@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { login, logout } from './authSlice';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import EventsPage from './pages/EventsPage';
@@ -14,6 +16,7 @@ import SignupPage from './pages/SignupPage';
 function MainLayout() {
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
   
   useEffect(() => {
     // Toujours ouvert en desktop
@@ -35,14 +38,23 @@ function MainLayout() {
     }
   };
 
+  const ProtectedRoute = ({ element }) => {
+    const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+    return isAuthenticated ? element : <Navigate to="/login" />;
+  };
+
+  const isPublicRoute = location.pathname === '/login' || location.pathname === '/forgot-password' || location.pathname === '/signup';
+
   return (
     <div className="flex flex-col md:flex-row">
       {/* Sidebar */}
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-
-      <div className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'md:ml-64' : 'md:ml-0'}`}>
+      {!isPublicRoute && (
+        <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      )}
+      
+      <div className={`flex-1 transition-all duration-300 ${isSidebarOpen && !isPublicRoute ? 'md:ml-64' : 'md:ml-0'}`}>
         {/* Header */}
-        {location.pathname !== '/login' && location.pathname !== '/forgot-password' && location.pathname !== '/signup' && (
+        {!isPublicRoute && (
           <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
         )}
 
@@ -56,6 +68,15 @@ function MainLayout() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/signup" element={<SignupPage />} />
+
+          {/* <Route path="/events" element={<ProtectedRoute element={<EventsPage />} />} />
+          <Route path="/events/:id" element={<ProtectedRoute element={<EventPage />} />} />
+          <Route path="/messages" element={<ProtectedRoute element={<MessagesPage />} />} />
+          <Route path="/messages/:id" element={<ProtectedRoute element={<ChatPage />} />} />
+          <Route path="/profile/:id" element={<ProtectedRoute element={<ProfilePage />} />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/signup" element={<SignupPage />} /> */}
         </Routes>
       </div>
     </div>

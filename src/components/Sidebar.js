@@ -1,8 +1,15 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FaMapMarkerAlt, FaHome, FaEnvelope, FaUser, FaChevronRight } from 'react-icons/fa';
+import axios from 'axios';
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const sidebarRef = useRef(null);
+  const [profile, setProfile] = useState({
+    name: 'John Doe',
+    email: 'email@example.com',
+    location: 'Paris',
+    profilePicture: 'https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg'
+  });
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -10,7 +17,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         toggleSidebar();
       }
     };
-  
+
     // Ajouter l'écouteur d'événements
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -18,7 +25,22 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen, toggleSidebar]);
-  
+
+  useEffect(() => {
+    // Remplacez l'URL par l'URL de votre API pour récupérer les informations du profil
+    axios.get('https://back-thumbs.vercel.app/profil')
+      .then(response => {
+        setProfile({
+          name: response.data.user.name, // Accès correct aux données
+          email: response.data.user.email, // Accès correct aux données
+          location: response.data.user.location, // Accès correct aux données
+          profilePicture: response.data.user.profilePicture // Accès correct aux données
+        });
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération du profil:', error);
+      });
+  }, []);
 
   return (
     <div
@@ -31,17 +53,17 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       <div className="bg-gray-900 p-4 border-b border-gray-700 flex items-center space-x-4">
         {/* Image de profil */}
         <img
-          src="https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg"
+          src={profile.profilePicture}
           alt="Photo de profil"
           className="w-10 h-10 rounded-full border-2 border-white"
         />
         
         {/* Contenu du profil */}
         <div className="flex flex-col">
-          <span className="text-lg font-semibold">John Doe</span>
+          <span className="text-lg font-semibold">{profile.name}</span>
           <div className="flex items-center space-x-1">
             <FaMapMarkerAlt className="text-gray-300" />
-            <span className="text-sm text-gray-300">Paris</span>
+            <span className="text-sm text-gray-300">{profile.location}</span>
           </div>
         </div>
       </div>

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import axios from 'axios'; // Assure-toi d'avoir installé axios
+import { useNavigate } from 'react-router-dom';
 
 const AssociationForm = ({ onBack, onNext }) => {
   const [formData, setFormData] = useState({
@@ -10,6 +12,8 @@ const AssociationForm = ({ onBack, onNext }) => {
     acceptTerms: false
   });
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -18,10 +22,18 @@ const AssociationForm = ({ onBack, onNext }) => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle submission logic
-    onNext();
+
+    try {
+      await axios.post('https://back-thumbs.vercel.app/auth/register', {
+        email: formData.email,
+        password: formData.password
+      });
+      navigate('/events');
+    } catch (error) {
+      console.error('Erreur lors de l\'inscription:', error);
+    }
   };
 
   return (

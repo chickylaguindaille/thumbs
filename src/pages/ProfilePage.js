@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import Modal from '../components/Modal';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
+import axios from 'axios';
 
 const animatedComponents = makeAnimated();
 
@@ -58,6 +59,37 @@ const ProfilePage = () => {
 
   const openDeleteAccountModal = () => setDeleteAccountModalIsOpen(true);
   const closeDeleteAccountModal = () => setDeleteAccountModalIsOpen(false);
+
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      await axios.post('https://back-thumbs.vercel.app/auth/logout', {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,        }
+      });
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error);
+    } finally {
+      closeLogoutModal();
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      await axios.post('https://back-thumbs.vercel.app/auth/delete-account', {}, {
+        headers: {
+          // Ajoute les en-têtes nécessaires si besoin
+        }
+      });
+      window.location.href = '/login'; // Redirection vers la page de connexion après suppression de compte
+    } catch (error) {
+      console.error('Erreur lors de la suppression du compte:', error);
+      // Afficher un message d'erreur si nécessaire
+    } finally {
+      closeDeleteAccountModal();
+    }
+  };
 
   return (
     <div className="pt-[56px]">
@@ -184,14 +216,14 @@ const ProfilePage = () => {
                     className="flex items-center justify-between p-2 rounded-lg shadow-sm cursor-pointer"
                     onClick={openLogoutModal}
                   >
-                    <span className="text-lg font-medium">Me déconnecter</span>
+                    <span className="text-lg font-medium">Déconnexion</span>
                     <FaChevronRight />
                   </div>
                   <div
                     className="flex items-center justify-between p-2 rounded-lg shadow-sm cursor-pointer"
                     onClick={openDeleteAccountModal}
                   >
-                    <span className="text-lg font-medium">Supprimer mon compte</span>
+                    <span className="text-lg font-medium text-red-500">Supprimer mon compte</span>
                     <FaChevronRight />
                   </div>
                 </div>
@@ -262,51 +294,45 @@ const ProfilePage = () => {
         </form>
       </Modal>
 
-      <Modal isOpen={logoutModalIsOpen} onClose={closeLogoutModal} size="w-[80%]">
-        <h2 className="text-xl font-semibold mb-4">Confirmation de déconnexion</h2>
-        <p>Êtes-vous sûr de vouloir vous déconnecter ?</p>
-        <div className="flex justify-end mt-4">
-          <button
-            type="button"
-            className="px-4 py-2 bg-red-600 text-white rounded-lg mr-2"
-            onClick={() => {
-              closeLogoutModal();
-              // Logique de déconnexion ici
-            }}
-          >
-            Déconnexion
-          </button>
-          <button
-            type="button"
-            className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg"
-            onClick={closeLogoutModal}
-          >
-            Annuler
-          </button>
+      <Modal isOpen={logoutModalIsOpen} onClose={closeLogoutModal}>
+        <div className="p-4">
+          <h2 className="text-xl font-semibold">Déconnexion</h2>
+          <p>Êtes-vous sûr de vouloir vous déconnecter ?</p>
+          <div className="mt-4 flex justify-between">
+            <button
+              className="px-4 py-2 bg-red-600 text-white rounded-lg mr-2"
+              onClick={handleLogout}
+            >
+              Déconnexion
+            </button>
+            <button
+              className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg"
+              onClick={closeLogoutModal}
+            >
+              Annuler
+            </button>
+          </div>
         </div>
       </Modal>
 
-      <Modal isOpen={deleteAccountModalIsOpen} onClose={closeDeleteAccountModal} size="w-[80%]">
-        <h2 className="text-xl font-semibold mb-4">Confirmation de suppression de compte</h2>
-        <p>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.</p>
-        <div className="flex justify-end mt-4">
-          <button
-            type="button"
-            className="px-4 py-2 bg-red-600 text-white rounded-lg mr-2"
-            onClick={() => {
-              closeDeleteAccountModal();
-              // Logique de suppression de compte ici
-            }}
-          >
-            Supprimer mon compte
-          </button>
-          <button
-            type="button"
-            className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg"
-            onClick={closeDeleteAccountModal}
-          >
-            Annuler
-          </button>
+      <Modal isOpen={deleteAccountModalIsOpen} onClose={closeDeleteAccountModal}>
+        <div className="p-4">
+          <h2 className="text-xl font-semibold text-red-500">Supprimer mon compte</h2>
+          <p>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.</p>
+          <div className="mt-4 flex justify-between">
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded-lg"
+              onClick={handleDeleteAccount}
+            >
+              Supprimer
+            </button>
+            <button
+              className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg"
+              onClick={closeDeleteAccountModal}
+            >
+              Annuler
+            </button>
+          </div>
         </div>
       </Modal>
     </div>
