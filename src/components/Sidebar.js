@@ -1,9 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FaMapMarkerAlt, FaHome, FaEnvelope, FaUser, FaChevronRight } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaHome, FaEnvelope, FaUser, FaChevronRight, FaSignOutAlt } from 'react-icons/fa';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { logout } from '../authSlice';
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const sidebarRef = useRef(null);
+  const dispatch = useDispatch(); // Utilise dispatch pour appeler l'action de déconnexion
   const [profile, setProfile] = useState({
     name: 'John Doe',
     email: 'email@example.com',
@@ -18,29 +21,30 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       }
     };
 
-    // Ajouter l'écouteur d'événements
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      // Nettoyer l'écouteur d'événements
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen, toggleSidebar]);
 
-  // useEffect(() => {
-  //   // Remplacez l'URL par l'URL de votre API pour récupérer les informations du profil
-  //   axios.get('https://back-thumbs.vercel.app/profil')
-  //     .then(response => {
-  //       setProfile({
-  //         name: response.data.user.name, // Accès correct aux données
-  //         email: response.data.user.email, // Accès correct aux données
-  //         location: response.data.user.location, // Accès correct aux données
-  //         profilePicture: response.data.user.profilePicture // Accès correct aux données
-  //       });
-  //     })
-  //     .catch(error => {
-  //       console.error('Erreur lors de la récupération du profil:', error);
-  //     });
-  // }, []);
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      await axios.post('https://back-thumbs.vercel.app/auth/logout', {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
+
+      dispatch(logout());
+
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error);
+    } finally {
+      // closeLogoutModal(); // Si tu as une modal de déconnexion, ferme-la ici
+    }
+  };
 
   return (
     <div
@@ -69,7 +73,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       </div>
 
       {/* Contenu de la sidebar */}
-      <div className="p-4">
+      <div className="p-4 flex flex-col flex-grow">
         {/* Ligne 1 : Maison */}
         <a href="/events" className="flex items-center justify-between space-x-2 text-white hover:bg-gray-700 p-2 rounded">
           <div className="flex space-x-3 items-center justify-center">
@@ -102,6 +106,22 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           </div>
           <FaChevronRight size={16} />
         </a>
+
+        {/* Espace flexible */}
+        <div className="flex-grow"></div>
+
+        {/* Bouton de déconnexion */}
+        <button
+          onClick={handleLogout}
+          className="flex items-center justify-between space-x-2 text-white hover:bg-gray-700 p-2 rounded absolute bottom-4 left-4 right-4"
+        >
+          <div className="flex space-x-3 items-center justify-center">
+            <div className="w-8 h-8 flex items-center justify-center bg-red-500 rounded-full">
+              <FaSignOutAlt size={16} />
+            </div>
+            <span>Déconnexion</span>
+          </div>
+        </button>
       </div>
     </div>
   );
