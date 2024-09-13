@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importation de useNavigate
+import { useNavigate } from 'react-router-dom';
 import AssociationForm from '../components/signup/association';
 import UserForm from '../components/signup/user';
+import { login } from '../authSlice';
 
 const SignUpPage = () => {
   const [role, setRole] = useState(null);
-  const [step, setStep] = useState(0); // Étape 0 pour la sélection du rôle
-  const navigate = useNavigate(); // Pour rediriger vers la page de connexion
+  const [step, setStep] = useState(0);
 
   const handleRoleChange = (selectedRole) => {
     setRole(selectedRole);
@@ -14,16 +14,12 @@ const SignUpPage = () => {
 
   const handleNext = () => {
     if (role) {
-      setStep(step + 1); // Passe à l'étape suivante
+      setStep(step + 1);
     }
   };
 
-//   const handleBack = () => {
-//     navigate('/login'); // Redirige vers la page de connexion
-//   };
-
   const handleBack = (stepNumber = 0) => {
-    setStep(stepNumber); // Revenir à l'étape 0 (choix du rôle)
+    setStep(stepNumber);
   };
 
   const renderForm = () => {

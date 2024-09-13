@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // Assure-toi d'avoir installé axios
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { login } from '../../authSlice';
 
 const AssociationForm = ({ onBack, onNext }) => {
   const [formData, setFormData] = useState({
@@ -13,6 +15,7 @@ const AssociationForm = ({ onBack, onNext }) => {
   });
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -26,10 +29,11 @@ const AssociationForm = ({ onBack, onNext }) => {
     e.preventDefault();
 
     try {
-      await axios.post('https://back-thumbs.vercel.app/auth/register', {
+      const response = await axios.post('https://back-thumbs.vercel.app/auth/register', {
         email: formData.email,
         password: formData.password
       });
+      dispatch(login(response.data.user));
       navigate('/events');
     } catch (error) {
       console.error('Erreur lors de l\'inscription:', error);

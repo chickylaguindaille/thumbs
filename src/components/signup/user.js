@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { login } from '../../authSlice';
 import { useNavigate } from 'react-router-dom';
 
 const animatedComponents = makeAnimated();
@@ -22,16 +24,19 @@ const UserForm = ({ onBack, onNext }) => {
     gender: '',
     age: '',
     location: '',
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
-    hobbies: [],
+    interests: [],
     acceptTerms: false,
-    about: '',
+    description: '',
     more: ''
   });
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -44,8 +49,9 @@ const UserForm = ({ onBack, onNext }) => {
   const handleSelectChange = (selectedOptions) => {
     setFormData({
       ...formData,
-      hobbies: selectedOptions
+      interests: selectedOptions
     });
+    console.log(selectedOptions)
   };
 
   const handleSubmit = async (e) => {
@@ -57,10 +63,22 @@ const UserForm = ({ onBack, onNext }) => {
     }
   
     try {
-      await axios.post('https://back-thumbs.vercel.app/auth/register', {
+      const response = await axios.post('https://back-thumbs.vercel.app/auth/register', {
+        photo: formData.photo,
+        gender: formData.gender,
+        age: formData.age,
+        location: formData.location,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
+        interests: formData.interests,
+        acceptTerms: formData.acceptTerms,
+        description: formData.description,
+        more: formData.more
       });
+        dispatch(login(response.data.user));
         navigate('/events');
     } catch (error) {
       console.error('Erreur lors de l\'inscription:', error);
@@ -88,6 +106,26 @@ const UserForm = ({ onBack, onNext }) => {
               <input
                 type="file"
                 name="photo"
+                onChange={handleChange}
+                className="w-full border rounded-lg p-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Prénom</label>
+              <input
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                className="w-full border rounded-lg p-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Nom</label>
+              <input
+                type="text"
+                name="lastName"
+                value={formData.lastName}
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
               />
@@ -172,7 +210,7 @@ const UserForm = ({ onBack, onNext }) => {
                 components={animatedComponents}
                 isMulti
                 options={optionsLoisirs}
-                value={formData.hobbies}
+                value={formData.interests}
                 onChange={handleSelectChange}
                 placeholder=""
               />
@@ -180,8 +218,8 @@ const UserForm = ({ onBack, onNext }) => {
             <div>
               <label className="block text-sm font-medium">Dites-nous pourquoi êtes-vous là</label>
               <textarea
-                name="about"
-                value={formData.about}
+                name="description"
+                value={formData.description}
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
                 rows="2"
