@@ -26,21 +26,21 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     };
   }, [isOpen, toggleSidebar]);
 
-  useEffect(() => {
-    // Remplacez l'URL par l'URL de votre API pour récupérer les informations du profil
-    axios.get('https://back-thumbs.vercel.app/profil')
-      .then(response => {
-        setProfile({
-          name: response.data.user.name, // Accès correct aux données
-          email: response.data.user.email, // Accès correct aux données
-          location: response.data.user.location, // Accès correct aux données
-          profilePicture: response.data.user.profilePicture // Accès correct aux données
-        });
-      })
-      .catch(error => {
-        console.error('Erreur lors de la récupération du profil:', error);
-      });
-  }, []);
+  // useEffect(() => {
+  //   // Remplacez l'URL par l'URL de votre API pour récupérer les informations du profil
+  //   axios.get('https://back-thumbs.vercel.app/profil')
+  //     .then(response => {
+  //       setProfile({
+  //         name: response.data.user.name, // Accès correct aux données
+  //         email: response.data.user.email, // Accès correct aux données
+  //         location: response.data.user.location, // Accès correct aux données
+  //         profilePicture: response.data.user.profilePicture // Accès correct aux données
+  //       });
+  //     })
+  //     .catch(error => {
+  //       console.error('Erreur lors de la récupération du profil:', error);
+  //     });
+  // }, []);
 
   return (
     <div

@@ -11,7 +11,7 @@ function ForgotPasswordPage() {
   };
 
   return (
-    <div className="flex flex-col items-center py-20 h-screen bg-gray-100 px-6">
+    <div className="flex flex-col items-center py-20 h-screen px-6">
       {/* Chevron de retour en arrière */}
       <div className="absolute top-4 left-4">
         <button onClick={handleBackClick} className="text-gray-700 hover:text-gray-900">

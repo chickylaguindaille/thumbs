@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { FaInfoCircle, FaChartBar, FaCog, FaChevronRight } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { logout } from '../authSlice';
 import contactsData from '../examples/contacts.json';
 import activitiesData from '../examples/activities.json';
 import Header from '../components/Header';
@@ -27,6 +29,7 @@ const ProfilePage = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [logoutModalIsOpen, setLogoutModalIsOpen] = useState(false);
   const [deleteAccountModalIsOpen, setDeleteAccountModalIsOpen] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const selectedContact = contactsData.find(contact => contact.id === parseInt(id, 10));
@@ -67,7 +70,11 @@ const ProfilePage = () => {
         headers: {
           Authorization: `Bearer ${token}`,        }
       });
-      window.location.href = '/login';
+
+      dispatch(logout());
+
+
+      // window.location.href = '/login';
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);
     } finally {

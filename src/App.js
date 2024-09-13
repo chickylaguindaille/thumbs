@@ -19,7 +19,6 @@ function MainLayout() {
   const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
   
   useEffect(() => {
-    // Toujours ouvert en desktop
     const handleResize = () => {
       if (window.innerWidth >= 768) {
         setIsSidebarOpen(true);
@@ -40,6 +39,7 @@ function MainLayout() {
 
   const ProtectedRoute = ({ element }) => {
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+    console.log("Is Authenticated:", isAuthenticated);
     return isAuthenticated ? element : <Navigate to="/login" />;
   };
 
@@ -51,7 +51,7 @@ function MainLayout() {
       {!isPublicRoute && (
         <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       )}
-      
+
       <div className={`flex-1 transition-all duration-300 ${isSidebarOpen && !isPublicRoute ? 'md:ml-64' : 'md:ml-0'}`}>
         {/* Header */}
         {!isPublicRoute && (
@@ -60,23 +60,23 @@ function MainLayout() {
 
         {/* Routes */}
         <Routes>
-          <Route path="/events" element={<EventsPage />} />
+          {/* <Route path="/events" element={<EventsPage />} />
           <Route path="/events/:id" element={<EventPage />} />
           <Route path="/messages" element={<MessagesPage />} />
           <Route path="/messages/:id" element={<ChatPage />} />
           <Route path="/profile/:id" element={<ProfilePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/signup" element={<SignupPage />} /> */}
 
-          {/* <Route path="/events" element={<ProtectedRoute element={<EventsPage />} />} />
+          <Route path="/events" element={<ProtectedRoute element={<EventsPage />} />} />
           <Route path="/events/:id" element={<ProtectedRoute element={<EventPage />} />} />
           <Route path="/messages" element={<ProtectedRoute element={<MessagesPage />} />} />
           <Route path="/messages/:id" element={<ProtectedRoute element={<ChatPage />} />} />
           <Route path="/profile/:id" element={<ProtectedRoute element={<ProfilePage />} />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/signup" element={<SignupPage />} /> */}
+          <Route path="/signup" element={<SignupPage />} />
         </Routes>
       </div>
     </div>

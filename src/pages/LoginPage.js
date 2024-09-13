@@ -27,10 +27,9 @@ function LoginPage() {
       // Dispatch de l'action pour mettre à jour l'état d'authentification
       dispatch(login(response.data.user));
       
-      // Attendez un moment pour la mise à jour de l'état si nécessaire
       setTimeout(() => {
         navigate('/events');
-      }, 100); // Petite attente pour s'assurer que la mise à jour de l'état est effectuée
+      }, 100);
     } catch (err) {
       // Afficher une erreur si la connexion échoue
       setError('Erreur lors de la connexion. Veuillez vérifier vos informations.');
@@ -92,7 +91,7 @@ function LoginPage() {
         <div className="flex items-center justify-center bg-customPurple rounded">
           <button
             type="submit"
-            className="text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="text-white font-bold py-2 px-4 w-full rounded focus:outline-none focus:shadow-outline"
           >
             Connexion
           </button>
