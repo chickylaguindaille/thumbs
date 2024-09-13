@@ -78,8 +78,8 @@ const UserForm = ({ onBack, onNext }) => {
         description: formData.description,
         more: formData.more
       });
-        dispatch(login(response.data.user));
-        navigate('/events');
+ 
+        navigate('/login');
     } catch (error) {
       console.error('Erreur lors de l\'inscription:', error);
     }

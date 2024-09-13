@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { FaInfoCircle, FaChartBar, FaCog, FaChevronRight } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { logout } from '../authSlice';
-import contactsData from '../examples/contacts.json';
 import activitiesData from '../examples/activities.json';
 import Header from '../components/Header';
 import Modal from '../components/Modal';
@@ -24,7 +23,15 @@ const optionsLoisirs = [
 
 const ProfilePage = () => {
   const { id } = useParams();
-  const [contact, setContact] = useState(null);
+  const [profile, setProfile] = useState({
+    _id: '',
+    firstName: '',
+    lastName: '',
+    interests: [],
+    email: '',
+    location: '',
+    photo: ''
+  });
   const [activeTab, setActiveTab] = useState('info');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [logoutModalIsOpen, setLogoutModalIsOpen] = useState(false);
@@ -32,15 +39,25 @@ const ProfilePage = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const selectedContact = contactsData.find(contact => contact.id === parseInt(id, 10));
-    setContact(selectedContact);
-  }, [id]);
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
 
-  if (!contact) {
-    return <div>Chargement...</div>;
-  }
+        const response = await axios.get('https://back-thumbs.vercel.app/profil/details', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+        setProfile(response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération du profil:', error);
+      }
+    };
 
-  const tabWidth = contact.id === 1 ? 'w-1/3' : 'w-1/2';
+    fetchProfile();
+  }, []);
+
+  const tabWidth = profile.id === profile.id ? 'w-1/3' : 'w-1/2';
 
   const allActivities = {
     sports: activitiesData.sports,
@@ -48,11 +65,12 @@ const ProfilePage = () => {
     loisirs: activitiesData.loisirs,
   };
 
-  const contactActivities = {
-    sports: contact.activities.sports.map(activityId => allActivities.sports.find(activity => activity.id === activityId)).filter(activity => activity),
-    arts: contact.activities.arts.map(activityId => allActivities.arts.find(activity => activity.id === activityId)).filter(activity => activity),
-    loisirs: contact.activities.loisirs.map(activityId => allActivities.loisirs.find(activity => activity.id === activityId)).filter(activity => activity),
-  };
+  // const contactActivities = {
+  //   sports: profile.interests.sports.map(activityId => allActivities.sports.find(activity => activity.id === activityId)).filter(activity => activity),
+  //   arts: profile.interests.arts.map(activityId => allActivities.arts.find(activity => activity.id === activityId)).filter(activity => activity),
+  //   loisirs: profile.interests.loisirs.map(activityId => allActivities.loisirs.find(activity => activity.id === activityId)).filter(activity => activity),
+  // };
+  
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
@@ -103,20 +121,20 @@ const ProfilePage = () => {
       <div className="p-4 flex flex-col items-start">
         <div className="flex items-center mb-4">
           <img
-            src={contact.profileImage}
-            alt={`${contact.name}'s profile`}
+            src={profile.photo || "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg"}
+            alt={`${profile.firstName || "John"}'s profile`}
             className="w-16 h-16 rounded-full mr-4"
           />
           <div>
-            <h1 className="text-2xl font-bold">{contact.name} {contact.lastName}</h1>
+            <h1 className="text-2xl font-bold">{profile.firstName || "John"} {profile.lastName || "Doe"}</h1>
           </div>
         </div>
         <div>
-          <p className="text-gray-600">{contact.description}</p>
+          <p className="text-gray-600">{profile.description || "Ceci est la description"}</p>
         </div>
 
         <div className="mt-2 text-blue-600">
-          <p className="text-sm font-semibold">{contact.location}</p>
+          <p className="text-sm font-semibold">{profile.location || "Ceci est la localisation"}</p>
         </div>
 
         <div className="mt-4 w-full">
@@ -134,7 +152,7 @@ const ProfilePage = () => {
               >
                 <FaChartBar className="inline-block text-xl" />
               </li>
-              {contact.id === 1 && (
+              {profile.id === profile.id && (
                 <li
                   className={`cursor-pointer text-center pb-2 w-1/3 ${activeTab === 'settings' ? 'border-b-2 border-blue-500 text-blue-600' : ''}`}
                   onClick={() => setActiveTab('settings')}
@@ -148,13 +166,13 @@ const ProfilePage = () => {
           <div className="mt-4">
             {activeTab === 'info' && (
               <div>
-                <h2 className="text-xl font-semibold">Informations sur {contact.name}</h2>
-                <p>Voici quelques informations supplémentaires sur le contact.</p>
+                <h2 className="text-xl font-semibold">Informations sur {profile.firstName || "John"} {profile.lastName || "Doe"}</h2>
+                <p>Voici quelques informations supplémentaires sur le profil.</p>
               </div>
             )}
             {activeTab === 'activity' && (
               <div>
-                <div className="space-y-4">
+                {/* <div className="space-y-4">
                   {contactActivities.sports.length > 0 && (
                     <div>
                       <h3 className="text-lg font-semibold">Sports</h3>
@@ -206,10 +224,10 @@ const ProfilePage = () => {
                       </div>
                     </div>
                   )}
-                </div>
+                </div> */}
               </div>
             )}
-            {activeTab === 'settings' && contact.id === 1 && (
+            {activeTab === 'settings' && profile.id == profile.id && (
               <div>
                 <div className="space-y-4">
                   <div
@@ -246,11 +264,11 @@ const ProfilePage = () => {
         <form className="space-y-4">
           <div>
             <label className="block text-sm font-medium">Nom</label>
-            <input type="text" className="w-full border rounded-lg p-2" defaultValue={contact.name} />
+            <input type="text" className="w-full border rounded-lg p-2" defaultValue={profile.name} />
           </div>
           <div>
             <label className="block text-sm font-medium">Prénom</label>
-            <input type="text" className="w-full border rounded-lg p-2" defaultValue={contact.lastName} />
+            <input type="text" className="w-full border rounded-lg p-2" defaultValue={profile.lastName} />
           </div>
           <div>
             <label className="block text-sm font-medium">Mot de passe</label>
@@ -258,7 +276,7 @@ const ProfilePage = () => {
           </div>
           <div>
             <label className="block text-sm font-medium">Sexe</label>
-            <select className="w-full border rounded-lg p-2" defaultValue={contact.gender}>
+            <select className="w-full border rounded-lg p-2" defaultValue={profile.gender}>
               <option value="male">Homme</option>
               <option value="female">Femme</option>
               <option value="other">Autre</option>
@@ -266,11 +284,11 @@ const ProfilePage = () => {
           </div>
           <div>
             <label className="block text-sm font-medium">Âge</label>
-            <input type="number" className="w-full border rounded-lg p-2" defaultValue={contact.age} />
+            <input type="number" className="w-full border rounded-lg p-2" defaultValue={profile.age} />
           </div>
           <div>
             <label className="block text-sm font-medium">Localisation</label>
-            <input type="text" className="w-full border rounded-lg p-2" defaultValue={contact.location} />
+            <input type="text" className="w-full border rounded-lg p-2" defaultValue={profile.location} />
           </div>
           <div>
                 <label className="block text-sm font-medium">Loisirs</label>

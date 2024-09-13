@@ -6,12 +6,13 @@ import { logout } from '../authSlice';
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const sidebarRef = useRef(null);
-  const dispatch = useDispatch(); // Utilise dispatch pour appeler l'action de déconnexion
+  const dispatch = useDispatch();
   const [profile, setProfile] = useState({
-    name: 'John Doe',
-    email: 'email@example.com',
-    location: 'Paris',
-    profilePicture: 'https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg'
+    _id: '',
+    firstName: '',
+    email: '',
+    location: '',
+    photo: ''
   });
 
   useEffect(() => {
@@ -27,6 +28,25 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     };
   }, [isOpen, toggleSidebar]);
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+
+        const response = await axios.get('https://back-thumbs.vercel.app/profil/details', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+        setProfile(response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération du profil:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem('authToken');
@@ -41,8 +61,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       window.location.href = '/login';
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);
-    } finally {
-      // closeLogoutModal(); // Si tu as une modal de déconnexion, ferme-la ici
     }
   };
 
@@ -57,17 +75,17 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       <div className="bg-gray-900 p-4 border-b border-gray-700 flex items-center space-x-4">
         {/* Image de profil */}
         <img
-          src={profile.profilePicture}
+          src={profile.photo || 'https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg'}
           alt="Photo de profil"
           className="w-10 h-10 rounded-full border-2 border-white"
         />
         
         {/* Contenu du profil */}
         <div className="flex flex-col">
-          <span className="text-lg font-semibold">{profile.name}</span>
+          <span className="text-lg font-semibold">{profile.firstName || 'John'} {profile.lastName || 'Doe'}</span>
           <div className="flex items-center space-x-1">
             <FaMapMarkerAlt className="text-gray-300" />
-            <span className="text-sm text-gray-300">{profile.location}</span>
+            <span className="text-sm text-gray-300">{profile.location || 'Paris'}</span>
           </div>
         </div>
       </div>
@@ -97,7 +115,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         </a>
 
         {/* Ligne 3 : Mon profil */}
-        <a href="/profile/1" className="flex items-center justify-between space-x-2 text-white hover:bg-gray-700 p-2 rounded">
+        <a href={`/profile/${profile._id || 1}`} className="flex items-center justify-between space-x-2 text-white hover:bg-gray-700 p-2 rounded">
           <div className="flex space-x-3 items-center justify-center">
             <div className="w-8 h-8 flex items-center justify-center bg-blue-500 rounded-full">
               <FaUser size={16} />

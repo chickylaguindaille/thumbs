@@ -21,11 +21,15 @@ function LoginPage() {
         email,
         password,
       });
+      const token = response.data.token;
+
+      localStorage.setItem('authToken', token);
+
       // Vérifiez la réponse ici
       console.log('Réponse de la connexion:', response.data);
       
       // Dispatch de l'action pour mettre à jour l'état d'authentification
-      dispatch(login(response.data.user));
+      dispatch(login({ token, user: response.data.user }));
       
       setTimeout(() => {
         navigate('/events');
