@@ -1,20 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { FaBars, FaSearch, FaTimes, FaChevronLeft, FaUser, FaEnvelope } from 'react-icons/fa'; // Ajoutez FaEnvelope
 import { useLocation, useNavigate } from 'react-router-dom';
-import Sidebar from './Sidebar';
 import SearchBar from './Searchbar';
 
-const Header = ({ contactName, contactId }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+const Header = ({ contactName, contactId, toggleSidebar, isSidebarOpen }) => {
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false);
   const [title, setTitle] = useState('Événements');
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Fonction pour ouvrir/fermer la sidebar
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
 
   // Fonction pour ouvrir/fermer la barre de recherche
   const toggleSearchBar = () => {
@@ -62,7 +55,7 @@ const Header = ({ contactName, contactId }) => {
     if (path === '/messages') {
       setTitle('Messagerie');
     } else if (path.startsWith('/messages/') && path.split('/').length === 3) {
-      setTitle(contactName || 'Messagerie');
+      setTitle(contactName || 'Chat');
     } else if (path.startsWith('/events/')) {
       setTitle('Événement');
     } else if (path.startsWith('/events')) {
@@ -80,7 +73,7 @@ const Header = ({ contactName, contactId }) => {
     if (path === '/messages') {
       return 'Messagerie';
     } else if (path.startsWith('/messages/') && path.split('/').length === 3) {
-      return contactName || 'Messagerie';
+      return contactName || 'Chat';
     }
     return title;
   };
@@ -136,7 +129,7 @@ const Header = ({ contactName, contactId }) => {
       return (
         <button
           onClick={handleBackButtonClick}
-          className="text-white p-2 rounded"
+          className="text-white p-2 rounded md:hidden"
         >
           <FaChevronLeft size={24} />
         </button>
@@ -145,7 +138,7 @@ const Header = ({ contactName, contactId }) => {
       return (
         <button
           onClick={toggleSidebar}
-          className="text-white p-2 rounded"
+          className="text-white p-2 rounded md:hidden"
         >
           <FaBars size={24} />
         </button>
@@ -154,7 +147,10 @@ const Header = ({ contactName, contactId }) => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-customPurple text-white py-2 px-2 flex items-center justify-between z-50" style={{ height: '56px' }}>
+    <header
+      className={`fixed top-0 left-0 right-0 bg-customPurple text-white py-2 px-2 flex items-center justify-between z-50 ${isSidebarOpen ? 'md:ml-64' : 'md:ml-0'}`}
+      style={{ height: '56px' }}
+    >
       {/* Afficher le bouton de retour en arrière sur les pages de messages/:id et le bouton pour la sidebar sur les autres pages */}
       {renderHeaderButton()}
 
@@ -165,11 +161,6 @@ const Header = ({ contactName, contactId }) => {
 
       {/* Bouton de recherche, message ou profil */}
       {renderActionButton()}
-
-      {/* Utilisation du composant Sidebar */}
-      {!location.pathname.startsWith('/messages/') && (
-        <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      )}
 
       {/* Barre de recherche */}
       <SearchBar

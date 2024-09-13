@@ -5,6 +5,19 @@ import contactsData from '../examples/contacts.json';
 import activitiesData from '../examples/activities.json';
 import Header from '../components/Header';
 import Modal from '../components/Modal';
+import Select from 'react-select';
+import makeAnimated from 'react-select/animated';
+
+const animatedComponents = makeAnimated();
+
+const optionsLoisirs = [
+  { value: '1', label: 'Bowling' },
+  { value: '2', label: 'Échecs' },
+  { value: '3', label: 'Jeux Vidéos' },
+  { value: '4', label: 'Peinture' },
+  { value: '5', label: 'Danse' },
+  { value: '6', label: 'Musique' }
+];
 
 const ProfilePage = () => {
   const { id } = useParams();
@@ -48,7 +61,6 @@ const ProfilePage = () => {
 
   return (
     <div className="pt-[56px]">
-      <Header contactName={contact.name} contactId={contact.id} showBackButton={true} />
       <div className="p-4 flex flex-col items-start">
         <div className="flex items-center mb-4">
           <img
@@ -222,16 +234,14 @@ const ProfilePage = () => {
             <input type="text" className="w-full border rounded-lg p-2" defaultValue={contact.location} />
           </div>
           <div>
-            <label className="block text-sm font-medium">Loisirs</label>
-            <input type="text" className="w-full border rounded-lg p-2" defaultValue={contact.activities.loisirs.join(', ')} />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Sports</label>
-            <input type="text" className="w-full border rounded-lg p-2" defaultValue={contact.activities.sports.join(', ')} />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Arts</label>
-            <input type="text" className="w-full border rounded-lg p-2" defaultValue={contact.activities.arts.join(', ')} />
+                <label className="block text-sm font-medium">Loisirs</label>
+                <Select
+                closeMenuOnSelect={false}
+                components={animatedComponents}
+                isMulti
+                options={optionsLoisirs}
+                placeholder=""
+                />
           </div>
           <div className="flex justify-end mt-4">
             <button
