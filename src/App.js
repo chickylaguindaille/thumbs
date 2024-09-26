@@ -9,9 +9,11 @@ import EventPage from './pages/EventPage';
 import MessagesPage from './pages/MessagesPage';
 import ChatPage from './pages/ChatPage';
 import ProfilePage from './pages/ProfilePage';
+import AssociationPage from './pages/AssociationPage';
 import LoginPage from './pages/LoginPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import SignupPage from './pages/SignupPage';
+import TermsPage from './pages/TermsPage';
 
 function MainLayout() {
   const location = useLocation();
@@ -43,7 +45,7 @@ function MainLayout() {
     return isAuthenticated ? element : <Navigate to="/login" />;
   };
 
-  const isPublicRoute = location.pathname === '/login' || location.pathname === '/forgot-password' || location.pathname === '/signup';
+  const isPublicRoute = location.pathname === '/login' || location.pathname === '/forgot-password' || location.pathname === '/signup' || location.pathname === '/terms';
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -69,11 +71,14 @@ function MainLayout() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/signup" element={<SignupPage />} /> */}
 
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/" element={<ProtectedRoute element={<EventsPage />} />} /> 
           <Route path="/events" element={<ProtectedRoute element={<EventsPage />} />} />
           <Route path="/events/:id" element={<ProtectedRoute element={<EventPage />} />} />
           <Route path="/messages" element={<ProtectedRoute element={<MessagesPage />} />} />
           <Route path="/messages/:id" element={<ProtectedRoute element={<ChatPage />} />} />
           <Route path="/profile/:id" element={<ProtectedRoute element={<ProfilePage />} />} />
+          <Route path="/association/:id" element={<ProtectedRoute element={<AssociationPage />} />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/signup" element={<SignupPage />} />

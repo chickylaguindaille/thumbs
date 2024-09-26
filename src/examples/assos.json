@@ -1,0 +1,18 @@
+[
+    {
+      "id": 1,
+      "email": "assos@asso.com",
+      "password": "test",
+      "name": "",
+      "interests": ["travail", "voyage"],
+      "birthday": "",
+      "photo": "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg",
+      "location": "Paris, France",
+      "SIRET": "",
+      "description": "",
+      "presentation": "",
+      "website": "",
+      "phone": "",
+      "gallery": ""
+    }
+]

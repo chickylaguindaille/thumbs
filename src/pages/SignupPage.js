@@ -36,6 +36,7 @@ const SignUpPage = () => {
                 type="radio"
                 name="role"
                 value="association"
+                checked={role === 'association'}
                 onChange={() => handleRoleChange('association')}
               />
               <span className="p-2">
@@ -47,6 +48,7 @@ const SignUpPage = () => {
                 type="radio"
                 name="role"
                 value="user"
+                checked={role === 'user'}
                 onChange={() => handleRoleChange('user')}
               />
               <span className="p-2">
@@ -67,7 +69,7 @@ const SignUpPage = () => {
               disabled={!role}
               onClick={handleNext}
             >
-              Suivant
+            Suivant
             </button>
           </div>
         </div>

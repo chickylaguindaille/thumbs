@@ -32,7 +32,7 @@ const UserForm = ({ onBack, onNext }) => {
     interests: [],
     acceptTerms: false,
     description: '',
-    more: ''
+    presentation: '',
   });
 
   const navigate = useNavigate();
@@ -51,14 +51,59 @@ const UserForm = ({ onBack, onNext }) => {
       ...formData,
       interests: selectedOptions
     });
-    console.log(selectedOptions)
+    console.log(selectedOptions);
+  };
+
+  const [passwordError, setPasswordError] = useState(''); 
+  const [isPasswordMatch, setIsPasswordMatch] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const validateFields = () => {
+    let newErrors = {};
+  
+    // Champs obligatoires pour la première étape
+    if (!formData.firstName) newErrors.firstName = 'Le prénom est obligatoire';
+    if (!formData.lastName) newErrors.lastName = 'Le nom est obligatoire';
+    if (!formData.email) newErrors.email = 'L\'email est obligatoire';
+    if (!formData.password) newErrors.password = 'Le mot de passe est obligatoire';
+    if (!formData.confirmPassword) newErrors.confirmPassword = 'La confirmation du mot de passe est obligatoire';
+    if (!formData.gender) newErrors.gender = 'Le sexe est obligatoire';
+    if (!formData.age) newErrors.age = 'L\'âge est obligatoire';
+    if (!formData.location) newErrors.location = 'La localisation est obligatoire';
+    
+    // Vérification des conditions uniquement pour la deuxième étape
+    if (step === 2 && !formData.acceptTerms) {
+      newErrors.acceptTerms = "Vous devez accepter les conditions.";
+    }
+
+    setErrors(newErrors);
+  
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+    
+    if (name === 'confirmPassword') {
+      if (value !== formData.password) {
+        setPasswordError('Les mots de passe ne correspondent pas');
+        setIsPasswordMatch(false);
+      } else {
+        setPasswordError('');
+        setIsPasswordMatch(true);
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
-      alert('Les mots de passe ne correspondent pas');
+      setPasswordError('Les mots de passe ne correspondent pas');
       return;
     }
   
@@ -76,20 +121,20 @@ const UserForm = ({ onBack, onNext }) => {
         interests: formData.interests,
         acceptTerms: formData.acceptTerms,
         description: formData.description,
-        more: formData.more
+        presentation: formData.presentation
       });
  
-        navigate('/login');
+      navigate('/login');
     } catch (error) {
       console.error('Erreur lors de l\'inscription:', error);
     }
   };
   
   const handleNext = () => {
-    if (step === 1) {
-      setStep(2); // Passe à l'étape suivante
-    } else if (step === 2) {
-      document.getElementById('user-form').requestSubmit(); // Soumettre le formulaire
+    if (step === 1 && validateFields() && isPasswordMatch) {
+      setStep(2);
+    } else if (step === 2 && validateFields()) {
+      document.getElementById('user-form').requestSubmit();
     }
   };
 
@@ -109,9 +154,10 @@ const UserForm = ({ onBack, onNext }) => {
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
               />
+              {/* {errors.photo && <p className="text-red-500">{errors.photo}</p>} */}
             </div>
             <div>
-              <label className="block text-sm font-medium">Prénom</label>
+              <label className="block text-sm font-medium">Prénom <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 name="firstName"
@@ -119,9 +165,10 @@ const UserForm = ({ onBack, onNext }) => {
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
               />
+              {errors.firstName && <p className="text-red-500">{errors.firstName}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium">Nom</label>
+              <label className="block text-sm font-medium">Nom <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 name="lastName"
@@ -129,9 +176,10 @@ const UserForm = ({ onBack, onNext }) => {
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
               />
+              {errors.lastName && <p className="text-red-500">{errors.lastName}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium">Email</label>
+              <label className="block text-sm font-medium">Email <span className="text-red-500">*</span></label>
               <input
                 type="email"
                 name="email"
@@ -139,9 +187,10 @@ const UserForm = ({ onBack, onNext }) => {
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
               />
+              {errors.email && <p className="text-red-500">{errors.email}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium">Mot de passe</label>
+              <label className="block text-sm font-medium">Mot de passe <span className="text-red-500">*</span></label>
               <input
                 type="password"
                 name="password"
@@ -149,19 +198,22 @@ const UserForm = ({ onBack, onNext }) => {
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
               />
+              {errors.password && <p className="text-red-500">{errors.password}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium">Confirmer le mot de passe</label>
+              <label className="block text-sm font-medium">Confirmer le mot de passe <span className="text-red-500">*</span></label>
               <input
                 type="password"
                 name="confirmPassword"
                 value={formData.confirmPassword}
-                onChange={handleChange}
+                onChange={handlePasswordChange}
                 className="w-full border rounded-lg p-2"
               />
+              {errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword}</p>}
+              {!isPasswordMatch && <p className="text-red-500">Les mots de passe ne correspondent pas</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium">Sexe</label>
+              <label className="block text-sm font-medium">Sexe <span className="text-red-500">*</span></label>
               <select
                 name="gender"
                 value={formData.gender}
@@ -173,9 +225,10 @@ const UserForm = ({ onBack, onNext }) => {
                 <option value="female">Femme</option>
                 <option value="other">Autre</option>
               </select>
+              {errors.gender && <p className="text-red-500">{errors.gender}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium">Âge</label>
+              <label className="block text-sm font-medium">Âge <span className="text-red-500">*</span></label>
               <input
                 type="number"
                 name="age"
@@ -183,9 +236,10 @@ const UserForm = ({ onBack, onNext }) => {
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
               />
+              {errors.age && <p className="text-red-500">{errors.age}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium">Localisation</label>
+              <label className="block text-sm font-medium">Localisation <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 name="location"
@@ -193,48 +247,93 @@ const UserForm = ({ onBack, onNext }) => {
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
               />
+              {errors.location && <p className="text-red-500">{errors.location}</p>}
             </div>
+          </div>
+          <div className="flex justify-between mt-4">
+            <button
+              type="button"
+              onClick={() => (step === 1 ? onBack(0) : setStep(1))}
+              className="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg"
+            >
+              Retour
+            </button>
+            <button
+              type="button"
+              onClick={handleNext}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+              >
+              Suivant
+            </button>
           </div>
         </div>
       );
     } else if (step === 2) {
       return (
         <div>
-          {/* Étape 2 */}
-          <h1 className="text-2xl font-bold mb-2 text-center">On veut en savoir plus sur vous</h1>
+          <h1 className="text-2xl font-bold mb-2 text-center">Informations supplémentaires</h1>
           <div className="space-y-4">
+            {/* Étape 2 */}
             <div>
-              <label className="block text-sm font-medium">Loisirs</label>
+              <label className="block text-sm font-medium">Intérêts</label>
               <Select
-                closeMenuOnSelect={false}
                 components={animatedComponents}
                 isMulti
                 options={optionsLoisirs}
-                value={formData.interests}
                 onChange={handleSelectChange}
-                placeholder=""
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Dites-nous pourquoi êtes-vous là</label>
+              <label className="block text-sm font-medium">Description</label>
               <textarea
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
-                rows="2"
+                rows="3"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Présentez-vous</label>
+              <label className="block text-sm font-medium">Présentation</label>
               <textarea
-                name="more"
-                value={formData.more}
+                name="presentation"
+                value={formData.presentation}
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
-                rows="4"
+                rows="3"
               />
             </div>
+            <div>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="acceptTerms"
+                  checked={formData.acceptTerms}
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                <span className="ml-2">J'accepte les <a href="/terms" className="text-blue-500">conditions d'utilisation</a></span>
+              </label>
+              {errors.acceptTerms && <p className="text-red-500">{errors.acceptTerms}</p>}
+            </div>
+          </div>
+          <div className="flex justify-between mt-4">
+            <button
+              type="button"
+              onClick={() => {
+                setStep(1);
+              }}
+              className="bg-gray-300 text-black p-2 rounded"
+            >
+              Retour
+            </button>
+            <button
+              type="button"
+              onClick={handleNext}
+              className="bg-blue-500 text-white p-2 rounded"
+            >
+              Inscription
+            </button>
           </div>
         </div>
       );
@@ -243,24 +342,8 @@ const UserForm = ({ onBack, onNext }) => {
 
   return (
     <div className="w-full max-w-md p-6 bg-white rounded-lg">
-      <form id="user-form" className="space-y-4" onSubmit={handleSubmit}>
+      <form id="user-form" onSubmit={handleSubmit}>
         {renderForm()}
-        <div className="flex justify-between">
-          <button
-            type="button"
-            onClick={() => (step === 1 ? onBack(0) : setStep(1))}
-            className="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg"
-          >
-            Retour
-          </button>
-          <button
-            type="button"
-            onClick={handleNext}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-          >
-            {step === 1 ? 'Suivant' : 'Inscription'}
-          </button>
-        </div>
       </form>
     </div>
   );
