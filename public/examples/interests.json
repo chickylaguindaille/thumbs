@@ -1,0 +1,200 @@
+{
+    "centres_interets": [
+      {
+        "id": 1,
+        "nom": "Football",
+        "thematique": "Sport"
+      },
+      {
+        "id": 2,
+        "nom": "Peinture",
+        "thematique": "Art"
+      },
+      {
+        "id": 3,
+        "nom": "Lecture",
+        "thematique": "Loisirs"
+      },
+      {
+        "id": 4,
+        "nom": "Yoga",
+        "thematique": "Bien-être"
+      },
+      {
+        "id": 5,
+        "nom": "Cuisine",
+        "thematique": "Loisirs"
+      },
+      {
+        "id": 6,
+        "nom": "Escalade",
+        "thematique": "Sport"
+      },
+      {
+        "id": 7,
+        "nom": "Photographie",
+        "thematique": "Art"
+      },
+      {
+        "id": 8,
+        "nom": "Voyages",
+        "thematique": "Aventure"
+      },
+      {
+        "id": 9,
+        "nom": "Programmation",
+        "thematique": "Technologie"
+      },
+      {
+        "id": 10,
+        "nom": "Cyclisme",
+        "thematique": "Sport"
+      },
+      {
+        "id": 11,
+        "nom": "Musique",
+        "thematique": "Art"
+      },
+      {
+        "id": 12,
+        "nom": "Randonnée",
+        "thematique": "Aventure"
+      },
+      {
+        "id": 13,
+        "nom": "Méditation",
+        "thematique": "Bien-être"
+      },
+      {
+        "id": 14,
+        "nom": "Jeux vidéo",
+        "thematique": "Technologie"
+      },
+      {
+        "id": 15,
+        "nom": "Astronomie",
+        "thematique": "Science"
+      },
+      {
+        "id": 16,
+        "nom": "Dessin",
+        "thematique": "Art"
+      },
+      {
+        "id": 17,
+        "nom": "Natation",
+        "thematique": "Sport"
+      },
+      {
+        "id": 18,
+        "nom": "Théâtre",
+        "thematique": "Art"
+      },
+      {
+        "id": 19,
+        "nom": "Écriture",
+        "thematique": "Littérature"
+      },
+      {
+        "id": 20,
+        "nom": "Pêche",
+        "thematique": "Loisirs"
+      },
+      {
+        "id": 21,
+        "nom": "Pâtisserie",
+        "thematique": "Loisirs"
+      },
+      {
+        "id": 22,
+        "nom": "Danse",
+        "thematique": "Sport"
+      },
+      {
+        "id": 23,
+        "nom": "Jardinage",
+        "thematique": "Loisirs"
+      },
+      {
+        "id": 24,
+        "nom": "Surf",
+        "thematique": "Sport"
+      },
+      {
+        "id": 25,
+        "nom": "Arts martiaux",
+        "thematique": "Sport"
+      },
+      {
+        "id": 26,
+        "nom": "Calligraphie",
+        "thematique": "Art"
+      },
+      {
+        "id": 27,
+        "nom": "Robotiques",
+        "thematique": "Technologie"
+      },
+      {
+        "id": 28,
+        "nom": "Boxe",
+        "thematique": "Sport"
+      },
+      {
+        "id": 29,
+        "nom": "Scrapbooking",
+        "thematique": "Loisirs"
+      },
+      {
+        "id": 30,
+        "nom": "Vélo tout terrain",
+        "thematique": "Sport"
+      },
+      {
+        "id": 31,
+        "nom": "Céramique",
+        "thematique": "Art"
+      },
+      {
+        "id": 32,
+        "nom": "Chant",
+        "thematique": "Art"
+      },
+      {
+        "id": 33,
+        "nom": "Équitation",
+        "thematique": "Sport"
+      },
+      {
+        "id": 34,
+        "nom": "Maquettisme",
+        "thematique": "Loisirs"
+      },
+      {
+        "id": 35,
+        "nom": "Ébénisterie",
+        "thematique": "Artisanat"
+      },
+      {
+        "id": 36,
+        "nom": "Triathlon",
+        "thematique": "Sport"
+      },
+      {
+        "id": 37,
+        "nom": "Plongée sous-marine",
+        "thematique": "Aventure"
+      },
+      {
+        "id": 38,
+        "nom": "Décoration intérieure",
+        "thematique": "Art"
+      },
+      {
+        "id": 39,
+        "nom": "Crossfit",
+        "thematique": "Sport"
+      }
+    ]
+  }
+  

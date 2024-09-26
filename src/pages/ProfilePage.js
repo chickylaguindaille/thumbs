@@ -12,15 +12,6 @@ import axios from 'axios';
 
 const animatedComponents = makeAnimated();
 
-const optionsLoisirs = [
-  { value: '1', label: 'Bowling' },
-  { value: '2', label: 'Échecs' },
-  { value: '3', label: 'Jeux Vidéos' },
-  { value: '4', label: 'Peinture' },
-  { value: '5', label: 'Danse' },
-  { value: '6', label: 'Musique' }
-];
-
 const ProfilePage = () => {
   const { id } = useParams();
   const [profile, setProfile] = useState({
@@ -30,8 +21,14 @@ const ProfilePage = () => {
     interests: [],
     email: '',
     location: '',
-    photo: ''
+    photo: '',
+    gender: '',
+    age: '',
+    description: '',
+    presentation: ''
   });
+  const [formData, setFormData] = useState(profile);
+  const [optionsLoisirs, setOptionsLoisirs] = useState([]);
   const [activeTab, setActiveTab] = useState('info');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [logoutModalIsOpen, setLogoutModalIsOpen] = useState(false);
@@ -48,14 +45,53 @@ const ProfilePage = () => {
             Authorization: `Bearer ${token}`,
           }
         });
+        // console.log(response.data);
         setProfile(response.data);
+        setFormData(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération du profil:', error);
       }
     };
-
+    
     fetchProfile();
   }, []);
+
+  useEffect(() => {
+    fetch('../examples/interests.json')
+      .then((response) => response.json())
+      .then((data) => {
+        const options = data.centres_interets.map((centre) => ({
+          value: centre.id.toString(),
+          label: centre.nom
+        }));
+        // console.log(options);
+        setOptionsLoisirs(options);
+      })
+      .catch((error) => {
+        console.error('Erreur lors du chargement du JSON:', error);
+      });
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleUpdateProfile = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await axios.post('https://back-thumbs.vercel.app/profil/profilupdate', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
+      console.log('Profil mis à jour avec succès:', response.data);
+      setProfile(response.data);
+      window.location.reload();
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du profil:', error);
+    }
+  };
 
   const tabWidth = profile.id === profile.id ? 'w-1/3' : 'w-1/2';
 
@@ -86,7 +122,8 @@ const ProfilePage = () => {
       const token = localStorage.getItem('authToken');
       await axios.post('https://back-thumbs.vercel.app/auth/logout', {}, {
         headers: {
-          Authorization: `Bearer ${token}`,        }
+          Authorization: `Bearer ${token}`,        
+        }
       });
 
       dispatch(logout());
@@ -102,9 +139,10 @@ const ProfilePage = () => {
 
   const handleDeleteAccount = async () => {
     try {
-      await axios.post('https://back-thumbs.vercel.app/auth/delete-account', {}, {
+      const token = localStorage.getItem('authToken');
+      await axios.delete('https://back-thumbs.vercel.app/profil/delete-profil', {
         headers: {
-          // Ajoute les en-têtes nécessaires si besoin
+          Authorization: `Bearer ${token}`,        
         }
       });
       window.location.href = '/login'; // Redirection vers la page de connexion après suppression de compte
@@ -263,48 +301,115 @@ const ProfilePage = () => {
        
         <form className="space-y-4">
           <div>
-            <label className="block text-sm font-medium">Nom</label>
-            <input type="text" className="w-full border rounded-lg p-2" defaultValue={profile.name} />
+            <label className="block text-sm font-medium">Prénom</label>
+            <input 
+              type="text" 
+              name="firstName" 
+              className="w-full border rounded-lg p-2" 
+              defaultValue={profile.firstName} 
+              onChange={handleInputChange} 
+            />
           </div>
           <div>
-            <label className="block text-sm font-medium">Prénom</label>
-            <input type="text" className="w-full border rounded-lg p-2" defaultValue={profile.lastName} />
+            <label className="block text-sm font-medium">Nom</label>
+            <input 
+              type="text" 
+              name="lastName" 
+              className="w-full border rounded-lg p-2" 
+              defaultValue={profile.lastName} 
+              onChange={handleInputChange} 
+            />
           </div>
           <div>
             <label className="block text-sm font-medium">Mot de passe</label>
-            <input type="password" className="w-full border rounded-lg p-2" />
+            <input 
+              type="password" 
+              className="w-full border rounded-lg p-2" 
+              // name="password"
+              // onChange={handleInputChange}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium">Sexe</label>
-            <select className="w-full border rounded-lg p-2" defaultValue={profile.gender}>
+            <select 
+              name="gender" 
+              className="w-full border rounded-lg p-2" 
+              defaultValue={profile.gender}
+              onChange={handleInputChange}
+            >
               <option value="male">Homme</option>
               <option value="female">Femme</option>
               <option value="other">Autre</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium">Âge</label>
-            <input type="number" className="w-full border rounded-lg p-2" defaultValue={profile.age} />
+            <label className="block text-sm font-medium">Date de naissance</label>
+            <input 
+              type="date" 
+              // name="age" 
+              className="w-full border rounded-lg p-2" 
+              defaultValue={profile.age}
+              onChange={handleInputChange} 
+            />
           </div>
           <div>
             <label className="block text-sm font-medium">Localisation</label>
-            <input type="text" className="w-full border rounded-lg p-2" defaultValue={profile.location} />
+            <input 
+              type="text" 
+              name="location" 
+              className="w-full border rounded-lg p-2" 
+              defaultValue={profile.location}
+              onChange={handleInputChange} 
+            />
           </div>
           <div>
-                <label className="block text-sm font-medium">Loisirs</label>
+                <label className="block text-sm font-medium">Intérêts</label>
                 <Select
                 closeMenuOnSelect={false}
                 components={animatedComponents}
                 isMulti
                 options={optionsLoisirs}
                 placeholder=""
+                value={optionsLoisirs.filter(option => formData.interests.includes(option.value))}
+                onChange={(selectedOptions) =>
+                  setFormData({
+                    ...formData,
+                    interests: selectedOptions.map(option => option.value)  // Update 'interests' with selected values
+                  })
+                }
                 />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Description</label>
+            <textarea 
+              name="description" 
+              className="w-full border rounded-lg p-2" 
+              defaultValue={profile.description} 
+              onChange={handleInputChange} 
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Présentation</label>
+            <textarea 
+              name="presentation" 
+              className="w-full border rounded-lg p-2" 
+              defaultValue={profile.presentation}
+              onChange={handleInputChange} 
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Photo de profil</label>
+            <input 
+              type="file" 
+              className="w-full border rounded-lg p-2" 
+              onChange={handleInputChange} 
+            />
           </div>
           <div className="flex justify-end mt-4">
             <button
               type="button"
               className="px-4 py-2 bg-blue-600 text-white rounded-lg mr-2"
-              onClick={closeModal}
+              onClick={handleUpdateProfile}
             >
               Enregistrer
             </button>

@@ -259,15 +259,15 @@ const AssociationPage = () => {
       </div>
 
       <Modal isOpen={modalIsOpen} onClose={closeModal} size="w-[90%] h-[90%]">
-        <h2 className="text-xl font-semibold mb-4">Modifier mes informations</h2>
+        <h2 className="text-xl font-semibold mb-4">Modifier mes informationss</h2>
        
         <form className="space-y-4">
           <div>
-            <label className="block text-sm font-medium">Nom</label>
-            <input type="text" className="w-full border rounded-lg p-2" defaultValue={profile.name} />
+            <label className="block text-sm font-medium">Prénom</label>
+            <input type="text" className="w-full border rounded-lg p-2" defaultValue={profile.firstName} />
           </div>
           <div>
-            <label className="block text-sm font-medium">Prénom</label>
+            <label className="block text-sm font-medium">Nom</label>
             <input type="text" className="w-full border rounded-lg p-2" defaultValue={profile.lastName} />
           </div>
           <div>
@@ -291,7 +291,11 @@ const AssociationPage = () => {
             <input type="text" className="w-full border rounded-lg p-2" defaultValue={profile.location} />
           </div>
           <div>
-                <label className="block text-sm font-medium">Loisirs</label>
+            <label className="block text-sm font-medium">Photo de profil</label>
+            <input type="text" className="w-full border rounded-lg p-2" />
+          </div>
+          <div>
+                <label className="block text-sm font-medium">Intérêts</label>
                 <Select
                 closeMenuOnSelect={false}
                 components={animatedComponents}

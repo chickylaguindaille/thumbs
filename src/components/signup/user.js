@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import axios from 'axios';
@@ -8,21 +8,12 @@ import { useNavigate } from 'react-router-dom';
 
 const animatedComponents = makeAnimated();
 
-const optionsLoisirs = [
-  { value: '1', label: 'Bowling' },
-  { value: '2', label: 'Échecs' },
-  { value: '3', label: 'Jeux Vidéos' },
-  { value: '4', label: 'Peinture' },
-  { value: '5', label: 'Danse' },
-  { value: '6', label: 'Musique' }
-];
-
 const UserForm = ({ onBack, onNext }) => {
   const [step, setStep] = useState(1); // Étape initiale
   const [formData, setFormData] = useState({
     photo: '',
     gender: '',
-    age: '',
+    // age: '',
     location: '',
     firstName: '',
     lastName: '',
@@ -34,9 +25,26 @@ const UserForm = ({ onBack, onNext }) => {
     description: '',
     presentation: '',
   });
+  const [optionsLoisirs, setOptionsLoisirs] = useState([]);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    fetch('../examples/interests.json')
+      .then((response) => response.json())
+      .then((data) => {
+        const options = data.centres_interets.map((centre) => ({
+          value: centre.id.toString(),
+          label: centre.nom
+        }));
+        // console.log(options);
+        setOptionsLoisirs(options);
+      })
+      .catch((error) => {
+        console.error('Erreur lors du chargement du JSON:', error);
+      });
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -68,7 +76,7 @@ const UserForm = ({ onBack, onNext }) => {
     if (!formData.password) newErrors.password = 'Le mot de passe est obligatoire';
     if (!formData.confirmPassword) newErrors.confirmPassword = 'La confirmation du mot de passe est obligatoire';
     if (!formData.gender) newErrors.gender = 'Le sexe est obligatoire';
-    if (!formData.age) newErrors.age = 'L\'âge est obligatoire';
+    // if (!formData.age) newErrors.age = 'L\'âge est obligatoire';
     if (!formData.location) newErrors.location = 'La localisation est obligatoire';
     
     // Vérification des conditions uniquement pour la deuxième étape
@@ -111,7 +119,7 @@ const UserForm = ({ onBack, onNext }) => {
       const response = await axios.post('https://back-thumbs.vercel.app/auth/register', {
         photo: formData.photo,
         gender: formData.gender,
-        age: formData.age,
+        // age: formData.age,
         location: formData.location,
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -227,17 +235,17 @@ const UserForm = ({ onBack, onNext }) => {
               </select>
               {errors.gender && <p className="text-red-500">{errors.gender}</p>}
             </div>
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium">Âge <span className="text-red-500">*</span></label>
               <input
-                type="number"
+                type="date"
                 name="age"
                 value={formData.age}
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
               />
               {errors.age && <p className="text-red-500">{errors.age}</p>}
-            </div>
+            </div> */}
             <div>
               <label className="block text-sm font-medium">Localisation <span className="text-red-500">*</span></label>
               <input
@@ -277,11 +285,17 @@ const UserForm = ({ onBack, onNext }) => {
             <div>
               <label className="block text-sm font-medium">Intérêts</label>
               <Select
+                closeMenuOnSelect={false}
                 components={animatedComponents}
                 isMulti
                 options={optionsLoisirs}
-                onChange={handleSelectChange}
-              />
+                placeholder=""
+                onChange={(selectedOptions) =>
+                  setFormData({
+                    ...formData,
+                    interests: selectedOptions.map(option => option.value)  // Update 'interests' with selected values
+                  })
+                }              />
             </div>
             <div>
               <label className="block text-sm font-medium">Description</label>
