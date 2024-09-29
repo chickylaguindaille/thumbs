@@ -76,6 +76,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         {/* Image de profil */}
         <img
           src={profile.photo || 'https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg'}
+          alt="Profil"
           className="w-10 h-10 rounded-full border-2 border-white"
         />
         

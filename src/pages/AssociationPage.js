@@ -21,7 +21,7 @@ const optionsLoisirs = [
 ];
 
 const AssociationPage = () => {
-  const { id } = useParams();
+  // const { id } = useParams();
   const [profile, setProfile] = useState({
     _id: '',
     firstName: '',
@@ -58,11 +58,11 @@ const AssociationPage = () => {
 
   const tabWidth = profile.id === profile.id ? 'w-1/3' : 'w-1/2';
 
-  const allActivities = {
-    sports: activitiesData.sports,
-    arts: activitiesData.arts,
-    loisirs: activitiesData.loisirs,
-  };
+  // const allActivities = {
+  //   sports: activitiesData.sports,
+  //   arts: activitiesData.arts,
+  //   loisirs: activitiesData.loisirs,
+  // };
 
   // const contactActivities = {
   //   sports: profile.interests.sports.map(activityId => allActivities.sports.find(activity => activity.id === activityId)).filter(activity => activity),
@@ -226,7 +226,7 @@ const AssociationPage = () => {
                 </div> */}
               </div>
             )}
-            {activeTab === 'settings' && profile.id == profile.id && (
+            {activeTab === 'settings' && profile.id === profile.id && (
               <div>
                 <div className="space-y-4">
                   <div
