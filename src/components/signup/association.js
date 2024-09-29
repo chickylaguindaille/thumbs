@@ -117,7 +117,6 @@ const AssociationForm = ({ onBack, onNext }) => {
     <div className="">
       <h1 className="text-2xl font-bold mb-2 text-center">Inscription - Étape 1</h1>
       <p className="mb-4 text-gray-600 text-center">Je suis une association</p>
-
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium">Nom de l'association <span className="text-red-500">*</span></label>

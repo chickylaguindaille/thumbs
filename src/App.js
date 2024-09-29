@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { login, logout } from './authSlice';
+import { useSelector } from 'react-redux';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import EventsPage from './pages/EventsPage';
@@ -19,7 +18,7 @@ import TermsPage from './pages/TermsPage';
 function MainLayout() {
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+  // const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
   
   useEffect(() => {
     const handleResize = () => {

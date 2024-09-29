@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import { login } from '../../authSlice';
 import { useNavigate } from 'react-router-dom';
 
 const animatedComponents = makeAnimated();
@@ -13,7 +11,7 @@ const UserForm = ({ onBack, onNext }) => {
   const [formData, setFormData] = useState({
     photo: '',
     gender: '',
-    // age: '',
+    age: '',
     location: '',
     firstName: '',
     lastName: '',
@@ -26,9 +24,10 @@ const UserForm = ({ onBack, onNext }) => {
     presentation: '',
   });
   const [optionsLoisirs, setOptionsLoisirs] = useState([]);
-
+  // const [passwordError, setPasswordError] = useState(''); 
+  const [isPasswordMatch, setIsPasswordMatch] = useState(false);
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     fetch('../examples/interests.json')
@@ -54,29 +53,28 @@ const UserForm = ({ onBack, onNext }) => {
     });
   };
 
-  const handleSelectChange = (selectedOptions) => {
-    setFormData({
-      ...formData,
-      interests: selectedOptions
-    });
-    console.log(selectedOptions);
-  };
+  // const handleSelectChange = (selectedOptions) => {
+  //   setFormData({
+  //     ...formData,
+  //     interests: selectedOptions
+  //   });
+  //   console.log(selectedOptions);
+  // };
 
-  const [passwordError, setPasswordError] = useState(''); 
-  const [isPasswordMatch, setIsPasswordMatch] = useState(false);
-  const [errors, setErrors] = useState({});
+
 
   const validateFields = () => {
     let newErrors = {};
   
     // Champs obligatoires pour la première étape
+    if (!formData.photo) newErrors.photo = 'La photo est obligatoire';
     if (!formData.firstName) newErrors.firstName = 'Le prénom est obligatoire';
     if (!formData.lastName) newErrors.lastName = 'Le nom est obligatoire';
     if (!formData.email) newErrors.email = 'L\'email est obligatoire';
     if (!formData.password) newErrors.password = 'Le mot de passe est obligatoire';
     if (!formData.confirmPassword) newErrors.confirmPassword = 'La confirmation du mot de passe est obligatoire';
     if (!formData.gender) newErrors.gender = 'Le sexe est obligatoire';
-    // if (!formData.age) newErrors.age = 'L\'âge est obligatoire';
+    if (!formData.age) newErrors.age = 'L\'âge est obligatoire';
     if (!formData.location) newErrors.location = 'La localisation est obligatoire';
     
     // Vérification des conditions uniquement pour la deuxième étape
@@ -96,14 +94,18 @@ const UserForm = ({ onBack, onNext }) => {
       [name]: value
     });
     
+    // if (name === 'confirmPassword') {
+    //   if (value !== formData.password) {
+    //     setPasswordError('Les mots de passe ne correspondent pas');
+    //     setIsPasswordMatch(false);
+    //   } else {
+    //     setPasswordError('');
+    //     setIsPasswordMatch(true);
+    //   }
+    // }
+
     if (name === 'confirmPassword') {
-      if (value !== formData.password) {
-        setPasswordError('Les mots de passe ne correspondent pas');
-        setIsPasswordMatch(false);
-      } else {
-        setPasswordError('');
-        setIsPasswordMatch(true);
-      }
+      setIsPasswordMatch(value === formData.password);
     }
   };
 
@@ -111,15 +113,18 @@ const UserForm = ({ onBack, onNext }) => {
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
-      setPasswordError('Les mots de passe ne correspondent pas');
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        confirmPassword: 'Les mots de passe ne correspondent pas',
+      }));
       return;
     }
   
     try {
-      const response = await axios.post('https://back-thumbs.vercel.app/auth/register', {
+      await axios.post('https://back-thumbs.vercel.app/auth/register', {
         photo: formData.photo,
         gender: formData.gender,
-        // age: formData.age,
+        age: formData.age,
         location: formData.location,
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -155,14 +160,15 @@ const UserForm = ({ onBack, onNext }) => {
           <div className="space-y-4">
             {/* Étape 1 */}
             <div>
-              <label className="block text-sm font-medium">Photo de profil</label>
+              <label className="block text-sm font-medium">Photo de profil <span className="text-red-500">*</span></label>
               <input
                 type="file"
                 name="photo"
+                value={formData.photo}
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
               />
-              {/* {errors.photo && <p className="text-red-500">{errors.photo}</p>} */}
+              {errors.photo && <p className="text-red-500">{errors.photo}</p>}
             </div>
             <div>
               <label className="block text-sm font-medium">Prénom <span className="text-red-500">*</span></label>
@@ -235,7 +241,7 @@ const UserForm = ({ onBack, onNext }) => {
               </select>
               {errors.gender && <p className="text-red-500">{errors.gender}</p>}
             </div>
-            {/* <div>
+            <div>
               <label className="block text-sm font-medium">Âge <span className="text-red-500">*</span></label>
               <input
                 type="date"
@@ -245,7 +251,7 @@ const UserForm = ({ onBack, onNext }) => {
                 className="w-full border rounded-lg p-2"
               />
               {errors.age && <p className="text-red-500">{errors.age}</p>}
-            </div> */}
+            </div>
             <div>
               <label className="block text-sm font-medium">Localisation <span className="text-red-500">*</span></label>
               <input
@@ -293,9 +299,10 @@ const UserForm = ({ onBack, onNext }) => {
                 onChange={(selectedOptions) =>
                   setFormData({
                     ...formData,
-                    interests: selectedOptions.map(option => option.value)  // Update 'interests' with selected values
+                    interests: selectedOptions.map(option => option.value)
                   })
-                }              />
+                }
+              />
             </div>
             <div>
               <label className="block text-sm font-medium">Description</label>
