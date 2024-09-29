@@ -45,7 +45,7 @@ function LoginPage() {
     <div className="flex flex-col items-center justify-center h-screen p-6">
       {/* Logo */}
       <div className="mb-6">
-        <img src="/images/Thumbs.webp" alt="Logo" className="w-40 h-40" />
+        <img src="/images/Thumbs.png" alt="Logo" className="w-40 h-40" />
       </div>
 
       {/* Titre */}

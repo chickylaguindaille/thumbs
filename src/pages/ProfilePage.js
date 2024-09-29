@@ -54,19 +54,26 @@ const ProfilePage = () => {
   }, []);
 
   useEffect(() => {
-    fetch('../examples/interests.json')
-      .then((response) => response.json())
-      .then((data) => {
-        const options = data.centres_interets.map((centre) => ({
-          value: centre.id.toString(),
-          label: centre.nom
+    const fetchInterests = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        const response = await axios.get('https://back-thumbs.vercel.app/profil/interests', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log(response.data);
+        const options = response.data.interests.map((interest) => ({
+          value: interest.id.toString(),
+          label: `${interest.nom} (${interest.thematique})`
         }));
-        // console.log(options);
         setOptionsLoisirs(options);
-      })
-      .catch((error) => {
-        console.error('Erreur lors du chargement du JSON:', error);
-      });
+      } catch (error) {
+        console.error('Erreur lors de la récupération des centres d\'intérêts:', error);
+      }
+    };
+
+    fetchInterests();
   }, []);
 
   const handleInputChange = (e) => {
