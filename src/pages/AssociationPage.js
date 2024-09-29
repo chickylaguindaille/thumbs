@@ -149,7 +149,7 @@ const AssociationPage = () => {
               >
                 <FaChartBar className="inline-block text-xl" />
               </li>
-              {profile.id === profile.id && (
+              {profile.id && (
                 <li
                   className={`cursor-pointer text-center pb-2 w-1/3 ${activeTab === 'settings' ? 'border-b-2 border-blue-500 text-blue-600' : ''}`}
                   onClick={() => setActiveTab('settings')}
