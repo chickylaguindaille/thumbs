@@ -54,7 +54,7 @@ const AssociationPage = () => {
     fetchProfile();
   }, []);
 
-  const tabWidth = profile.id === profile.id ? 'w-1/3' : 'w-1/2';
+  const tabWidth = profile.id ? 'w-1/3' : 'w-1/2';
 
   // const allActivities = {
   //   sports: activitiesData.sports,
@@ -224,7 +224,7 @@ const AssociationPage = () => {
                 </div> */}
               </div>
             )}
-            {activeTab === 'settings' && profile.id === profile.id && (
+            {activeTab === 'settings' && profile.id && (
               <div>
                 <div className="space-y-4">
                   <div

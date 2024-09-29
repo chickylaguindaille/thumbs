@@ -90,7 +90,7 @@ const ProfilePage = () => {
     }
   };
 
-  const tabWidth = profile.id === profile.id ? 'w-1/3' : 'w-1/2';
+  const tabWidth = profile.id ? 'w-1/3' : 'w-1/2';
 
   // const allActivities = {
   //   sports: activitiesData.sports,
@@ -187,7 +187,7 @@ const ProfilePage = () => {
               >
                 <FaChartBar className="inline-block text-xl" />
               </li>
-              {profile.id === profile.id && (
+              {profile.id && (
                 <li
                   className={`cursor-pointer text-center pb-2 w-1/3 ${activeTab === 'settings' ? 'border-b-2 border-blue-500 text-blue-600' : ''}`}
                   onClick={() => setActiveTab('settings')}
@@ -262,7 +262,7 @@ const ProfilePage = () => {
                 </div> */}
               </div>
             )}
-            {activeTab === 'settings' && profile.id === profile.id && (
+            {activeTab === 'settings' && profile.id && (
               <div>
                 <div className="space-y-4">
                   <div
