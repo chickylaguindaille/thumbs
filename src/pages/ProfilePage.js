@@ -4,7 +4,6 @@ import { FaInfoCircle, FaChartBar, FaCog, FaChevronRight } from 'react-icons/fa'
 import { useDispatch } from 'react-redux';
 import { logout } from '../authSlice';
 import activitiesData from '../examples/activities.json';
-import Header from '../components/Header';
 import Modal from '../components/Modal';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';

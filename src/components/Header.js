@@ -29,11 +29,11 @@ const Header = ({ contactName, contactId, toggleSidebar, isSidebarOpen }) => {
   };
 
   // Fonction pour naviguer vers la page de chat
-  const handleChatButtonClick = () => {
-    if (contactId) {
-      navigate(`/messages/${contactId}`);
-    }
-  };
+  // const handleChatButtonClick = () => {
+  //   if (contactId) {
+  //     navigate(`/messages/${contactId}`);
+  //   }
+  // };
 
   // Fonction pour naviguer vers la page de messages
   const handleMessageButtonClick = () => {

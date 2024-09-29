@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import contactsData from '../examples/contacts.json';
 import messagesData from '../examples/messages.json'; // Assurez-vous que ce fichier est importé
-import { FaChevronRight, FaCircle } from 'react-icons/fa';
+import { FaCircle } from 'react-icons/fa';
 
 const MessagesPage = () => {
   const { id } = useParams();
   const [contacts, setContacts] = useState([]);
   const [messages, setMessages] = useState({});
-  const [selectedContact, setSelectedContact] = useState(null);
+  // const [selectedContact, setSelectedContact] = useState(null);
 
   useEffect(() => {
     // Charger les contacts
@@ -18,10 +18,10 @@ const MessagesPage = () => {
     setMessages(messagesData);
 
     // Charger les messages pour le contact sélectionné
-    if (id) {
-      const contact = contactsData.find(contact => contact.id === parseInt(id, 10));
-      setSelectedContact(contact);
-    }
+    // if (id) {
+    //   const contact = contactsData.find(contact => contact.id === parseInt(id, 10));
+    //   setSelectedContact(contact);
+    // }
   }, [id]);
 
   // Fonction pour obtenir le dernier message pour un contact

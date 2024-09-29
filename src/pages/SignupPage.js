@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import AssociationForm from '../components/signup/association';
 import UserForm from '../components/signup/user';
-import { login } from '../authSlice';
 
 const SignUpPage = () => {
   const [role, setRole] = useState(null);
