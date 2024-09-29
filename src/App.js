@@ -9,6 +9,7 @@ import EventPage from './pages/EventPage';
 import MessagesPage from './pages/MessagesPage';
 import ChatPage from './pages/ChatPage';
 import ProfilePage from './pages/ProfilePage';
+import AssociationsPage from './pages/AssociationsPage';
 import AssociationPage from './pages/AssociationPage';
 import LoginPage from './pages/LoginPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
@@ -78,6 +79,7 @@ function MainLayout() {
           <Route path="/messages" element={<ProtectedRoute element={<MessagesPage />} />} />
           <Route path="/messages/:id" element={<ProtectedRoute element={<ChatPage />} />} />
           <Route path="/profile/:id" element={<ProtectedRoute element={<ProfilePage />} />} />
+          <Route path="/associations" element={<ProtectedRoute element={<AssociationsPage />} />} />
           <Route path="/association/:id" element={<ProtectedRoute element={<AssociationPage />} />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />

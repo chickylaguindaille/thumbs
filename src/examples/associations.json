@@ -1,0 +1,50 @@
+[
+    {
+      "id": 1,
+      "email": "assos@asso.com",
+      "password": "test",
+      "name": "HETIC",
+      "interests": ["travail", "code"],
+      "birthday": "",
+      "logo": "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg",
+      "location": "Paris, France",
+      "SIRET": "",
+      "description": "L'école des hacker!",
+      "presentation": "",
+      "website": "",
+      "phone": "",
+      "gallery": ""
+    },
+    {
+      "id": 2,
+      "email": "assos@asso.com",
+      "password": "test",
+      "name": "Thumbs",
+      "interests": ["travail", "aide", "code"],
+      "birthday": "",
+      "logo": "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg",
+      "location": "Paris, France",
+      "SIRET": "",
+      "description": "C'est Thumbs, notre projet!",
+      "presentation": "",
+      "website": "",
+      "phone": "",
+      "gallery": ""
+    },
+    {
+      "id": 3,
+      "email": "assos@asso.com",
+      "password": "test",
+      "name": "Croix Rouge",
+      "interests": ["Santé"],
+      "birthday": "",
+      "logo": "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg",
+      "location": "Paris, France",
+      "SIRET": "",
+      "description": "C'est Thumbs, notre projet!",
+      "presentation": "",
+      "website": "",
+      "phone": "",
+      "gallery": ""
+    }
+]

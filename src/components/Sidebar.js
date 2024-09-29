@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FaMapMarkerAlt, FaHome, FaEnvelope, FaUser, FaChevronRight, FaSignOutAlt } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaHome, FaEnvelope, FaUser, FaChevronRight, FaSignOutAlt, FaHandsHelping } from 'react-icons/fa';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { logout } from '../authSlice';
@@ -92,13 +92,24 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
       {/* Contenu de la sidebar */}
       <div className="p-4 flex flex-col flex-grow">
-        {/* Ligne 1 : Maison */}
+        {/* Ligne 1 : Événements */}
         <a href="/events" className="flex items-center justify-between space-x-2 text-white hover:bg-gray-700 p-2 rounded">
           <div className="flex space-x-3 items-center justify-center">
             <div className="w-8 h-8 flex items-center justify-center bg-blue-500 rounded-full">
               <FaHome size={16} />
             </div>
             <span>Événements</span>
+          </div>
+          <FaChevronRight size={16} />
+        </a>
+
+        {/* Ligne 1 : Associations */}
+        <a href="/associations" className="flex items-center justify-between space-x-2 text-white hover:bg-gray-700 p-2 rounded">
+          <div className="flex space-x-3 items-center justify-center">
+            <div className="w-8 h-8 flex items-center justify-center bg-blue-500 rounded-full">
+              <FaHandsHelping size={16} />
+            </div>
+            <span>Associations</span>
           </div>
           <FaChevronRight size={16} />
         </a>

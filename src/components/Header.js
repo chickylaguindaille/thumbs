@@ -60,6 +60,8 @@ const Header = ({ contactName, contactId, toggleSidebar, isSidebarOpen }) => {
       setTitle('Événement');
     } else if (path.startsWith('/events')) {
       setTitle('Événements');
+    } else if (path.startsWith('/associations')) {
+      setTitle('Associations');
     } else if (path.startsWith('/profile/')) {
       setTitle('Profil');
     } else {
