@@ -32,6 +32,7 @@ const AssociationForm = ({ onBack, onNext }) => {
   const [errors, setErrors] = useState({});
   const [step, setStep] = useState(1);
   const [isPasswordMatch, setIsPasswordMatch] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
 
@@ -397,6 +398,7 @@ const AssociationForm = ({ onBack, onNext }) => {
             Inscription
           </button>
         </div>
+        {errorMessage && <div className="error-message text-red-500">{errorMessage}</div>}
       </div>
     </div>
   );
