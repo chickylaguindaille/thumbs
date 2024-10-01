@@ -1,17 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FaMapMarkerAlt, FaHome, FaEnvelope, FaUser, FaChevronRight, FaSignOutAlt, FaHandsHelping } from 'react-icons/fa';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../authSlice';
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const sidebarRef = useRef(null);
   const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
+
   const [profile, setProfile] = useState({
     _id: '',
+    type: '',
+    nameasso: '',
     firstName: '',
+    lastName: '',
     email: '',
-    location: '',
+    city: '',
+    logo: '',
     photo: ''
   });
 
@@ -64,6 +70,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     }
   };
 
+  // Vérifiez si user existe avant de l'utiliser
+  if (!user) {
+    return null; // ou une autre logique pour gérer l'absence d'utilisateur
+  }
+
   return (
     <div
       ref={sidebarRef}
@@ -75,17 +86,21 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       <div className="bg-gray-900 p-4 border-b border-gray-700 flex items-center space-x-4">
         {/* Image de profil */}
         <img
-          src={profile.photo || 'https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg'}
+          src={
+            user.type === 'asso' 
+              ? (user.logo || 'https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg')
+              : (user.photo || 'https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg')
+          }       
           alt="Profil"
           className="w-10 h-10 rounded-full border-2 border-white"
         />
         
         {/* Contenu du profil */}
         <div className="flex flex-col">
-          <span className="text-lg font-semibold">{profile.firstName || 'John'} {profile.lastName || 'Doe'}</span>
+          <span className="text-lg font-semibold">{user.type === 'asso' ? user.nameasso : `${user.firstName} ${user.lastName}`}</span>
           <div className="flex items-center space-x-1">
             <FaMapMarkerAlt className="text-gray-300" />
-            <span className="text-sm text-gray-300">{profile.location || 'Paris'}</span>
+            <span className="text-sm text-gray-300">{user.city || 'Pas de localisation'}</span>
           </div>
         </div>
       </div>
@@ -126,7 +141,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         </a>
 
         {/* Ligne 3 : Mon profil */}
-        <a href={`/profile/${profile._id || 1}`} className="flex items-center justify-between space-x-2 text-white hover:bg-gray-700 p-2 rounded">
+        <a
+          href={user.type === 'asso' ? `/association/${user._id}` : `/profile/${user._id}`}
+          className="flex items-center justify-between space-x-2 text-white hover:bg-gray-700 p-2 rounded"
+        >     
           <div className="flex space-x-3 items-center justify-center">
             <div className="w-8 h-8 flex items-center justify-center bg-blue-500 rounded-full">
               <FaUser size={16} />

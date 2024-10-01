@@ -15,6 +15,12 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import SignupPage from './pages/SignupPage';
 import TermsPage from './pages/TermsPage';
 
+const ProtectedRoute = ({ element }) => {
+  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+  console.log("Is Authenticated:", isAuthenticated);
+  return isAuthenticated ? element : <Navigate to="/login" />;
+};
+
 function MainLayout() {
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -37,12 +43,6 @@ function MainLayout() {
     if (window.innerWidth < 768) {
       setIsSidebarOpen(!isSidebarOpen);
     }
-  };
-
-  const ProtectedRoute = ({ element }) => {
-    const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
-    console.log("Is Authenticated:", isAuthenticated);
-    return isAuthenticated ? element : <Navigate to="/login" />;
   };
 
   const isPublicRoute = location.pathname === '/login' || location.pathname === '/forgot-password' || location.pathname === '/signup' || location.pathname === '/terms';

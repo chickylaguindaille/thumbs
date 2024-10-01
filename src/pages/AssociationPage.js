@@ -127,11 +127,11 @@ const AssociationPage = () => {
           </div>
         </div>
         <div>
-          <p className="text-gray-600">{profile.description || "Ceci est la description"}</p>
+          <p className="text-gray-600">{profile.description || "Pas de description"}</p>
         </div>
 
         <div className="mt-2 text-blue-600">
-          <p className="text-sm font-semibold">{profile.location || "Ceci est la localisation"}</p>
+          <p className="text-sm font-semibold">{profile.location || "Pas de localisation"}</p>
         </div>
 
         <div className="mt-4 w-full">

@@ -6,6 +6,7 @@ import Modal from '../components/Modal';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import axios from 'axios';
+import CitySearch from '../components/CitySearch';
 
 const animatedComponents = makeAnimated();
 
@@ -19,7 +20,7 @@ const ProfilePage = () => {
     email: '',
     location: '',
     photo: '',
-    gender: '',
+    genre: '',
     birthdate: '',
     description: '',
     presentation: ''
@@ -99,19 +100,6 @@ const ProfilePage = () => {
 
   const tabWidth = profile.id ? 'w-1/3' : 'w-1/2';
 
-  // const allActivities = {
-  //   sports: activitiesData.sports,
-  //   arts: activitiesData.arts,
-  //   loisirs: activitiesData.loisirs,
-  // };
-
-  // const contactActivities = {
-  //   sports: profile.interests.sports.map(activityId => allActivities.sports.find(activity => activity.id === activityId)).filter(activity => activity),
-  //   arts: profile.interests.arts.map(activityId => allActivities.arts.find(activity => activity.id === activityId)).filter(activity => activity),
-  //   loisirs: profile.interests.loisirs.map(activityId => allActivities.loisirs.find(activity => activity.id === activityId)).filter(activity => activity),
-  // };
-  
-
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
 
@@ -176,7 +164,7 @@ const ProfilePage = () => {
         </div>
 
         <div className="mt-2 text-blue-600">
-          <p className="text-sm font-semibold">{profile.location || "Ceci est la localisation"}</p>
+          <p className="text-sm font-semibold">{profile.city || "Ceci est la localisation"}</p>
         </div>
 
         <div className="mt-4 w-full">
@@ -209,7 +197,7 @@ const ProfilePage = () => {
             {activeTab === 'info' && (
               <div>
                 <h2 className="text-xl font-semibold">Informations sur {profile.firstName || "John"} {profile.lastName || "Doe"}</h2>
-                <p>Voici quelques informations supplémentaires sur le profil.</p>
+                <p>{ profile.presentation || "Pas de présentation"}</p>
               </div>
             )}
             {activeTab === 'activity' && (
@@ -336,14 +324,14 @@ const ProfilePage = () => {
           <div>
             <label className="block text-sm font-medium">Sexe</label>
             <select 
-              name="gender" 
+              name="genre" 
               className="w-full border rounded-lg p-2" 
-              defaultValue={profile.gender}
+              defaultValue={profile.genre}
               onChange={handleInputChange}
             >
-              <option value="male">Homme</option>
-              <option value="female">Femme</option>
-              <option value="other">Autre</option>
+              <option value="homme">Homme</option>
+              <option value="femme">Femme</option>
+              <option value="autre">Autre</option>
             </select>
           </div>
           <div>
@@ -356,16 +344,26 @@ const ProfilePage = () => {
               onChange={handleInputChange} 
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium">Localisation</label>
-            <input 
-              type="text" 
-              name="location" 
-              className="w-full border rounded-lg p-2" 
-              defaultValue={profile.location}
-              onChange={handleInputChange} 
-            />
-          </div>
+          <div> 
+              <label className="block text-sm font-medium">Ville et code postal <span className="text-red-500">*</span></label>
+              <CitySearch 
+                formData={formData} 
+                setFormData={setFormData}
+                // errors={errors}
+              />              
+              {/* {errors.city && <p className="text-red-500">{errors.city}</p>} */}
+            </div>
+            <div> 
+              <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            
+              <input
+                type="text"
+                name="adress"
+                defaultValue={profile.adress}
+                onChange={handleInputChange}
+                className="w-full border rounded-lg p-2"
+              />
+              {/* {errors.adress && <p className="text-red-500">{errors.adress}</p>} */}
+            </div>
           <div>
                 <label className="block text-sm font-medium">Intérêts</label>
                 <Select
@@ -378,7 +376,7 @@ const ProfilePage = () => {
                 onChange={(selectedOptions) =>
                   setFormData({
                     ...formData,
-                    interests: selectedOptions.map(option => option.value)  // Update 'interests' with selected values
+                    interests: selectedOptions.map(option => option.value)
                   })
                 }
                 />
