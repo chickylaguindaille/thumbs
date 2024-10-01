@@ -10,6 +10,7 @@ const animatedComponents = makeAnimated();
 const UserForm = ({ onBack, onNext }) => {
   const [step, setStep] = useState(1); // Étape initiale
   const [formData, setFormData] = useState({
+    type: "user",
     photo: null,
     genre: '',
     birthdate: '',
@@ -27,7 +28,6 @@ const UserForm = ({ onBack, onNext }) => {
     presentation: '',
   });
   const [optionsLoisirs, setOptionsLoisirs] = useState([]);
-  // const [passwordError, setPasswordError] = useState(''); 
   const [isPasswordMatch, setIsPasswordMatch] = useState(false);
   const [errors, setErrors] = useState({});
   const [errorMessage, setErrorMessage] = useState('');
@@ -51,11 +51,10 @@ const UserForm = ({ onBack, onNext }) => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     if (type === 'file') {
-      // Gérer le fichier téléchargé
-      const file = e.target.files[0]; // Récupérer le premier fichier
+      const file = e.target.files[0];
       setFormData({
         ...formData,
-        photo: file // Stocker le fichier dans le state
+        photo: file
       });
     } else {
       setFormData({
@@ -68,7 +67,6 @@ const UserForm = ({ onBack, onNext }) => {
   const validateFields = () => {
     let newErrors = {};
   
-    // Champs obligatoires pour la première étape
     if (!formData.photo) newErrors.photo = 'La photo est obligatoire';
     if (!formData.firstName) newErrors.firstName = 'Le prénom est obligatoire';
     if (!formData.lastName) newErrors.lastName = 'Le nom est obligatoire';
@@ -77,10 +75,9 @@ const UserForm = ({ onBack, onNext }) => {
     if (!formData.confirmPassword) newErrors.confirmPassword = 'La confirmation du mot de passe est obligatoire';
     if (!formData.genre) newErrors.genre = 'Le sexe est obligatoire';
     if (!formData.birthdate) newErrors.birthdate = 'L\'âge est obligatoire';
-    // if (!formData.city) newErrors.city = 'La ville est obligatoire';
-    if (!formData.adress) newErrors.adress = 'La localisation est obligatoire';
+    if (!formData.city) newErrors.city = 'La ville est obligatoire';
+    if (!formData.adress) newErrors.adress = 'L\'adresse est obligatoire';
     
-    // Vérification des conditions uniquement pour la deuxième étape
     if (step === 2 && !formData.acceptTerms) {
       if (!formData.description) newErrors.description = 'La description est obligatoire';
       newErrors.acceptTerms = "Vous devez accepter les conditions.";
@@ -115,6 +112,7 @@ const UserForm = ({ onBack, onNext }) => {
     }
 
     const formDataToSend = new FormData();
+    formDataToSend.append('type', formData.type);
     formDataToSend.append('photo', formData.photo);
     formDataToSend.append('genre', formData.genre);
     formDataToSend.append('birthdate', formData.birthdate);
@@ -134,7 +132,7 @@ const UserForm = ({ onBack, onNext }) => {
     try {
       await axios.post('https://back-thumbs.vercel.app/auth/register', formDataToSend, {
         headers: {
-          'Content-Type': 'multipart/form-data' // Indiquer que c'est un formulaire
+          'Content-Type': 'multipart/form-data'
         }
       });
       navigate('/login');
@@ -142,7 +140,7 @@ const UserForm = ({ onBack, onNext }) => {
       if (error.response && error.response.status === 400 && error.response.data === 'Email already exists') {
         setErrorMessage("L'email existe déjà");
       } else {
-        setErrorMessage("Une erreur s'est produite lors de l'inscription."); // Gestion d'autres erreurs
+        setErrorMessage("Une erreur s'est produite lors de l'inscription.");
       }
       console.error('Erreur lors de l\'inscription:'/*, error */);
     }
@@ -177,7 +175,7 @@ const UserForm = ({ onBack, onNext }) => {
               <input
                 type="file"
                 name="photo"
-                accept="image/*" // Accepter uniquement les images
+                accept="image/*"
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
               />
@@ -255,7 +253,7 @@ const UserForm = ({ onBack, onNext }) => {
               {errors.genre && <p className="text-red-500">{errors.genre}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium">Âge <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-medium">Date de naissance <span className="text-red-500">*</span></label>
               <input
                 type="date"
                 name="birthdate"
@@ -272,7 +270,7 @@ const UserForm = ({ onBack, onNext }) => {
                 setFormData={setFormData} 
                 errors={errors}
               />              
-              {/* {errors.city && <p className="text-red-500">{errors.city}</p>} */}
+              {errors.city && <p className="text-red-500">{errors.city}</p>}
             </div>
             <div> 
               <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            

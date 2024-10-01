@@ -1,52 +1,69 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { login } from '../../authSlice';
+import CitySearch from '../CitySearch';
 
 const animatedComponents = makeAnimated();
 
-const optionsLoisirs = [
-  { value: '1', label: 'Bowling' },
-  { value: '2', label: 'Échecs' },
-  { value: '3', label: 'Jeux Vidéos' },
-  { value: '4', label: 'Peinture' },
-  { value: '5', label: 'Danse' },
-  { value: '6', label: 'Musique' }
-];
-
 const AssociationForm = ({ onBack, onNext }) => {
   const [formData, setFormData] = useState({
-    name: '',
+    type: "asso",
+    logo: null,
+    nameasso: '',
     email: '',
     password: '',
     confirmPassword: '',
     siret: '',
     acceptTerms: false,
-    photo: null,
-    location: '',
+    city: '',
+    postalcode: '',
+    adress: '',
     website: '',
-    phone: '',
-    birthday: '',
+    telephone: '',
+    creationdate: '',
     interests: '',
     description: '',
     presentation: ''
   });
 
+  const [optionsLoisirs, setOptionsLoisirs] = useState([]);
   const [errors, setErrors] = useState({});
-  const [step, setStep] = useState(1); // Utilisation de plusieurs étapes
-  const [isPasswordMatch, setIsPasswordMatch] = useState(true); // Vérification de la correspondance des mots de passe
+  const [step, setStep] = useState(1);
+  const [isPasswordMatch, setIsPasswordMatch] = useState(true);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+
+
+  useEffect(() => {
+    fetch('../examples/interests.json')
+      .then((response) => response.json())
+      .then((data) => {
+        const options = data.centres_interets.map((centre) => ({
+          value: centre.id.toString(),
+          label: centre.nom
+        }));
+        setOptionsLoisirs(options);
+      })
+      .catch((error) => {
+        console.error('Erreur lors du chargement du JSON:', error);
+      });
+  }, []);
 
   const handleChange = (e) => {
-    const { name, value, type, checked, files } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : type === 'file' ? files[0] : value
-    });
+    const { name, value, type, checked } = e.target;
+    if (type === 'file') {
+      const file = e.target.files[0];
+      setFormData({
+        ...formData,
+        logo: file
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: type === 'checkbox' ? checked : value
+      });
+    }
   };
 
   const handleSelectChange = (selectedOptions) => {
@@ -61,21 +78,22 @@ const AssociationForm = ({ onBack, onNext }) => {
     const newErrors = {};
     
     if (step === 1) {
-      if (!formData.name) newErrors.name = "Le nom de l'association est requis.";
-      if (!formData.email) newErrors.email = "L'adresse email est requise.";
+      if (!formData.nameasso) newErrors.nameasso = "Le nom de l'association est obligatoire";
+      if (!formData.email) newErrors.email = "L'adresse email est obligatoire.";
       if (formData.password !== formData.confirmPassword) {
-        newErrors.password = "Les mots de passe ne correspondent pas.";
+        newErrors.password = "Les mots de passe ne correspondent pas";
         setIsPasswordMatch(false);
       } else {
         setIsPasswordMatch(true);
       }
-      if (!formData.siret) newErrors.siret = "Le numéro SIRET est requis.";
+      if (!formData.siret) newErrors.siret = "Le numéro SIRET est obligatoire";
     }
     
     if (step === 2) {
-      // if (!formData.photo) newErrors.photo = "Une photo est requise.";
-      if (!formData.location) newErrors.location = "La localisation est requise.";
-      if (!formData.phone) newErrors.phone = "Le numéro de téléphone est requis.";
+      // if (!formData.logo) newErrors.logo = "Un logo est obligatoire";
+      if (!formData.city) newErrors.city = "La ville est obligatoire";
+      if (!formData.adress) newErrors.adress = "L\'adresse est obligatoire";
+      if (!formData.telephone) newErrors.telephone = "Le numéro de téléphone est obligatoire";
     }
 
     if (step === 3) {
@@ -91,25 +109,39 @@ const AssociationForm = ({ onBack, onNext }) => {
 
     if (!validateStep()) return;
 
+    const formDataToSend = new FormData();
+    formDataToSend.append('type', formData.type);
+    formDataToSend.append('logo', formData.logo);
+    formDataToSend.append('nameasso', formData.nameasso);
+    formDataToSend.append('email', formData.email);
+    formDataToSend.append('password', formData.password);
+    formDataToSend.append('confirmPassword', formData.confirmPassword);
+    formDataToSend.append('siret', formData.siret);
+    formDataToSend.append('acceptTerms', formData.acceptTerms);
+    formDataToSend.append('city', formData.city);
+    formDataToSend.append('postalcode', formData.postalcode);
+    formDataToSend.append('adress', formData.adress);
+    formDataToSend.append('website', formData.website);
+    formDataToSend.append('telephone', formData.telephone);
+    formDataToSend.append('creationdate', formData.creationdate);
+    formDataToSend.append('interests', formData.interests);
+    formDataToSend.append('description', formData.description);
+    formDataToSend.append('presentation', formData.presentation);
+
     try {
-      const response = await axios.post('https://back-thumbs.vercel.app/auth/register', {
-        email: formData.email,
-        password: formData.password,
-        name: formData.name,
-        siret: formData.siret,
-        photo: formData.photo,
-        location: formData.location,
-        website: formData.website,
-        phone: formData.phone,
-        birthday: formData.birthday,
-        interests: formData.interests,
-        description: formData.description,
-        presentation: formData.presentation,
+      await axios.post('https://back-thumbs.vercel.app/auth-asso/register-asso', formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       });
-      dispatch(login(response.data.user));
-      navigate('/events');
+      navigate('/login');
     } catch (error) {
-      console.error('Erreur lors de l\'inscription:', error);
+      if (error.response && error.response.status === 400 && error.response.data === 'Email already exists') {
+        setErrorMessage("L'email existe déjà");
+      } else {
+        setErrorMessage("Une erreur s'est produite lors de l'inscription.");
+      }
+      console.error('Erreur lors de l\'inscription:'/*, error */);
     }
   };
 
@@ -122,13 +154,13 @@ const AssociationForm = ({ onBack, onNext }) => {
           <label className="block text-sm font-medium">Nom de l'association <span className="text-red-500">*</span></label>
           <input
             type="text"
-            name="name"
-            value={formData.name}
+            name="nameasso"
+            value={formData.nameasso}
             // placeholder="Nom de l'association"
             onChange={handleChange}
             className="w-full border rounded-lg p-2"
           />
-          {errors.name && <p className="text-red-500">{errors.name}</p>}
+          {errors.nameasso && <p className="text-red-500">{errors.nameasso}</p>}
         </div>
         <div>
           <label className="block text-sm font-medium">Email <span className="text-red-500">*</span></label>
@@ -209,27 +241,43 @@ const AssociationForm = ({ onBack, onNext }) => {
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium">Logo de l'association</label>
+          {/* 
           <input
             type="file"
             name="photo"
             onChange={handleChange}
             className="w-full border rounded-lg p-2"
-          />
-          {/* {errors.photo && <p className="text-red-500">{errors.photo}</p>} */}
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Localisation <span className="text-red-500">*</span></label>
+          /> */}
+          <label className="block text-sm font-medium">Logo de l'association</label>
           <input
-            type="text"
-            name="location"
-            value={formData.location}
-            // placeholder="Localisation"
+            type="file"
+            name="logo"
+            accept="image/*"
             onChange={handleChange}
             className="w-full border rounded-lg p-2"
           />
-          {errors.location && <p className="text-red-500">{errors.location}</p>}
+          {/* {errors.logo && <p className="text-red-500">{errors.logo}</p>} */}
         </div>
+        <div> 
+              <label className="block text-sm font-medium">Ville et code postal <span className="text-red-500">*</span></label>
+              <CitySearch 
+                formData={formData} 
+                setFormData={setFormData} 
+                errors={errors}
+              />              
+              {errors.city && <p className="text-red-500">{errors.city}</p>}
+            </div>
+            <div> 
+              <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            
+              <input
+                type="text"
+                name="adress"
+                value={formData.adress}
+                onChange={handleChange}
+                className="w-full border rounded-lg p-2"
+              />
+              {errors.adress && <p className="text-red-500">{errors.adress}</p>}
+            </div>
         <div>
           <label className="block text-sm font-medium">Site web</label>
           <input
@@ -245,20 +293,20 @@ const AssociationForm = ({ onBack, onNext }) => {
           <label className="block text-sm font-medium">Numéro de téléphone <span className="text-red-500">*</span></label>
           <input
             type="text"
-            name="phone"
+            name="telephone"
             value={formData.phone}
             // placeholder="Numéro de téléphone"
             onChange={handleChange}
             className="w-full border rounded-lg p-2"
           />
-          {errors.phone && <p className="text-red-500">{errors.phone}</p>}
+          {errors.telephone && <p className="text-red-500">{errors.telephone}</p>}
         </div>
         <div>
-          <label className="block text-sm font-medium">Création</label>
+          <label className="block text-sm font-medium">Date de création</label>
           <input
             type="date"
-            name="birthday"
-            value={formData.birthday}
+            name="creationdate"
+            value={formData.creationdate}
             onChange={handleChange}
             className="w-full border rounded-lg p-2"
           />

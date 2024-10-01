@@ -45,7 +45,6 @@ function CitySearch({ formData, setFormData, errors }) {
         name="location"
         value={displayValue} // Affiche ville + code postal
         onChange={handleInputChange}
-        placeholder="Entrez une ville"
         className="w-full border rounded-lg p-2"
       />
       {locations.length > 0 && (
