@@ -93,7 +93,7 @@ const AssociationForm = ({ onBack, onNext }) => {
     if (step === 2) {
       // if (!formData.logo) newErrors.logo = "Un logo est obligatoire";
       if (!formData.city) newErrors.city = "La ville est obligatoire";
-      if (!formData.adress) newErrors.adress = "L\'adresse est obligatoire";
+      if (!formData.adress) newErrors.adress = "L'adresse est obligatoire";
       if (!formData.telephone) newErrors.telephone = "Le numéro de téléphone est obligatoire";
     }
 
