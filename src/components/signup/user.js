@@ -3,15 +3,16 @@ import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import CitySearch from '../CitySearch';
 
 const animatedComponents = makeAnimated();
 
 const UserForm = ({ onBack, onNext }) => {
   const [step, setStep] = useState(1); // Étape initiale
   const [formData, setFormData] = useState({
-    photo: '',
-    gender: '',
-    age: '',
+    photo: null,
+    genre: '',
+    birthdate: '',
     location: '',
     firstName: '',
     lastName: '',
@@ -27,6 +28,7 @@ const UserForm = ({ onBack, onNext }) => {
   // const [passwordError, setPasswordError] = useState(''); 
   const [isPasswordMatch, setIsPasswordMatch] = useState(false);
   const [errors, setErrors] = useState({});
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,10 +49,19 @@ const UserForm = ({ onBack, onNext }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value
-    });
+    if (type === 'file') {
+      // Gérer le fichier téléchargé
+      const file = e.target.files[0]; // Récupérer le premier fichier
+      setFormData({
+        ...formData,
+        photo: file // Stocker le fichier dans le state
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: type === 'checkbox' ? checked : value
+      });
+    }
   };
 
   // const handleSelectChange = (selectedOptions) => {
@@ -73,12 +84,13 @@ const UserForm = ({ onBack, onNext }) => {
     if (!formData.email) newErrors.email = 'L\'email est obligatoire';
     if (!formData.password) newErrors.password = 'Le mot de passe est obligatoire';
     if (!formData.confirmPassword) newErrors.confirmPassword = 'La confirmation du mot de passe est obligatoire';
-    if (!formData.gender) newErrors.gender = 'Le sexe est obligatoire';
-    if (!formData.age) newErrors.age = 'L\'âge est obligatoire';
+    if (!formData.genre) newErrors.genre = 'Le sexe est obligatoire';
+    if (!formData.birthdate) newErrors.birthdate = 'L\'âge est obligatoire';
     if (!formData.location) newErrors.location = 'La localisation est obligatoire';
     
     // Vérification des conditions uniquement pour la deuxième étape
     if (step === 2 && !formData.acceptTerms) {
+      if (!formData.description) newErrors.description = 'La description est obligatoire';
       newErrors.acceptTerms = "Vous devez accepter les conditions.";
     }
 
@@ -93,16 +105,6 @@ const UserForm = ({ onBack, onNext }) => {
       ...formData,
       [name]: value
     });
-    
-    // if (name === 'confirmPassword') {
-    //   if (value !== formData.password) {
-    //     setPasswordError('Les mots de passe ne correspondent pas');
-    //     setIsPasswordMatch(false);
-    //   } else {
-    //     setPasswordError('');
-    //     setIsPasswordMatch(true);
-    //   }
-    // }
 
     if (name === 'confirmPassword') {
       setIsPasswordMatch(value === formData.password);
@@ -119,26 +121,36 @@ const UserForm = ({ onBack, onNext }) => {
       }));
       return;
     }
+
+    const formDataToSend = new FormData();
+    formDataToSend.append('photo', formData.photo);
+    formDataToSend.append('genre', formData.genre);
+    formDataToSend.append('birthdate', formData.birthdate);
+    formDataToSend.append('location', formData.location);
+    formDataToSend.append('firstName', formData.firstName);
+    formDataToSend.append('lastName', formData.lastName);
+    formDataToSend.append('email', formData.email);
+    formDataToSend.append('password', formData.password);
+    formDataToSend.append('confirmPassword', formData.confirmPassword);
+    formDataToSend.append('interests', JSON.stringify(formData.interests));
+    formDataToSend.append('acceptTerms', formData.acceptTerms);
+    formDataToSend.append('description', formData.description);
+    formDataToSend.append('presentation', formData.presentation);
   
     try {
-      await axios.post('https://back-thumbs.vercel.app/auth/register', {
-        photo: formData.photo,
-        gender: formData.gender,
-        age: formData.age,
-        location: formData.location,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        password: formData.password,
-        confirmPassword: formData.confirmPassword,
-        interests: formData.interests,
-        acceptTerms: formData.acceptTerms,
-        description: formData.description,
-        presentation: formData.presentation
+      await axios.post('https://back-thumbs.vercel.app/auth/register', formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data' // Indiquer que c'est un formulaire
+        }
       });
  
       navigate('/login');
     } catch (error) {
+      if (error.response && error.response.status === 400 && error.response.data === 'Email already exists') {
+        setErrorMessage("L'email existe déjà");
+      } else {
+        setErrorMessage("Une erreur s'est produite lors de l'inscription."); // Gestion d'autres erreurs
+      }
       console.error('Erreur lors de l\'inscription:', error);
     }
   };
@@ -161,10 +173,18 @@ const UserForm = ({ onBack, onNext }) => {
             {/* Étape 1 */}
             <div>
               <label className="block text-sm font-medium">Photo de profil <span className="text-red-500">*</span></label>
-              <input
+              {/* <input
                 type="file"
                 name="photo"
                 value={formData.photo}
+                onChange={handleChange}
+                className="w-full border rounded-lg p-2"
+              /> */}
+
+              <input
+                type="file"
+                name="photo"
+                accept="image/*" // Accepter uniquement les images
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
               />
@@ -229,38 +249,36 @@ const UserForm = ({ onBack, onNext }) => {
             <div>
               <label className="block text-sm font-medium">Sexe <span className="text-red-500">*</span></label>
               <select
-                name="gender"
-                value={formData.gender}
+                name="genre"
+                value={formData.genre}
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
               >
                 <option value="">Sélectionnez...</option>
-                <option value="male">Homme</option>
-                <option value="female">Femme</option>
-                <option value="other">Autre</option>
+                <option value="homme">Homme</option>
+                <option value="femme">Femme</option>
+                <option value="autre">Autre</option>
               </select>
-              {errors.gender && <p className="text-red-500">{errors.gender}</p>}
+              {errors.genre && <p className="text-red-500">{errors.genre}</p>}
             </div>
             <div>
               <label className="block text-sm font-medium">Âge <span className="text-red-500">*</span></label>
               <input
                 type="date"
-                name="age"
-                value={formData.age}
+                name="birthdate"
+                value={formData.birthdate}
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
               />
-              {errors.age && <p className="text-red-500">{errors.age}</p>}
+              {errors.birthdate && <p className="text-red-500">{errors.birthdate}</p>}
             </div>
-            <div>
+            <div> 
               <label className="block text-sm font-medium">Localisation <span className="text-red-500">*</span></label>
-              <input
-                type="text"
-                name="location"
-                value={formData.location}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2"
-              />
+              <CitySearch 
+                formData={formData} 
+                setFormData={setFormData} 
+                errors={errors}
+              />              
               {errors.location && <p className="text-red-500">{errors.location}</p>}
             </div>
           </div>
@@ -305,7 +323,7 @@ const UserForm = ({ onBack, onNext }) => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Description</label>
+              <label className="block text-sm font-medium">Description <span className="text-red-500">*</span></label>
               <textarea
                 name="description"
                 value={formData.description}
@@ -313,6 +331,7 @@ const UserForm = ({ onBack, onNext }) => {
                 className="w-full border rounded-lg p-2"
                 rows="3"
               />
+              {errors.description && <p className="text-red-500">{errors.description}</p>}
             </div>
             <div>
               <label className="block text-sm font-medium">Présentation</label>
@@ -356,6 +375,7 @@ const UserForm = ({ onBack, onNext }) => {
               Inscription
             </button>
           </div>
+          {errorMessage && <div className="error-message text-red-500">{errorMessage}</div>}
         </div>
       );
     }

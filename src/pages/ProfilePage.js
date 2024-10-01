@@ -20,7 +20,7 @@ const ProfilePage = () => {
     location: '',
     photo: '',
     gender: '',
-    age: '',
+    birthdate: '',
     description: '',
     presentation: ''
   });
@@ -91,7 +91,7 @@ const ProfilePage = () => {
       });
       console.log('Profil mis à jour avec succès:', response.data);
       setProfile(response.data);
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.error('Erreur lors de la mise à jour du profil:', error);
     }
@@ -350,9 +350,9 @@ const ProfilePage = () => {
             <label className="block text-sm font-medium">Date de naissance</label>
             <input 
               type="date" 
-              // name="age" 
+              name="birthdate" 
               className="w-full border rounded-lg p-2" 
-              defaultValue={profile.age}
+              defaultValue={profile.birthdate}
               onChange={handleInputChange} 
             />
           </div>
@@ -404,6 +404,7 @@ const ProfilePage = () => {
           <div>
             <label className="block text-sm font-medium">Photo de profil</label>
             <input 
+              name="photo"
               type="file" 
               className="w-full border rounded-lg p-2" 
               onChange={handleInputChange} 
