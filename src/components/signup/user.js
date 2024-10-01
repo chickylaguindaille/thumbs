@@ -13,7 +13,9 @@ const UserForm = ({ onBack, onNext }) => {
     photo: null,
     genre: '',
     birthdate: '',
-    location: '',
+    city: '',
+    postalcode: '',
+    adress: '',
     firstName: '',
     lastName: '',
     email: '',
@@ -39,7 +41,6 @@ const UserForm = ({ onBack, onNext }) => {
           value: centre.id.toString(),
           label: centre.nom
         }));
-        // console.log(options);
         setOptionsLoisirs(options);
       })
       .catch((error) => {
@@ -64,16 +65,6 @@ const UserForm = ({ onBack, onNext }) => {
     }
   };
 
-  // const handleSelectChange = (selectedOptions) => {
-  //   setFormData({
-  //     ...formData,
-  //     interests: selectedOptions
-  //   });
-  //   console.log(selectedOptions);
-  // };
-
-
-
   const validateFields = () => {
     let newErrors = {};
   
@@ -86,7 +77,8 @@ const UserForm = ({ onBack, onNext }) => {
     if (!formData.confirmPassword) newErrors.confirmPassword = 'La confirmation du mot de passe est obligatoire';
     if (!formData.genre) newErrors.genre = 'Le sexe est obligatoire';
     if (!formData.birthdate) newErrors.birthdate = 'L\'âge est obligatoire';
-    if (!formData.location) newErrors.location = 'La localisation est obligatoire';
+    // if (!formData.city) newErrors.city = 'La ville est obligatoire';
+    if (!formData.adress) newErrors.adress = 'La localisation est obligatoire';
     
     // Vérification des conditions uniquement pour la deuxième étape
     if (step === 2 && !formData.acceptTerms) {
@@ -126,7 +118,9 @@ const UserForm = ({ onBack, onNext }) => {
     formDataToSend.append('photo', formData.photo);
     formDataToSend.append('genre', formData.genre);
     formDataToSend.append('birthdate', formData.birthdate);
-    formDataToSend.append('location', formData.location);
+    formDataToSend.append('city', formData.city);
+    formDataToSend.append('postalcode', formData.postalcode);
+    formDataToSend.append('adress', formData.adress);
     formDataToSend.append('firstName', formData.firstName);
     formDataToSend.append('lastName', formData.lastName);
     formDataToSend.append('email', formData.email);
@@ -143,7 +137,6 @@ const UserForm = ({ onBack, onNext }) => {
           'Content-Type': 'multipart/form-data' // Indiquer que c'est un formulaire
         }
       });
- 
       navigate('/login');
     } catch (error) {
       if (error.response && error.response.status === 400 && error.response.data === 'Email already exists') {
@@ -151,7 +144,7 @@ const UserForm = ({ onBack, onNext }) => {
       } else {
         setErrorMessage("Une erreur s'est produite lors de l'inscription."); // Gestion d'autres erreurs
       }
-      console.error('Erreur lors de l\'inscription:', error);
+      console.error('Erreur lors de l\'inscription:'/*, error */);
     }
   };
   
@@ -273,13 +266,24 @@ const UserForm = ({ onBack, onNext }) => {
               {errors.birthdate && <p className="text-red-500">{errors.birthdate}</p>}
             </div>
             <div> 
-              <label className="block text-sm font-medium">Localisation <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-medium">Ville et code postal <span className="text-red-500">*</span></label>
               <CitySearch 
                 formData={formData} 
                 setFormData={setFormData} 
                 errors={errors}
               />              
-              {errors.location && <p className="text-red-500">{errors.location}</p>}
+              {/* {errors.city && <p className="text-red-500">{errors.city}</p>} */}
+            </div>
+            <div> 
+              <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            
+              <input
+                type="text"
+                name="adress"
+                value={formData.adress}
+                onChange={handleChange}
+                className="w-full border rounded-lg p-2"
+              />
+              {errors.adress && <p className="text-red-500">{errors.adress}</p>}
             </div>
           </div>
           <div className="flex justify-between mt-4">

@@ -20,7 +20,7 @@ function CitySearch({ formData, setFormData, errors }) {
       const response = await axios.get(url);
       const data = response.data.results.map(result => ({
         city: result.components.city || result.components.town || result.components.village,
-        postalCode: result.components.postcode,
+        postalcode: result.components.postcode,
       }));
       setLocations(data);
     } catch (error) {
@@ -28,11 +28,12 @@ function CitySearch({ formData, setFormData, errors }) {
     }
   };
 
-  const handleLocationClick = (city, postalCode) => {
-    setDisplayValue(`${city} - ${postalCode}`); // Afficher ville + code postal
+  const handleLocationClick = (city, postalcode) => {
+    setDisplayValue(`${city} - ${postalcode}`); // Afficher ville + code postal
     setFormData(prevState => ({
       ...prevState,
-      location: postalCode // Enregistre le code postal dans formData
+      postalcode: postalcode, // Enregistre le code postal dans formData
+      city: city, // Enregistre la ville dans formData
     }));
     setLocations([]); // Masquer la liste après sélection
   };
@@ -44,7 +45,7 @@ function CitySearch({ formData, setFormData, errors }) {
         name="location"
         value={displayValue} // Affiche ville + code postal
         onChange={handleInputChange}
-        // placeholder="Entrez une ville"
+        placeholder="Entrez une ville"
         className="w-full border rounded-lg p-2"
       />
       {locations.length > 0 && (
@@ -52,10 +53,10 @@ function CitySearch({ formData, setFormData, errors }) {
           {locations.map((location, index) => (
             <li 
               key={index} 
-              onClick={() => handleLocationClick(location.city, location.postalCode)} 
+              onClick={() => handleLocationClick(location.city, location.postalcode)} 
               className="cursor-pointer hover:bg-gray-200 p-2"
             >
-              {location.city} - {location.postalCode}
+              {location.city} - {location.postalcode}
             </li>
           ))}
         </ul>
