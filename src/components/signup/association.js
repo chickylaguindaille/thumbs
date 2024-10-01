@@ -91,7 +91,7 @@ const AssociationForm = ({ onBack, onNext }) => {
     }
     
     if (step === 2) {
-      // if (!formData.logo) newErrors.logo = "Un logo est obligatoire";
+      if (!formData.logo) newErrors.logo = "Un logo est obligatoire";
       if (!formData.city) newErrors.city = "La ville est obligatoire";
       if (!formData.adress) newErrors.adress = "L'adresse est obligatoire";
       if (!formData.telephone) newErrors.telephone = "Le numéro de téléphone est obligatoire";
@@ -249,7 +249,7 @@ const AssociationForm = ({ onBack, onNext }) => {
             onChange={handleChange}
             className="w-full border rounded-lg p-2"
           /> */}
-          <label className="block text-sm font-medium">Logo de l'association</label>
+          <label className="block text-sm font-medium">Logo de l'association <span className="text-red-500">*</span></label>
           <input
             type="file"
             name="logo"
@@ -257,7 +257,7 @@ const AssociationForm = ({ onBack, onNext }) => {
             onChange={handleChange}
             className="w-full border rounded-lg p-2"
           />
-          {/* {errors.logo && <p className="text-red-500">{errors.logo}</p>} */}
+          {errors.logo && <p className="text-red-500">{errors.logo}</p>}
         </div>
         <div> 
               <label className="block text-sm font-medium">Ville et code postal <span className="text-red-500">*</span></label>
