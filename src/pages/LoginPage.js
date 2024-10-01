@@ -7,9 +7,17 @@ import { useNavigate } from 'react-router-dom';
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('user'); // Rôle par défaut sur "user"
   const [error, setError] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  let url;
+  if (role === 'asso') {
+    url = 'https://back-thumbs.vercel.app/auth-asso/login';
+  } else {
+    url = 'https://back-thumbs.vercel.app/auth/login';
+  }
 
   // Fonction pour gérer la soumission du formulaire
   const handleSubmit = async (event) => {
@@ -17,7 +25,7 @@ function LoginPage() {
     setError('');
 
     try {
-      const response = await axios.post('https://back-thumbs.vercel.app/auth/login', {
+      const response = await axios.post(url, {
         email,
         password,
       });
@@ -25,9 +33,6 @@ function LoginPage() {
 
       localStorage.setItem('authToken', token);
 
-      // Vérifiez la réponse ici
-      console.log('Réponse de la connexion:', response.data);
-      
       // Dispatch de l'action pour mettre à jour l'état d'authentification
       dispatch(login({ token, user: response.data.user }));
       
@@ -35,7 +40,6 @@ function LoginPage() {
         navigate('/events');
       }, 100);
     } catch (err) {
-      // Afficher une erreur si la connexion échoue
       setError('Erreur lors de la connexion. Veuillez vérifier vos informations.');
       console.error('Erreur de connexion:', err);
     }
@@ -81,6 +85,37 @@ function LoginPage() {
             required
           />
         </div>
+
+              {/* Sélection du rôle avec apparence d'onglets */}
+      <div className="flex justify-center mb-4 p-2 rounded-lg">
+        <label
+          className={`cursor-pointer px-4 py-2 mx-2 rounded ${role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+        >
+          <input
+            type="radio"
+            name="role"
+            value="user"
+            checked={role === 'user'}
+            onChange={(e) => setRole(e.target.value)}
+            className="hidden"
+          />
+          Utilisateur
+        </label>
+        <label
+          className={`cursor-pointer px-4 py-2 mx-2 rounded ${role === 'asso' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+        >
+          <input
+            type="radio"
+            name="role"
+            value="asso"
+            checked={role === 'asso'}
+            onChange={(e) => setRole(e.target.value)}
+            className="hidden"
+          />
+          Association
+        </label>
+      </div>
+
 
         {/* Afficher les erreurs */}
         {error && <p className="text-red-500 mb-4">{error}</p>}
