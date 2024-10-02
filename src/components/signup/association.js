@@ -204,7 +204,7 @@ const AssociationForm = ({ onBack, onNext }) => {
         <div>
           <label className="block text-sm font-medium">SIRET <span className="text-red-500">*</span></label>
           <input
-            type="text"
+            type="number"
             name="siret"
             value={formData.siret}
             // placeholder="SIRET"

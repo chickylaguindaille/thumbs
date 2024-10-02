@@ -1,36 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { FaInfoCircle, FaChartBar, FaCog, FaChevronRight } from 'react-icons/fa';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../authSlice';
 import Modal from '../components/Modal';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import axios from 'axios';
+import CitySearch from '../components/CitySearch';
 
 const animatedComponents = makeAnimated();
 
-const optionsLoisirs = [
-  { value: '1', label: 'Bowling' },
-  { value: '2', label: 'Échecs' },
-  { value: '3', label: 'Jeux Vidéos' },
-  { value: '4', label: 'Peinture' },
-  { value: '5', label: 'Danse' },
-  { value: '6', label: 'Musique' }
-];
-
 const AssociationPage = () => {
-  // const { id } = useParams();
+  const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
   const [profile, setProfile] = useState({
     _id: '',
-    firstName: '',
-    lastName: '',
+    nameasso: '',
     interests: [],
     email: '',
-    location: '',
-    photo: ''
+    creation: '',
+    description: '',
+    presentation: ''
   });
+  const [formData, setFormData] = useState(profile);
+  const [optionsLoisirs, setOptionsLoisirs] = useState([]);
   const [activeTab, setActiveTab] = useState('info');
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalCreateEventIsOpen, setModalCreateEventIsOpen] = useState(false);
   const [logoutModalIsOpen, setLogoutModalIsOpen] = useState(false);
   const [deleteAccountModalIsOpen, setDeleteAccountModalIsOpen] = useState(false);
   const dispatch = useDispatch();
@@ -40,37 +35,112 @@ const AssociationPage = () => {
       try {
         const token = localStorage.getItem('authToken');
 
-        const response = await axios.get('https://back-thumbs.vercel.app/profil/details', {
+        const response = await axios.get('https://back-thumbs.vercel.app/asso/asso-details', {
           headers: {
             Authorization: `Bearer ${token}`,
           }
         });
         setProfile(response.data);
+        // console.log(response.data);
       } catch (error) {
-        console.error('Erreur lors de la récupération du profil:', error);
+        console.error('Erreur lors de la récupération du profil asso:', error);
       }
     };
 
     fetchProfile();
   }, []);
 
-  const tabWidth = profile.id ? 'w-1/3' : 'w-1/2';
 
-  // const allActivities = {
-  //   sports: activitiesData.sports,
-  //   arts: activitiesData.arts,
-  //   loisirs: activitiesData.loisirs,
-  // };
+  useEffect(() => {
+    const fetchInterests = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        const response = await axios.get('https://back-thumbs.vercel.app/profil/interests', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        // console.log(response.data);
+        const options = response.data.interests.map((interest) => ({
+          value: interest.id.toString(),
+          label: `${interest.nom} (${interest.thematique})`
+        }));
+        setOptionsLoisirs(options);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des centres d\'intérêts:', error);
+      }
+    };
 
-  // const contactActivities = {
-  //   sports: profile.interests.sports.map(activityId => allActivities.sports.find(activity => activity.id === activityId)).filter(activity => activity),
-  //   arts: profile.interests.arts.map(activityId => allActivities.arts.find(activity => activity.id === activityId)).filter(activity => activity),
-  //   loisirs: profile.interests.loisirs.map(activityId => allActivities.loisirs.find(activity => activity.id === activityId)).filter(activity => activity),
-  // };
+    fetchInterests();
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleUpdateProfile = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await axios.put('https://back-thumbs.vercel.app/asso/update-asso', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
+      console.log('Profil mis à jour avec succès:', response.data);
+      setProfile(response.data);
+      // window.location.reload();
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du profil:', error);
+    }
+  };
+
+  const handleCreateEvent = async () => {
+    try {
+      const eventData = new FormData();
+      eventData.append('organisator', user._id);
+      eventData.append('eventName', formDataInputs.eventName);
+      eventData.append('description', formDataInputs.description);
+      eventData.append('location', formDataInputs.location);
+      eventData.append('interests', formDataInputs.interests);
+
+      console.log(eventData);
+
+
+      const token = localStorage.getItem('authToken');
+      const response = await axios.post('https://back-thumbs.vercel.app/event/create-event', eventData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
+      console.log('Event créé avec succès:', response.data);
+      setProfile(response.data);
+      // window.location.reload();
+    } catch (error) {
+      console.error('Erreur lors de la création de l\'event:', error);
+    }
+  };
+
+  const [formDataInputs, setFormDataInputs] = useState({
+    eventName: '',
+    description: '',
+    location: '',
+    interests: ''
+  });
   
+  // Function to handle input changes in the event creation form
+const handleEventInputChange = (e) => {
+  const { name, value } = e.target;
+  setFormDataInputs({ ...formDataInputs, [name]: value });
+};
 
+  const tabWidth = profile.id === user?.id ? 'w-1/3' : 'w-1/2';
+  
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
+  const openModalCreateEvent = () => setModalCreateEventIsOpen(true);
+  const closeModalCreateEvent = () => setModalCreateEventIsOpen(false);
+
 
   const openLogoutModal = () => setLogoutModalIsOpen(true);
   const closeLogoutModal = () => setLogoutModalIsOpen(false);
@@ -118,12 +188,12 @@ const AssociationPage = () => {
       <div className="p-4 flex flex-col items-start">
         <div className="flex items-center mb-4">
           <img
-            src={profile.photo || "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg"}
-            alt={`${profile.firstName || "John"}'s profile`}
+            src={profile.logo || "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg"}
+            alt={`${profile.assoname || "John"}'s profile`}
             className="w-16 h-16 rounded-full mr-4"
           />
           <div>
-            <h1 className="text-2xl font-bold">{profile.firstName || "John"} {profile.lastName || "Doe"}</h1>
+            <h1 className="text-2xl font-bold">{profile.nameasso || "Assoname"}</h1>
           </div>
         </div>
         <div>
@@ -131,7 +201,7 @@ const AssociationPage = () => {
         </div>
 
         <div className="mt-2 text-blue-600">
-          <p className="text-sm font-semibold">{profile.location || "Pas de localisation"}</p>
+          <p className="text-sm font-semibold">{profile.city || "Pas de localisation"}</p>
         </div>
 
         <div className="mt-4 w-full">
@@ -149,7 +219,7 @@ const AssociationPage = () => {
               >
                 <FaChartBar className="inline-block text-xl" />
               </li>
-              {profile.id && (
+              {profile.id === user?.id && (
                 <li
                   className={`cursor-pointer text-center pb-2 w-1/3 ${activeTab === 'settings' ? 'border-b-2 border-blue-500 text-blue-600' : ''}`}
                   onClick={() => setActiveTab('settings')}
@@ -163,12 +233,19 @@ const AssociationPage = () => {
           <div className="mt-4">
             {activeTab === 'info' && (
               <div>
-                <h2 className="text-xl font-semibold">Informations sur {profile.firstName || "John"} {profile.lastName || "Doe"}</h2>
-                <p>Voici quelques informations supplémentaires sur le profil.</p>
+                <h2 className="text-xl font-semibold">Informations sur {profile.nameasso || "asso"}</h2>
+                <p>{ profile.presentation || "Pas de présentation"}</p>
               </div>
             )}
             {activeTab === 'activity' && (
-              <div>
+              <div className="text-center">
+                <button
+                  type="button"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg mr-2"
+                  onClick={openModalCreateEvent}
+                >
+                  <span className="text-lg font-medium">Créer un événement</span>
+                </button>
                 {/* <div className="space-y-4">
                   {contactActivities.sports.length > 0 && (
                     <div>
@@ -224,7 +301,7 @@ const AssociationPage = () => {
                 </div> */}
               </div>
             )}
-            {activeTab === 'settings' && profile.id && (
+            {activeTab === 'settings' && profile.id === user?.id && (
               <div>
                 <div className="space-y-4">
                   <div
@@ -255,41 +332,142 @@ const AssociationPage = () => {
         </div>
       </div>
 
+      <Modal isOpen={modalCreateEventIsOpen} onClose={closeModalCreateEvent} size="w-[90%] h-[90%]">
+      <h2 className="text-xl font-semibold mb-4">Créer un événement</h2>
+       
+        <form className="space-y-4">
+        <div>
+            <label className="block text-sm font-medium">Nom de l'événement</label>
+            <input 
+              type="text" 
+              name="eventName" 
+              className="w-full border rounded-lg p-2" 
+              onChange={handleEventInputChange}
+              />
+        </div>
+        <div>
+            <label className="block text-sm font-medium">Résumé</label>
+            <textarea 
+              name="description" 
+              className="w-full border rounded-lg p-2" 
+              onChange={handleEventInputChange}
+              />
+        </div>
+        <div>
+            <label className="block text-sm font-medium">Description</label>
+            <textarea 
+              name="description" 
+              className="w-full border rounded-lg p-2" 
+              onChange={handleEventInputChange}
+              />
+        </div>
+        <div>
+            <label className="block text-sm font-medium">Lieu</label>
+        </div>
+        <div>
+            <label className="block text-sm font-medium">Intérêts</label>
+        </div>
+        <div className="flex justify-end mt-4">
+            <button
+              type="button"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg mr-2"
+              onClick={handleCreateEvent}
+            >
+              Créer
+            </button>
+            <button
+              type="button"
+              className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg"
+              onClick={closeModalCreateEvent}
+            >
+              Annuler
+            </button>
+          </div>
+        </form>
+      </Modal>
+
       <Modal isOpen={modalIsOpen} onClose={closeModal} size="w-[90%] h-[90%]">
-        <h2 className="text-xl font-semibold mb-4">Modifier mes informationss</h2>
+        <h2 className="text-xl font-semibold mb-4">Modifier mes informations</h2>
        
         <form className="space-y-4">
           <div>
-            <label className="block text-sm font-medium">Prénom</label>
-            <input type="text" className="w-full border rounded-lg p-2" defaultValue={profile.firstName} />
+              <label className="block text-sm font-medium">Nom de l'association</label>
+              <input 
+                type="text" 
+                name="nameasso" 
+                className="w-full border rounded-lg p-2" 
+                defaultValue={profile.nameasso} 
+                onChange={handleInputChange} 
+              />
           </div>
           <div>
-            <label className="block text-sm font-medium">Nom</label>
-            <input type="text" className="w-full border rounded-lg p-2" defaultValue={profile.lastName} />
+              <label className="block text-sm font-medium">Mot de passe</label>
+              <input 
+                type="password" 
+                // name="password" 
+                className="w-full border rounded-lg p-2" 
+                // onChange={handleInputChange} 
+              />
           </div>
           <div>
-            <label className="block text-sm font-medium">Mot de passe</label>
-            <input type="password" className="w-full border rounded-lg p-2" />
+              <label className="block text-sm font-medium">SIRET</label>
+              <input 
+                type="number" 
+                name="siret" 
+                className="w-full border rounded-lg p-2" 
+                defaultValue={profile.siret} 
+                onChange={handleInputChange} 
+              />
           </div>
-          <div>
-            <label className="block text-sm font-medium">Sexe</label>
-            <select className="w-full border rounded-lg p-2" defaultValue={profile.gender}>
-              <option value="male">Homme</option>
-              <option value="female">Femme</option>
-              <option value="other">Autre</option>
-            </select>
+          <div> 
+              <label className="block text-sm font-medium">Ville et code postal <span className="text-red-500">*</span></label>
+              <CitySearch 
+                formData={formData} 
+                setFormData={setFormData}
+                // errors={errors}
+              />              
+              {/* {errors.city && <p className="text-red-500">{errors.city}</p>} */}
+            </div>
+            <div> 
+              <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            
+              <input
+                type="text"
+                name="adress"
+                defaultValue={profile.adress}
+                onChange={handleInputChange}
+                className="w-full border rounded-lg p-2"
+              />
+              {/* {errors.adress && <p className="text-red-500">{errors.adress}</p>} */}
+            </div>
+            <div>
+            <label className="block text-sm font-medium">Création</label>
+            <input 
+              type="date" 
+              name="creationdate" 
+              className="w-full border rounded-lg p-2" 
+              defaultValue={profile.birthdate}
+              onChange={handleInputChange} 
+            />
           </div>
-          <div>
-            <label className="block text-sm font-medium">Âge</label>
-            <input type="number" className="w-full border rounded-lg p-2" defaultValue={profile.age} />
+          <div> 
+            <label className="block text-sm font-medium">Site web <span className="text-red-500">*</span></label>            
+            <input
+              type="text"
+              name="website"
+              defaultValue={profile.website}
+              onChange={handleInputChange}
+              className="w-full border rounded-lg p-2"
+            />
           </div>
-          <div>
-            <label className="block text-sm font-medium">Localisation</label>
-            <input type="text" className="w-full border rounded-lg p-2" defaultValue={profile.location} />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Photo de profil</label>
-            <input type="text" className="w-full border rounded-lg p-2" />
+          <div> 
+            <label className="block text-sm font-medium">Numéro de téléphone <span className="text-red-500">*</span></label>            
+            <input
+              type="text"
+              name="telephone"
+              defaultValue={profile.telephone}
+              onChange={handleInputChange}
+              className="w-full border rounded-lg p-2"
+            />
           </div>
           <div>
                 <label className="block text-sm font-medium">Intérêts</label>
@@ -299,13 +477,47 @@ const AssociationPage = () => {
                 isMulti
                 options={optionsLoisirs}
                 placeholder=""
+                value={optionsLoisirs.filter(option => formData.interests.includes(option.value))}
+                onChange={(selectedOptions) =>
+                  setFormData({
+                    ...formData,
+                    interests: selectedOptions.map(option => option.value)
+                  })
+                }
                 />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Description</label>
+            <textarea 
+              name="description" 
+              className="w-full border rounded-lg p-2" 
+              defaultValue={profile.description} 
+              onChange={handleInputChange} 
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Présentation</label>
+            <textarea 
+              name="presentation" 
+              className="w-full border rounded-lg p-2" 
+              defaultValue={profile.presentation}
+              onChange={handleInputChange} 
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Logo de l'association</label>
+            <input 
+              name="photo"
+              type="file" 
+              className="w-full border rounded-lg p-2" 
+              onChange={handleInputChange} 
+            />
           </div>
           <div className="flex justify-end mt-4">
             <button
               type="button"
               className="px-4 py-2 bg-blue-600 text-white rounded-lg mr-2"
-              onClick={closeModal}
+              onClick={handleUpdateProfile}
             >
               Enregistrer
             </button>

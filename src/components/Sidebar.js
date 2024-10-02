@@ -9,17 +9,17 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
 
-  const [profile, setProfile] = useState({
-    _id: '',
-    type: '',
-    nameasso: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    city: '',
-    logo: '',
-    photo: ''
-  });
+  // const [profile, setProfile] = useState({
+  //   _id: '',
+  //   type: '',
+  //   nameasso: '',
+  //   firstName: '',
+  //   lastName: '',
+  //   email: '',
+  //   city: '',
+  //   logo: '',
+  //   photo: ''
+  // });
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -34,24 +34,24 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     };
   }, [isOpen, toggleSidebar]);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem('authToken');
+  // useEffect(() => {
+  //   const fetchProfile = async () => {
+  //     try {
+  //       const token = localStorage.getItem('authToken');
 
-        const response = await axios.get('https://back-thumbs.vercel.app/profil/details', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
-        });
-        setProfile(response.data);
-      } catch (error) {
-        console.error('Erreur lors de la récupération du profil:', error);
-      }
-    };
+  //       const response = await axios.get('https://back-thumbs.vercel.app/profil/details', {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         }
+  //       });
+  //       setProfile(response.data);
+  //     } catch (error) {
+  //       console.error('Erreur lors de la récupération du profil:', error);
+  //     }
+  //   };
 
-    fetchProfile();
-  }, []);
+  //   fetchProfile();
+  // }, []);
 
   const handleLogout = async () => {
     try {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FaInfoCircle, FaChartBar, FaCog, FaChevronRight } from 'react-icons/fa';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../authSlice';
 import Modal from '../components/Modal';
 import Select from 'react-select';
@@ -11,14 +11,13 @@ import CitySearch from '../components/CitySearch';
 const animatedComponents = makeAnimated();
 
 const ProfilePage = () => {
-  // const { id } = useParams();
+  const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
   const [profile, setProfile] = useState({
     _id: '',
     firstName: '',
     lastName: '',
     interests: [],
     email: '',
-    location: '',
     photo: '',
     genre: '',
     birthdate: '',
@@ -47,7 +46,7 @@ const ProfilePage = () => {
         setProfile(response.data);
         setFormData(response.data);
       } catch (error) {
-        console.error('Erreur lors de la récupération du profil:', error);
+        console.error('Erreur lors de la récupération du profil user:', error);
       }
     };
     
@@ -98,7 +97,7 @@ const ProfilePage = () => {
     }
   };
 
-  const tabWidth = profile.id ? 'w-1/3' : 'w-1/2';
+  const tabWidth = profile.id === user?.id ? 'w-1/3' : 'w-1/2';
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
@@ -119,7 +118,6 @@ const ProfilePage = () => {
       });
 
       dispatch(logout());
-
 
       // window.location.href = '/login';
     } catch (error) {
@@ -182,7 +180,7 @@ const ProfilePage = () => {
               >
                 <FaChartBar className="inline-block text-xl" />
               </li>
-              {profile.id && (
+              {profile.id === user?.id && (
                 <li
                   className={`cursor-pointer text-center pb-2 w-1/3 ${activeTab === 'settings' ? 'border-b-2 border-blue-500 text-blue-600' : ''}`}
                   onClick={() => setActiveTab('settings')}
