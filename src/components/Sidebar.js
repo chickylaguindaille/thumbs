@@ -9,18 +9,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
 
-  // const [profile, setProfile] = useState({
-  //   _id: '',
-  //   type: '',
-  //   nameasso: '',
-  //   firstName: '',
-  //   lastName: '',
-  //   email: '',
-  //   city: '',
-  //   logo: '',
-  //   photo: ''
-  // });
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (isOpen && sidebarRef.current && !sidebarRef.current.contains(event.target)) {
