@@ -51,7 +51,7 @@ const EventsPage = () => {
     // console.log(interestsData);
     return eventInterests
       .map(interestId => {
-        const interest = interestsData.find(i => i.id == interestId);
+        const interest = interestsData.find(i => Number(i.id) == Number(interestId));
         return interest ? interest.nom : 'Unknown';
       })
     };
