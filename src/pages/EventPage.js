@@ -6,6 +6,7 @@ import { FaChevronLeft } from 'react-icons/fa';
 const EventPage = () => {
   const [event, setEvent] = useState(null);
   const [error, setError] = useState(null);
+  const [isParticipant, setIsParticipant] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
   const [interestsData, setInterestsData] = useState([]);
@@ -19,12 +20,12 @@ const EventPage = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setInterestsData(response.data.interests); // Sauvegarde les intérêts récupérés
+        setInterestsData(response.data.interests);
       } catch (error) {
         console.error('Erreur lors de la récupération des centres d\'intérêts:', error);
       }
     };
-  
+
     fetchInterests();
   }, []);
 
@@ -32,15 +33,16 @@ const EventPage = () => {
     const fetchEvent = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        
         const response = await axios.get(`https://back-thumbs.vercel.app/event/getEvent/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        
+
         setEvent(response.data.event);
         console.log(response.data);
+        // Vous pouvez vérifier ici si l'utilisateur participe déjà à l'événement
+        setIsParticipant(response.data.event.isUserParticipant); // Exemple: flag venant de l'API
       } catch (error) {
         console.error('Erreur lors de la récupération des événements:', error);
         setError('Erreur lors de la récupération des événements');
@@ -50,7 +52,21 @@ const EventPage = () => {
     fetchEvent();
   }, [id]);
 
-  // Mapping des intérêts IDs vers leurs noms, avec vérification que event et event.interests existent
+  const toggleParticipation = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      await axios.post(`https://back-thumbs.vercel.app/event/${id}/toggle-participant`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setIsParticipant((prev) => !prev); // On inverse l'état après la requête
+    } catch (error) {
+      console.error('Erreur lors de la participation:', error);
+      setError('Erreur lors de la participation');
+    }
+  };
+
   const eventInterestNames = event && event.interests
     ? event.interests
       .map(interestId => {
@@ -60,7 +76,6 @@ const EventPage = () => {
       .join(', ')
     : '';
 
-  // Si l'événement est en cours de chargement ou n'a pas encore été récupéré
   if (!event && !error) {
     return (
       <div className="pt-[56px]">
@@ -69,7 +84,6 @@ const EventPage = () => {
     );
   }
 
-  // Si une erreur s'est produite lors de la récupération de l'événement
   if (error) {
     return (
       <div className="pt-[56px]">
@@ -88,35 +102,36 @@ const EventPage = () => {
           <FaChevronLeft size={24} className="text-white"/>
         </button>
 
-        {/* Bannière */}
         <div className="relative">
           <img
             src={event.photo}
             alt={event.eventName}
             className="w-full max-h-[200px] object-cover md:max-h-[300px] lg:max-h-[350px]"
-            />
+          />
         </div>
       </div>
+
       <div className="px-4 my-4">
         <div className="flex justify-between">
           <p className="text-gray-600 text-gray-500 font-bold">
             {eventInterestNames}
           </p>          
           <div className="flex items-center space-x-1 text-blue-600">
-            {/* <FaMapMarkerAlt className="text-blue-600" /> */}
             <span className="text-sm">{event.city}</span>
           </div>
         </div>
           
         <h1 className="text-2xl font-bold">{event.eventName}</h1>
-
-        {/* <p className="text-sm text-gray-500 mb-2">
-          Date: {formattedDate}
-        </p> */}
-
         <p className="text-gray-600 mb-2 text-gray-500">{event.subdescription}</p>
-
         <p>{event.description}</p>
+
+        {/* Bouton de participation */}
+        <button
+          onClick={toggleParticipation}
+          className={`mt-4 py-2 px-4 rounded ${isParticipant ? 'bg-red-500' : 'bg-green-500'} text-white`}
+        >
+          {isParticipant ? 'Se retirer' : 'Participe'}
+        </button>
       </div>
     </div>
   );
