@@ -67,13 +67,13 @@ const AssociationForm = ({ onBack, onNext }) => {
     }
   };
 
-  const handleSelectChange = (selectedOptions) => {
-    setFormData({
-      ...formData,
-      interests: selectedOptions
-    });
-    console.log(selectedOptions);
-  };
+  // const handleSelectChange = (selectedOptions) => {
+  //   setFormData({
+  //     ...formData,
+  //     interests: selectedOptions
+  //   });
+  //   console.log(selectedOptions);
+  // };
 
   const validateStep = () => {
     const newErrors = {};

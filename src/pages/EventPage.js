@@ -70,7 +70,8 @@ const EventPage = () => {
   const eventInterestNames = event && event.interests
     ? event.interests
       .map(interestId => {
-        const interest = interestsData.find(i => i.id == interestId);
+        console.log(interestId);
+        const interest = interestsData.find(i => Number(i.id) == interestId);
         return interest ? `${interest.nom}` : 'Unknown';
       })
       .join(', ')
