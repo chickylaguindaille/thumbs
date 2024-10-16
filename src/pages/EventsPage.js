@@ -5,6 +5,25 @@ import EventCard from '../components/EventCard';
 const EventsPage = () => {
   const [events, setEvents] = useState([]);
   const [error, setError] = useState(null);
+  const [interestsData, setInterestsData] = useState([]);
+
+  useEffect(() => {
+    const fetchInterests = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        const response = await axios.get('https://back-thumbs.vercel.app/profil/interests', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setInterestsData(response.data.interests); // Sauvegarde les intérêts récupérés
+      } catch (error) {
+        console.error('Erreur lors de la récupération des centres d\'intérêts:', error);
+      }
+    };
+  
+    fetchInterests();
+  }, []);
 
   useEffect(() => {
     const fetchAllEvents = async () => {
@@ -28,6 +47,15 @@ const EventsPage = () => {
     fetchAllEvents();
   }, []);
 
+  const getEventInterestNames = (eventInterests) => {
+    console.log(interestsData);
+    return eventInterests
+      .map(interestId => {
+        const interest = interestsData.find(i => i.id == interestId);
+        return interest ? interest.nom : 'Unknown';
+      })
+    };
+
   return (
     <div className="pt-[56px]">
       <div className="px-8 space-y-6 py-8">
@@ -40,7 +68,7 @@ const EventsPage = () => {
               photo={event.photo}
               eventName={event.eventName}
               subdescription={event.subdescription}
-              interests={event.interests}
+              interests={getEventInterestNames(event.interests)}
               city={event.city}
             />
           ))

@@ -124,7 +124,7 @@ const UserForm = ({ onBack, onNext }) => {
     formDataToSend.append('email', formData.email);
     formDataToSend.append('password', formData.password);
     formDataToSend.append('confirmPassword', formData.confirmPassword);
-    formDataToSend.append('interests', JSON.stringify(formData.interests));
+    formDataToSend.append('interests', formData.interests);
     formDataToSend.append('acceptTerms', formData.acceptTerms);
     formDataToSend.append('description', formData.description);
     formDataToSend.append('presentation', formData.presentation);

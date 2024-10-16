@@ -42,7 +42,7 @@ const AssociationPage = () => {
         });
         setProfile(response.data);
         setFormData(response.data);
-        console.log(response.data);
+        // console.log(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération du profil asso:', error);
       }
@@ -61,7 +61,6 @@ const AssociationPage = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        // console.log(response.data);
         const options = response.data.interests.map((interest) => ({
           value: interest.id.toString(),
           label: `${interest.nom} (${interest.thematique})`
@@ -130,8 +129,11 @@ const AssociationPage = () => {
       eventData.append('organisator', user._id);
       eventData.append('eventName', formDataInputs.eventName);
       eventData.append('description', formDataInputs.description);
-      eventData.append('location', formDataInputs.location);
+      // eventData.append('location', formDataInputs.location);
       eventData.append('interests', formDataInputs.interests);
+      eventData.append('address', formDataInputs.address);
+      eventData.append('photo', formDataInputs.photo);
+
 
       console.log(eventData);
 
@@ -139,6 +141,7 @@ const AssociationPage = () => {
       const token = localStorage.getItem('authToken');
       const response = await axios.post('https://back-thumbs.vercel.app/event/create-event', eventData, {
         headers: {
+          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
         }
       });
@@ -153,14 +156,26 @@ const AssociationPage = () => {
   const [formDataInputs, setFormDataInputs] = useState({
     eventName: '',
     description: '',
-    location: '',
-    interests: ''
+    // location: '',
+    interests: '',
+    address: '',
+    photo: null
   });
-  
-  // Function to handle input changes in the event creation form
+
 const handleEventInputChange = (e) => {
-  const { name, value } = e.target;
-  setFormDataInputs({ ...formDataInputs, [name]: value });
+  const { name, value, type, checked } = e.target;
+  if (type === 'file') {
+    const file = e.target.files[0];
+    setFormDataInputs({
+      ...formDataInputs,
+      photo: file
+    });
+  } else {
+    setFormDataInputs({
+      ...formDataInputs,
+      [name]: type === 'checkbox' ? checked : value
+    });
+  }
 };
 
   const tabWidth = profile.id === user?.id ? 'w-1/3' : 'w-1/2';
@@ -297,67 +312,76 @@ const handleEventInputChange = (e) => {
             </div>
             )}
             {activeTab === 'activity' && (
-              <div className="text-center">
-                <button
-                  type="button"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg mr-2"
-                  onClick={openModalCreateEvent}
-                >
-                  <span className="text-lg font-medium">Créer un événement</span>
-                </button>
-                {/* <div className="space-y-4">
-                  {contactActivities.sports.length > 0 && (
-                    <div>
-                      <h3 className="text-lg font-semibold">Sports</h3>
-                      <div className="flex flex-col space-y-2">
-                        {contactActivities.sports.map(activity => (
-                          <div key={activity.id} className="flex items-center border p-2 rounded-lg shadow-sm">
+              <div>
+                <div className="text-center">
+                  <button
+                    type="button"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg mr-2 mb-4"
+                    onClick={openModalCreateEvent}
+                  >
+                    <span className="text-lg font-medium">Créer un événement</span>
+                  </button>
+                </div>
+
+                {/* Mes événements */}
+                <h2 className="text-xl font-semibold mt-4 mb-2">Mes événements</h2>
+                <div className="space-y-4">
+                  <div className="flex flex-col space-y-2">
+                    {optionsLoisirs.filter((loisir) => 
+                      profile.interests.some((interest) => interest === loisir.value)
+                    ).length > 0 ? (
+                      optionsLoisirs
+                        .filter((loisir) => profile.interests.some((interest) => interest === loisir.value))
+                        .map((loisir) => (
+                          <div key={loisir.value} className="flex items-center border p-2 rounded-lg shadow-sm">
                             <img
-                              src={activity.image}
-                              alt={activity.name}
+                              src={loisir.image}
+                              alt={loisir.label}
                               className="w-12 h-12 object-cover rounded-lg mr-4"
                             />
-                            <span className="text-lg font-medium">{activity.name}</span>
+                            <span className="text-lg font-medium">
+                              {loisir.label}
+                            </span>
                           </div>
-                        ))}
+                        ))
+                    ) : (
+                      <div className="">
+                        Pas d'événement créé
                       </div>
-                    </div>
-                  )}
-                  {contactActivities.arts.length > 0 && (
-                    <div>
-                      <h3 className="text-lg font-semibold">Arts</h3>
-                      <div className="flex flex-col space-y-2">
-                        {contactActivities.arts.map(activity => (
-                          <div key={activity.id} className="flex items-center border p-2 rounded-lg shadow-sm">
+                    )}
+                  </div>
+                </div>
+
+                {/* Les événements auxquels je participe*/}
+                <h2 className="text-xl font-semibold mt-4 mb-2">Événements auxquels je participe</h2>
+                <div className="space-y-4">
+                  <div className="flex flex-col space-y-2">
+                    {optionsLoisirs.filter((loisir) => 
+                      profile.interests.some((interest) => interest === loisir.value)
+                    ).length > 0 ? (
+                      optionsLoisirs
+                        .filter((loisir) => profile.interests.some((interest) => interest === loisir.value))
+                        .map((loisir) => (
+                          <div key={loisir.value} className="flex items-center border p-2 rounded-lg shadow-sm">
                             <img
-                              src={activity.image}
-                              alt={activity.name}
+                              src={loisir.image}
+                              alt={loisir.label}
                               className="w-12 h-12 object-cover rounded-lg mr-4"
                             />
-                            <span className="text-lg font-medium">{activity.name}</span>
+                            <span className="text-lg font-medium">
+                              {loisir.label}
+                            </span>
                           </div>
-                        ))}
+                        ))
+                    ) : (
+                      <div className="">
+                        Pas d'événement créé
                       </div>
-                    </div>
-                  )}
-                  {contactActivities.loisirs.length > 0 && (
-                    <div>
-                      <h3 className="text-lg font-semibold">Loisirs</h3>
-                      <div className="flex flex-col space-y-2">
-                        {contactActivities.loisirs.map(activity => (
-                          <div key={activity.id} className="flex items-center border p-2 rounded-lg shadow-sm">
-                            <img
-                              src={activity.image}
-                              alt={activity.name}
-                              className="w-12 h-12 object-cover rounded-lg mr-4"
-                            />
-                            <span className="text-lg font-medium">{activity.name}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div> */}
+                    )}
+                  </div>
+                </div>
+
+
               </div>
             )}
             {activeTab === 'settings' && profile.id === user?.id && (
@@ -405,14 +429,6 @@ const handleEventInputChange = (e) => {
               />
         </div>
         <div>
-            <label className="block text-sm font-medium">Résumé</label>
-            <textarea 
-              name="description" 
-              className="w-full border rounded-lg p-2" 
-              onChange={handleEventInputChange}
-              />
-        </div>
-        <div>
             <label className="block text-sm font-medium">Description</label>
             <textarea 
               name="description" 
@@ -420,12 +436,49 @@ const handleEventInputChange = (e) => {
               onChange={handleEventInputChange}
               />
         </div>
+        {/* <div>
+            <label className="block text-sm font-medium">Description</label>
+            <textarea 
+              name="description" 
+              className="w-full border rounded-lg p-2" 
+              onChange={handleEventInputChange}
+              />
+        </div> */}
         <div>
-            <label className="block text-sm font-medium">Lieu</label>
+            <label className="block text-sm font-medium">Adresse</label>
+            <input
+                type="text"
+                name="address"
+                onChange={handleEventInputChange}
+                className="w-full border rounded-lg p-2"
+              />
         </div>
         <div>
             <label className="block text-sm font-medium">Intérêts</label>
+            <Select
+              closeMenuOnSelect={false}
+              components={animatedComponents}
+              isMulti
+              options={optionsLoisirs}
+              placeholder=""
+              onChange={(selectedOptions) =>
+                setFormDataInputs({
+                  ...formDataInputs,
+                  interests: selectedOptions.map(option => option.value)
+                })
+              }
+              />
         </div>
+        <div>
+            <label className="block text-sm font-medium">Photo</label>
+            <input 
+              type="file"
+              name="photo"
+              accept="image/*"              
+              className="w-full border rounded-lg p-2" 
+              onChange={handleEventInputChange} 
+            />
+          </div>
         <div className="flex justify-end mt-4">
             <button
               type="button"
@@ -521,7 +574,7 @@ const handleEventInputChange = (e) => {
           <div> 
             <label className="block text-sm font-medium">Numéro de téléphone <span className="text-red-500">*</span></label>            
             <input
-              type="text"
+              type="tel"
               name="telephone"
               defaultValue={profile.telephone}
               onChange={handleInputChange}

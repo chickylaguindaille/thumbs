@@ -125,7 +125,7 @@ const AssociationForm = ({ onBack, onNext }) => {
     formDataToSend.append('website', formData.website);
     formDataToSend.append('telephone', formData.telephone);
     formDataToSend.append('creationdate', formData.creationdate);
-    formDataToSend.append('interests', formData.interests);
+    formDataToSend.append('interests', JSON.stringify(formData.interests));
     formDataToSend.append('description', formData.description);
     formDataToSend.append('presentation', formData.presentation);
 
@@ -293,7 +293,7 @@ const AssociationForm = ({ onBack, onNext }) => {
         <div>
           <label className="block text-sm font-medium">Numéro de téléphone <span className="text-red-500">*</span></label>
           <input
-            type="text"
+            type="tel"
             name="telephone"
             value={formData.phone}
             // placeholder="Numéro de téléphone"
@@ -343,10 +343,18 @@ const AssociationForm = ({ onBack, onNext }) => {
           <div>
             <label className="block text-sm font-medium">Intérêts</label>
             <Select
+              closeMenuOnSelect={false}
               components={animatedComponents}
               isMulti
               options={optionsLoisirs}
-              onChange={handleSelectChange}
+              placeholder=""
+              onChange={(selectedOptions) =>
+                setFormData({
+                  ...formData,
+                  interests: selectedOptions.map(option => option.value)
+                })
+              // onChange={handleSelectChange}
+              }
             />
           </div>
         <div>

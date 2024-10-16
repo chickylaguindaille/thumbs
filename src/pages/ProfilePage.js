@@ -63,7 +63,6 @@ const ProfilePage = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        // console.log(response.data);
         const options = response.data.interests.map((interest) => ({
           value: interest.id.toString(),
           label: `${interest.nom} (${interest.thematique})`
@@ -260,59 +259,34 @@ const ProfilePage = () => {
             )}
             {activeTab === 'activity' && (
               <div>
-                {/* <div className="space-y-4">
-                  {contactActivities.sports.length > 0 && (
-                    <div>
-                      <h3 className="text-lg font-semibold">Sports</h3>
-                      <div className="flex flex-col space-y-2">
-                        {contactActivities.sports.map(activity => (
-                          <div key={activity.id} className="flex items-center border p-2 rounded-lg shadow-sm">
+                {/* Les événements auxquels je participe*/}
+                <h2 className="text-xl font-semibold mt-4 mb-2">Événements auxquels je participe</h2>
+                <div className="space-y-4">
+                  <div className="flex flex-col space-y-2">
+                    {optionsLoisirs.filter((loisir) => 
+                      profile.interests.some((interest) => interest === loisir.value)
+                    ).length > 0 ? (
+                      optionsLoisirs
+                        .filter((loisir) => profile.interests.some((interest) => interest === loisir.value))
+                        .map((loisir) => (
+                          <div key={loisir.value} className="flex items-center border p-2 rounded-lg shadow-sm">
                             <img
-                              src={activity.image}
-                              alt={activity.name}
+                              src={loisir.image}
+                              alt={loisir.label}
                               className="w-12 h-12 object-cover rounded-lg mr-4"
                             />
-                            <span className="text-lg font-medium">{activity.name}</span>
+                            <span className="text-lg font-medium">
+                              {loisir.label}
+                            </span>
                           </div>
-                        ))}
+                        ))
+                    ) : (
+                      <div className="">
+                        Pas d'événement créé
                       </div>
-                    </div>
-                  )}
-                  {contactActivities.arts.length > 0 && (
-                    <div>
-                      <h3 className="text-lg font-semibold">Arts</h3>
-                      <div className="flex flex-col space-y-2">
-                        {contactActivities.arts.map(activity => (
-                          <div key={activity.id} className="flex items-center border p-2 rounded-lg shadow-sm">
-                            <img
-                              src={activity.image}
-                              alt={activity.name}
-                              className="w-12 h-12 object-cover rounded-lg mr-4"
-                            />
-                            <span className="text-lg font-medium">{activity.name}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {contactActivities.loisirs.length > 0 && (
-                    <div>
-                      <h3 className="text-lg font-semibold">Loisirs</h3>
-                      <div className="flex flex-col space-y-2">
-                        {contactActivities.loisirs.map(activity => (
-                          <div key={activity.id} className="flex items-center border p-2 rounded-lg shadow-sm">
-                            <img
-                              src={activity.image}
-                              alt={activity.name}
-                              className="w-12 h-12 object-cover rounded-lg mr-4"
-                            />
-                            <span className="text-lg font-medium">{activity.name}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div> */}
+                    )}
+                  </div>
+                </div>
               </div>
             )}
             {activeTab === 'settings' && profile.id && (
