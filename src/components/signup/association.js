@@ -19,7 +19,7 @@ const AssociationForm = ({ onBack, onNext }) => {
     acceptTerms: false,
     city: '',
     postalcode: '',
-    adress: '',
+    address: '',
     website: '',
     telephone: '',
     creationdate: '',
@@ -93,7 +93,7 @@ const AssociationForm = ({ onBack, onNext }) => {
     if (step === 2) {
       if (!formData.logo) newErrors.logo = "Un logo est obligatoire";
       if (!formData.city) newErrors.city = "La ville est obligatoire";
-      if (!formData.adress) newErrors.adress = "L'adresse est obligatoire";
+      if (!formData.address) newErrors.address = "L'adresse est obligatoire";
       if (!formData.telephone) newErrors.telephone = "Le numéro de téléphone est obligatoire";
     }
 
@@ -121,7 +121,7 @@ const AssociationForm = ({ onBack, onNext }) => {
     formDataToSend.append('acceptTerms', formData.acceptTerms);
     formDataToSend.append('city', formData.city);
     formDataToSend.append('postalcode', formData.postalcode);
-    formDataToSend.append('adress', formData.adress);
+    formDataToSend.append('address', formData.address);
     formDataToSend.append('website', formData.website);
     formDataToSend.append('telephone', formData.telephone);
     formDataToSend.append('creationdate', formData.creationdate);
@@ -272,12 +272,12 @@ const AssociationForm = ({ onBack, onNext }) => {
               <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            
               <input
                 type="text"
-                name="adress"
-                value={formData.adress}
+                name="address"
+                value={formData.address}
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
               />
-              {errors.adress && <p className="text-red-500">{errors.adress}</p>}
+              {errors.address && <p className="text-red-500">{errors.address}</p>}
             </div>
         <div>
           <label className="block text-sm font-medium">Site web</label>

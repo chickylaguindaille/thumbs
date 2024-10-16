@@ -17,8 +17,8 @@ const ProfilePage = () => {
     firstName: '',
     lastName: '',
     interests: [],
-    email: '',
-    photo: '',
+    // email: '',
+    photo: null,
     genre: '',
     birthdate: '',
     description: '',
@@ -32,6 +32,7 @@ const ProfilePage = () => {
   const [deleteAccountModalIsOpen, setDeleteAccountModalIsOpen] = useState(false);
   const dispatch = useDispatch();
 
+  // Récupère les infos du profil
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -62,12 +63,13 @@ const ProfilePage = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log(response.data);
+        // console.log(response.data);
         const options = response.data.interests.map((interest) => ({
           value: interest.id.toString(),
           label: `${interest.nom} (${interest.thematique})`
         }));
         setOptionsLoisirs(options);
+        console.log(options);
       } catch (error) {
         console.error('Erreur lors de la récupération des centres d\'intérêts:', error);
       }
@@ -77,15 +79,42 @@ const ProfilePage = () => {
   }, []);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, value, type, checked } = e.target;
+    if (type === 'file') {
+      const file = e.target.files[0];
+      setFormData({
+        ...formData,
+        photo: file
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: type === 'checkbox' ? checked : value
+      });
+    }
   };
 
-  const handleUpdateProfile = async () => {
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+
+    const formDataToSend = new FormData();
+    formDataToSend.append('firstName', formData.firstName);
+    formDataToSend.append('lastName', formData.lastName);
+    formDataToSend.append('interests', formData.interests);
+    formDataToSend.append('photo', formData.photo);
+    formDataToSend.append('genre', formData.genre);
+    formDataToSend.append('birthdate', formData.birthdate);
+    formDataToSend.append('description', formData.description);
+    formDataToSend.append('presentation', formData.presentation);
+
+
     try {
+      console.log(formData);
       const token = localStorage.getItem('authToken');
-      const response = await axios.post('https://back-thumbs.vercel.app/profil/profilupdate', formData, {
+      const response = await axios.post('https://back-thumbs.vercel.app/profil/profilupdate', formDataToSend, {
         headers: {
+          // 'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
         }
       });
@@ -194,9 +223,40 @@ const ProfilePage = () => {
           <div className="mt-4">
             {activeTab === 'info' && (
               <div>
-                <h2 className="text-xl font-semibold">Informations sur {profile.firstName || "John"} {profile.lastName || "Doe"}</h2>
-                <p>{ profile.presentation || "Pas de présentation"}</p>
+                <div>
+                  <h2 className="text-xl font-semibold">Informations sur {profile.firstName || "John"} {profile.lastName || "Doe"}</h2>
+                  <p>{ profile.presentation || "Pas de présentation"}</p>
+                </div>
+
+                <h2 className="text-xl font-semibold mt-4">Intérêts</h2>
+                <div className="space-y-4">
+                  <div className="flex flex-col space-y-2">
+                    {optionsLoisirs.filter((loisir) => 
+                      profile.interests.some((interest) => interest === loisir.value)
+                    ).length > 0 ? (
+                      optionsLoisirs
+                        .filter((loisir) => profile.interests.some((interest) => interest === loisir.value))
+                        .map((loisir) => (
+                          <div key={loisir.value} className="flex items-center border p-2 rounded-lg shadow-sm">
+                            <img
+                              src={loisir.image}
+                              alt={loisir.label}
+                              className="w-12 h-12 object-cover rounded-lg mr-4"
+                            />
+                            <span className="text-lg font-medium">
+                              {loisir.label}
+                            </span>
+                          </div>
+                        ))
+                    ) : (
+                      <div className="">
+                        Pas d'intérêts sélectionnés
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
+
             )}
             {activeTab === 'activity' && (
               <div>
@@ -355,12 +415,12 @@ const ProfilePage = () => {
               <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            
               <input
                 type="text"
-                name="adress"
-                defaultValue={profile.adress}
+                name="address"
+                defaultValue={profile.address}
                 onChange={handleInputChange}
                 className="w-full border rounded-lg p-2"
               />
-              {/* {errors.adress && <p className="text-red-500">{errors.adress}</p>} */}
+              {/* {errors.address && <p className="text-red-500">{errors.address}</p>} */}
             </div>
           <div>
                 <label className="block text-sm font-medium">Intérêts</label>
@@ -402,6 +462,7 @@ const ProfilePage = () => {
             <input 
               name="photo"
               type="file" 
+              accept="image/*"
               className="w-full border rounded-lg p-2" 
               onChange={handleInputChange} 
             />

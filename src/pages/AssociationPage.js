@@ -13,10 +13,10 @@ const animatedComponents = makeAnimated();
 const AssociationPage = () => {
   const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
   const [profile, setProfile] = useState({
-    _id: '',
+    type: "user",
+    logo: null,    
     nameasso: '',
     interests: [],
-    email: '',
     creation: '',
     description: '',
     presentation: ''
@@ -41,7 +41,8 @@ const AssociationPage = () => {
           }
         });
         setProfile(response.data);
-        // console.log(response.data);
+        setFormData(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération du profil asso:', error);
       }
@@ -75,15 +76,43 @@ const AssociationPage = () => {
   }, []);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, value, type, checked } = e.target;
+    if (type === 'file') {
+      const file = e.target.files[0];
+      setFormData({
+        ...formData,
+        logo: file
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: type === 'checkbox' ? checked : value
+      });
+    }
   };
 
-  const handleUpdateProfile = async () => {
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+
+    const formDataToSend = new FormData();
+    formDataToSend.append('type', formData.type);
+    formDataToSend.append('nameasso', formData.nameasso);
+    formDataToSend.append('interests', formData.interests);
+    formDataToSend.append('creation', formData.creation);
+    formDataToSend.append('description', formData.description);
+    formDataToSend.append('presentation', formData.presentation);
+    formDataToSend.append('logo', formData.logo);
+
+    // console.log(formDataToSend);
+
+
     try {
+      console.log(formData);
+      console.log(formDataToSend);
       const token = localStorage.getItem('authToken');
       const response = await axios.put('https://back-thumbs.vercel.app/asso/update-asso', formData, {
         headers: {
+          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
         }
       });
@@ -171,7 +200,7 @@ const handleEventInputChange = (e) => {
     try {
       await axios.post('https://back-thumbs.vercel.app/auth/delete-account', {}, {
         headers: {
-          // Ajoute les en-têtes nécessaires si besoin
+
         }
       });
       window.location.href = '/login'; // Redirection vers la page de connexion après suppression de compte
@@ -232,10 +261,40 @@ const handleEventInputChange = (e) => {
 
           <div className="mt-4">
             {activeTab === 'info' && (
+             <div> 
               <div>
                 <h2 className="text-xl font-semibold">Informations sur {profile.nameasso || "asso"}</h2>
                 <p>{ profile.presentation || "Pas de présentation"}</p>
               </div>
+
+                <h2 className="text-xl font-semibold mt-4">Intérêts</h2>
+                <div className="space-y-4">
+                  <div className="flex flex-col space-y-2">
+                    {optionsLoisirs.filter((loisir) => 
+                      profile.interests.some((interest) => interest === loisir.value)
+                    ).length > 0 ? (
+                      optionsLoisirs
+                        .filter((loisir) => profile.interests.some((interest) => interest === loisir.value))
+                        .map((loisir) => (
+                          <div key={loisir.value} className="flex items-center border p-2 rounded-lg shadow-sm">
+                            <img
+                              src={loisir.image}
+                              alt={loisir.label}
+                              className="w-12 h-12 object-cover rounded-lg mr-4"
+                            />
+                            <span className="text-lg font-medium">
+                              {loisir.label}
+                            </span>
+                          </div>
+                        ))
+                    ) : (
+                      <div className="">
+                        Pas d'intérêts sélectionnés
+                      </div>
+                    )}
+                  </div>
+                </div>
+            </div>
             )}
             {activeTab === 'activity' && (
               <div className="text-center">
@@ -432,12 +491,12 @@ const handleEventInputChange = (e) => {
               <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            
               <input
                 type="text"
-                name="adress"
-                defaultValue={profile.adress}
+                name="address"
+                defaultValue={profile.address}
                 onChange={handleInputChange}
                 className="w-full border rounded-lg p-2"
               />
-              {/* {errors.adress && <p className="text-red-500">{errors.adress}</p>} */}
+              {/* {errors.address && <p className="text-red-500">{errors.address}</p>} */}
             </div>
             <div>
             <label className="block text-sm font-medium">Création</label>
@@ -470,21 +529,21 @@ const handleEventInputChange = (e) => {
             />
           </div>
           <div>
-                <label className="block text-sm font-medium">Intérêts</label>
-                <Select
-                closeMenuOnSelect={false}
-                components={animatedComponents}
-                isMulti
-                options={optionsLoisirs}
-                placeholder=""
-                value={optionsLoisirs.filter(option => formData.interests.includes(option.value))}
-                onChange={(selectedOptions) =>
-                  setFormData({
-                    ...formData,
-                    interests: selectedOptions.map(option => option.value)
-                  })
-                }
-                />
+              <label className="block text-sm font-medium">Intérêts</label>
+              <Select
+              closeMenuOnSelect={false}
+              components={animatedComponents}
+              isMulti
+              options={optionsLoisirs}
+              placeholder=""
+              value={optionsLoisirs.filter(option => formData.interests.includes(option.value))}
+              onChange={(selectedOptions) =>
+                setFormData({
+                  ...formData,
+                  interests: selectedOptions.map(option => option.value)
+                })
+              }
+              />
           </div>
           <div>
             <label className="block text-sm font-medium">Description</label>
@@ -507,8 +566,9 @@ const handleEventInputChange = (e) => {
           <div>
             <label className="block text-sm font-medium">Logo de l'association</label>
             <input 
-              name="photo"
-              type="file" 
+              type="file"
+              name="logo"
+              accept="image/*"              
               className="w-full border rounded-lg p-2" 
               onChange={handleInputChange} 
             />

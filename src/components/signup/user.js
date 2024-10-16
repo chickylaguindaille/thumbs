@@ -8,7 +8,7 @@ import CitySearch from '../CitySearch';
 const animatedComponents = makeAnimated();
 
 const UserForm = ({ onBack, onNext }) => {
-  const [step, setStep] = useState(1); // Étape initiale
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     type: "user",
     photo: null,
@@ -16,7 +16,7 @@ const UserForm = ({ onBack, onNext }) => {
     birthdate: '',
     city: '',
     postalcode: '',
-    adress: '',
+    address: '',
     firstName: '',
     lastName: '',
     email: '',
@@ -76,7 +76,7 @@ const UserForm = ({ onBack, onNext }) => {
     if (!formData.genre) newErrors.genre = 'Le sexe est obligatoire';
     if (!formData.birthdate) newErrors.birthdate = 'L\'âge est obligatoire';
     if (!formData.city) newErrors.city = 'La ville est obligatoire';
-    if (!formData.adress) newErrors.adress = 'L\'adresse est obligatoire';
+    if (!formData.address) newErrors.address = 'L\'addresse est obligatoire';
     
     if (step === 2 && !formData.acceptTerms) {
       if (!formData.description) newErrors.description = 'La description est obligatoire';
@@ -118,7 +118,7 @@ const UserForm = ({ onBack, onNext }) => {
     formDataToSend.append('birthdate', formData.birthdate);
     formDataToSend.append('city', formData.city);
     formDataToSend.append('postalcode', formData.postalcode);
-    formDataToSend.append('adress', formData.adress);
+    formDataToSend.append('address', formData.address);
     formDataToSend.append('firstName', formData.firstName);
     formDataToSend.append('lastName', formData.lastName);
     formDataToSend.append('email', formData.email);
@@ -164,14 +164,6 @@ const UserForm = ({ onBack, onNext }) => {
             {/* Étape 1 */}
             <div>
               <label className="block text-sm font-medium">Photo de profil <span className="text-red-500">*</span></label>
-              {/* <input
-                type="file"
-                name="photo"
-                value={formData.photo}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2"
-              /> */}
-
               <input
                 type="file"
                 name="photo"
@@ -273,15 +265,15 @@ const UserForm = ({ onBack, onNext }) => {
               {errors.city && <p className="text-red-500">{errors.city}</p>}
             </div>
             <div> 
-              <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            
+              <label className="block text-sm font-medium">addresse <span className="text-red-500">*</span></label>            
               <input
                 type="text"
-                name="adress"
-                value={formData.adress}
+                name="address"
+                value={formData.address}
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2"
               />
-              {errors.adress && <p className="text-red-500">{errors.adress}</p>}
+              {errors.address && <p className="text-red-500">{errors.address}</p>}
             </div>
           </div>
           <div className="flex justify-between mt-4">
