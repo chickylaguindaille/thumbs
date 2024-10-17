@@ -16,6 +16,7 @@ const AssociationPage = () => {
     type: "user",
     logo: null,    
     nameasso: '',
+    password: '',
     interests: [],
     creation: '',
     description: '',
@@ -96,6 +97,7 @@ const AssociationPage = () => {
     const formDataToSend = new FormData();
     formDataToSend.append('type', formData.type);
     formDataToSend.append('nameasso', formData.nameasso);
+    formDataToSend.append('password', formData.password);
     formDataToSend.append('interests', formData.interests);
     formDataToSend.append('creation', formData.creation);
     formDataToSend.append('description', formData.description);
@@ -528,9 +530,9 @@ const handleEventInputChange = (e) => {
               <label className="block text-sm font-medium">Mot de passe</label>
               <input 
                 type="password" 
-                // name="password" 
+                name="password" 
                 className="w-full border rounded-lg p-2" 
-                // onChange={handleInputChange} 
+                onChange={handleInputChange} 
               />
           </div>
           <div>

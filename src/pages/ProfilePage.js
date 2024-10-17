@@ -16,6 +16,7 @@ const ProfilePage = () => {
     _id: '',
     firstName: '',
     lastName: '',
+    password: '',
     interests: [],
     // email: '',
     photo: null,
@@ -100,6 +101,7 @@ const ProfilePage = () => {
     const formDataToSend = new FormData();
     formDataToSend.append('firstName', formData.firstName);
     formDataToSend.append('lastName', formData.lastName);
+    formDataToSend.append('password', formData.password);
     formDataToSend.append('interests', formData.interests);
     formDataToSend.append('photo', formData.photo);
     formDataToSend.append('genre', formData.genre);
@@ -348,9 +350,9 @@ const ProfilePage = () => {
             <label className="block text-sm font-medium">Mot de passe</label>
             <input 
               type="password" 
+              name="password" 
               className="w-full border rounded-lg p-2" 
-              // name="password"
-              // onChange={handleInputChange}
+              onChange={handleInputChange}
             />
           </div>
           <div>
@@ -381,9 +383,7 @@ const ProfilePage = () => {
               <CitySearch 
                 formData={formData} 
                 setFormData={setFormData}
-                // errors={errors}
               />              
-              {/* {errors.city && <p className="text-red-500">{errors.city}</p>} */}
             </div>
             <div> 
               <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            
@@ -394,7 +394,6 @@ const ProfilePage = () => {
                 onChange={handleInputChange}
                 className="w-full border rounded-lg p-2"
               />
-              {/* {errors.address && <p className="text-red-500">{errors.address}</p>} */}
             </div>
           <div>
                 <label className="block text-sm font-medium">Intérêts</label>
