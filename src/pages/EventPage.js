@@ -25,6 +25,7 @@ const EventPage = () => {
   const navigate = useNavigate();
   const [interestsData, setInterestsData] = useState([]);
 
+  // Récupération des interests
   useEffect(() => {
     const fetchInterests = async () => {
       try {
@@ -48,6 +49,7 @@ const EventPage = () => {
     fetchInterests();
   }, []);
 
+  // Récupération des infos de l'event
   useEffect(() => {
     const fetchEvent = async () => {
       try {
@@ -59,9 +61,11 @@ const EventPage = () => {
         });
 
         setEvent(response.data.event);
-        console.log(response.data);
-        // Vous pouvez vérifier ici si l'utilisateur participe déjà à l'événement
-        setIsParticipant(response.data.event.isUserParticipant); // Exemple: flag venant de l'API
+
+        const userId = user._id;
+        const isUserParticipant = response.data.event.participants.some(participantId => participantId === userId);
+        setIsParticipant(isUserParticipant);
+
       } catch (error) {
         console.error('Erreur lors de la récupération des événements:', error);
         setError('Erreur lors de la récupération des événements');
@@ -71,6 +75,7 @@ const EventPage = () => {
     fetchEvent();
   }, [id]);
 
+  // Mettre participe ou non
   const toggleParticipation = async () => {
     try {
       const token = localStorage.getItem('authToken');
@@ -86,6 +91,7 @@ const EventPage = () => {
     }
   };
 
+  // Modal Update Event
   const openModalModifyEvent = () => setModalModifyEventIsOpen(true);
   const closeModalModifyEvent = () => setModalModifyEventIsOpen(false);
 
@@ -159,6 +165,7 @@ const EventPage = () => {
     }
   };
 
+  // Traduction des ids des interests
   const eventInterestNames = event && event.interests
     ? event.interests
       .map(interestId => {
@@ -168,6 +175,30 @@ const EventPage = () => {
       })
       .join(', ')
     : '';
+
+  // Afficher les participants de l'event
+  // useEffect(() => {
+  //   const fetchEvent = async () => {
+  //     try {
+  //       const token = localStorage.getItem('authToken');
+  //       const response = await axios.get(`https://back-thumbs.vercel.app/event/getUser-event`, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
+
+  //       console.log(response.data);
+  //     } catch (error) {
+  //       console.error('Erreur lors de la récupération des événements:', error);
+  //       setError('Erreur lors de la récupération des événements');
+  //     }
+  //   };
+
+  //   fetchEvent();
+  // }, [id]);
+
+
+
 
   if (!event && !error) {
     return (
