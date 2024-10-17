@@ -7,6 +7,7 @@ import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import axios from 'axios';
 import CitySearch from '../components/CitySearch';
+import { updateUser } from '../authSlice';
 
 const animatedComponents = makeAnimated();
 
@@ -95,14 +96,15 @@ const AssociationPage = () => {
     e.preventDefault();
 
     const formDataToSend = new FormData();
-    formDataToSend.append('type', formData.type);
-    formDataToSend.append('nameasso', formData.nameasso);
-    formDataToSend.append('password', formData.password);
-    formDataToSend.append('interests', formData.interests);
-    formDataToSend.append('creation', formData.creation);
-    formDataToSend.append('description', formData.description);
-    formDataToSend.append('presentation', formData.presentation);
-    formDataToSend.append('logo', formData.logo);
+    if (formData.type) formDataToSend.append('type', formData.type);
+    if (formData.nameasso) formDataToSend.append('nameasso', formData.nameasso);
+    if (formData.password) formDataToSend.append('password', formData.password);
+    if (formData.interests) formDataToSend.append('interests', formData.interests);
+    if (formData.creation) formDataToSend.append('creation', formData.creation);
+    if (formData.description) formDataToSend.append('description', formData.description);
+    if (formData.presentation) formDataToSend.append('presentation', formData.presentation);
+    if (formData.logo) formDataToSend.append('logo', formData.logo);
+
 
     // console.log(formDataToSend);
 
@@ -118,8 +120,17 @@ const AssociationPage = () => {
         }
       });
       console.log('Profil mis à jour avec succès:', response.data);
-      setProfile(response.data);
-      // window.location.reload();
+
+      setProfile((prevProfile) => ({
+          ...prevProfile,
+          ...response.data,
+      }));
+
+      dispatch(updateUser(response.data));
+
+    // window.location.reload();
+
+
     } catch (error) {
       console.error('Erreur lors de la mise à jour du profil:', error);
     }

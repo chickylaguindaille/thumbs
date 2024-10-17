@@ -76,7 +76,7 @@ const UserForm = ({ onBack, onNext }) => {
     if (!formData.genre) newErrors.genre = 'Le sexe est obligatoire';
     if (!formData.birthdate) newErrors.birthdate = 'L\'âge est obligatoire';
     if (!formData.city) newErrors.city = 'La ville est obligatoire';
-    if (!formData.address) newErrors.address = 'L\'addresse est obligatoire';
+    if (!formData.address) newErrors.address = 'L\'adresse est obligatoire';
     
     if (step === 2 && !formData.acceptTerms) {
       if (!formData.description) newErrors.description = 'La description est obligatoire';
@@ -265,7 +265,7 @@ const UserForm = ({ onBack, onNext }) => {
               {errors.city && <p className="text-red-500">{errors.city}</p>}
             </div>
             <div> 
-              <label className="block text-sm font-medium">addresse <span className="text-red-500">*</span></label>            
+              <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            
               <input
                 type="text"
                 name="address"

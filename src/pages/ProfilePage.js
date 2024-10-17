@@ -7,6 +7,7 @@ import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import axios from 'axios';
 import CitySearch from '../components/CitySearch';
+import { updateUser } from '../authSlice';
 
 const animatedComponents = makeAnimated();
 
@@ -18,7 +19,6 @@ const ProfilePage = () => {
     lastName: '',
     password: '',
     interests: [],
-    // email: '',
     photo: null,
     genre: '',
     birthdate: '',
@@ -99,19 +99,20 @@ const ProfilePage = () => {
     e.preventDefault();
 
     const formDataToSend = new FormData();
-    formDataToSend.append('firstName', formData.firstName);
-    formDataToSend.append('lastName', formData.lastName);
-    formDataToSend.append('password', formData.password);
-    formDataToSend.append('interests', formData.interests);
-    formDataToSend.append('photo', formData.photo);
-    formDataToSend.append('genre', formData.genre);
-    formDataToSend.append('birthdate', formData.birthdate);
-    formDataToSend.append('description', formData.description);
-    formDataToSend.append('presentation', formData.presentation);
+
+    if (formData.firstName) formDataToSend.append('firstName', formData.firstName);
+    if (formData.lastName) formDataToSend.append('lastName', formData.lastName);
+    if (formData.password) formDataToSend.append('password', formData.password);
+    if (formData.interests) formDataToSend.append('interests', formData.interests);
+    if (formData.photo) formDataToSend.append('photo', formData.photo);
+    if (formData.genre) formDataToSend.append('genre', formData.genre);
+    if (formData.birthdate) formDataToSend.append('birthdate', formData.birthdate);
+    if (formData.description) formDataToSend.append('description', formData.description);
+    if (formData.presentation) formDataToSend.append('presentation', formData.presentation);
 
 
     try {
-      console.log(formData);
+      // console.log(formData);
       const token = localStorage.getItem('authToken');
       const response = await axios.post('https://back-thumbs.vercel.app/profil/profilupdate', formDataToSend, {
         headers: {
@@ -120,8 +121,17 @@ const ProfilePage = () => {
         }
       });
       console.log('Profil mis à jour avec succès:', response.data);
-      setProfile(response.data);
+
+      setProfile((prevProfile) => ({
+          ...prevProfile,
+          ...response.data,
+      }));
+
+      dispatch(updateUser(response.data));
+
       // window.location.reload();
+
+
     } catch (error) {
       console.error('Erreur lors de la mise à jour du profil:', error);
     }
