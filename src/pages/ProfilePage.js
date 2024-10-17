@@ -8,6 +8,7 @@ import makeAnimated from 'react-select/animated';
 import axios from 'axios';
 import CitySearch from '../components/CitySearch';
 import { updateUser } from '../authSlice';
+import { format, parseISO } from 'date-fns';
 
 const animatedComponents = makeAnimated();
 
@@ -384,7 +385,7 @@ const ProfilePage = () => {
               type="date" 
               name="birthdate" 
               className="w-full border rounded-lg p-2" 
-              defaultValue={profile.birthdate}
+              defaultValue={profile.birthdate ? format(parseISO(profile.birthdate), 'yyyy-MM-dd') : ''}         
               onChange={handleInputChange} 
             />
           </div>

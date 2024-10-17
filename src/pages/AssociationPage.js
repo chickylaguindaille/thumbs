@@ -8,6 +8,7 @@ import makeAnimated from 'react-select/animated';
 import axios from 'axios';
 import CitySearch from '../components/CitySearch';
 import { updateUser } from '../authSlice';
+import { format, parseISO } from 'date-fns';
 
 const animatedComponents = makeAnimated();
 
@@ -104,10 +105,6 @@ const AssociationPage = () => {
     if (formData.description) formDataToSend.append('description', formData.description);
     if (formData.presentation) formDataToSend.append('presentation', formData.presentation);
     if (formData.logo) formDataToSend.append('logo', formData.logo);
-
-
-    // console.log(formDataToSend);
-
 
     try {
       console.log(formData);
@@ -581,7 +578,7 @@ const handleEventInputChange = (e) => {
               type="date" 
               name="creationdate" 
               className="w-full border rounded-lg p-2" 
-              defaultValue={profile.creationdate}
+              defaultValue={profile.creationdate ? format(parseISO(profile.creationdate), 'yyyy-MM-dd') : ''}         
               onChange={handleInputChange} 
             />
           </div>
