@@ -9,6 +9,9 @@ import axios from 'axios';
 import CitySearch from '../components/CitySearch';
 import { updateUser } from '../authSlice';
 import { format, parseISO } from 'date-fns';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { fr } from 'date-fns/locale';
 
 const animatedComponents = makeAnimated();
 
@@ -31,6 +34,7 @@ const AssociationPage = () => {
   const [modalCreateEventIsOpen, setModalCreateEventIsOpen] = useState(false);
   const [logoutModalIsOpen, setLogoutModalIsOpen] = useState(false);
   const [deleteAccountModalIsOpen, setDeleteAccountModalIsOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -100,6 +104,10 @@ const AssociationPage = () => {
     if (formData.type) formDataToSend.append('type', formData.type);
     if (formData.nameasso) formDataToSend.append('nameasso', formData.nameasso);
     if (formData.password) formDataToSend.append('password', formData.password);
+    if (formData.siret) formDataToSend.append('siret', formData.siret);
+    if (formData.address) formDataToSend.append('address', formData.address);
+    if (formData.city) formDataToSend.append('city', formData.city);
+    if (formData.postalcode) formDataToSend.append('postalcode', formData.postalcode);
     if (formData.interests) formDataToSend.append('interests', formData.interests);
     if (formData.creation) formDataToSend.append('creation', formData.creation);
     if (formData.description) formDataToSend.append('description', formData.description);
@@ -137,17 +145,15 @@ const AssociationPage = () => {
     try {
       const eventData = new FormData();
       eventData.append('organisator', user._id);
-      eventData.append('eventName', formDataInputs.eventName);
-      eventData.append('description', formDataInputs.description);
-      // eventData.append('location', formDataInputs.location);
-      eventData.append('interests', formDataInputs.interests);
-      eventData.append('address', formDataInputs.address);
-      eventData.append('creationdate', formDataInputs.creationdate);
-      eventData.append('photo', formDataInputs.photo);
-
+      if (formDataInputs.eventName) eventData.append('eventName', formDataInputs.eventName);
+      if (formDataInputs.description)eventData.append('description', formDataInputs.description);
+      if (formDataInputs.interests) eventData.append('interests', formDataInputs.interests);
+      if (formDataInputs.address) eventData.append('address', formDataInputs.address);
+      if (formDataInputs.city) eventData.append('city', formDataInputs.city);
+      if (formDataInputs.creationdate) eventData.append('creationdate', formDataInputs.creationdate.toISOString());
+      if (formDataInputs.photo) eventData.append('photo', formDataInputs.photo);
 
       console.log(eventData);
-
 
       const token = localStorage.getItem('authToken');
       const response = await axios.post('https://back-thumbs.vercel.app/event/create-event', eventData, {
@@ -158,6 +164,7 @@ const AssociationPage = () => {
       });
       console.log('Event créé avec succès:', response.data);
       setProfile(response.data);
+      // Rediriger vers la page de l'événement
       // window.location.reload();
     } catch (error) {
       console.error('Erreur lors de la création de l\'event:', error);
@@ -188,6 +195,13 @@ const handleEventInputChange = (e) => {
       [name]: type === 'checkbox' ? checked : value
     });
   }
+};
+
+const handleDateChange = (date) => {
+  setFormDataInputs(({
+    ...formDataInputs,
+    creationdate: date
+  }));
 };
 
   const tabWidth = profile.id === user?.id ? 'w-1/3' : 'w-1/2';
@@ -458,20 +472,34 @@ const handleEventInputChange = (e) => {
         </div> */}
         <div>
             <label className="block text-sm font-medium">Adresse</label>
-            <input
+            <CitySearch 
+                formData={formDataInputs} 
+                setFormData={setFormDataInputs}
+              />   
+            {/* <input
                 type="text"
                 name="address"
                 onChange={handleEventInputChange}
                 className="w-full border rounded-lg p-2"
-              />
+              /> */}
         </div>
         <div>
-          <label className="block text-sm font-medium">Date de l'événement</label>
-          <input
+          <label className="block text-sm font-medium">Date et heure de l'événement</label>
+          {/* <input
             type="date"            
             name="creationdate"
-            value={formDataInputs.creationdate}
             onChange={handleEventInputChange}
+            className="w-full border rounded-lg p-2"
+          /> */}
+          <DatePicker
+            name="creationdate"
+            selected={formDataInputs.creationdate || null}
+            onChange={handleDateChange}
+            showTimeSelect
+            timeFormat="HH:mm"
+            timeIntervals={15}
+            dateFormat="Pp"
+            locale={fr}
             className="w-full border rounded-lg p-2"
           />
         </div>
@@ -554,15 +582,13 @@ const handleEventInputChange = (e) => {
               />
           </div>
           <div> 
-              <label className="block text-sm font-medium">Ville et code postal <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>
               <CitySearch 
                 formData={formData} 
                 setFormData={setFormData}
-                // errors={errors}
               />              
-              {/* {errors.city && <p className="text-red-500">{errors.city}</p>} */}
             </div>
-            <div> 
+            {/* <div> 
               <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            
               <input
                 type="text"
@@ -571,7 +597,7 @@ const handleEventInputChange = (e) => {
                 onChange={handleInputChange}
                 className="w-full border rounded-lg p-2"
               />
-            </div>
+            </div> */}
             <div>
             <label className="block text-sm font-medium">Création</label>
             <input 

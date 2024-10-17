@@ -108,6 +108,9 @@ const ProfilePage = () => {
     if (formData.photo) formDataToSend.append('photo', formData.photo);
     if (formData.genre) formDataToSend.append('genre', formData.genre);
     if (formData.birthdate) formDataToSend.append('birthdate', formData.birthdate);
+    if (formData.address) formDataToSend.append('address', formData.address);
+    if (formData.city) formDataToSend.append('city', formData.city);
+    if (formData.postalcode) formDataToSend.append('postalcode', formData.postalcode);
     if (formData.description) formDataToSend.append('description', formData.description);
     if (formData.presentation) formDataToSend.append('presentation', formData.presentation);
 
@@ -390,13 +393,13 @@ const ProfilePage = () => {
             />
           </div>
           <div> 
-              <label className="block text-sm font-medium">Ville et code postal <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>
               <CitySearch 
                 formData={formData} 
                 setFormData={setFormData}
               />              
             </div>
-            <div> 
+            {/* <div> 
               <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            
               <input
                 type="text"
@@ -405,7 +408,7 @@ const ProfilePage = () => {
                 onChange={handleInputChange}
                 className="w-full border rounded-lg p-2"
               />
-            </div>
+            </div> */}
           <div>
                 <label className="block text-sm font-medium">Intérêts</label>
                 <Select
