@@ -146,6 +146,7 @@ const AssociationPage = () => {
       eventData.append('organisator', user._id);
       if (formDataInputs.eventName) eventData.append('eventName', formDataInputs.eventName);
       if (formDataInputs.description)eventData.append('description', formDataInputs.description);
+      if (formDataInputs.subdescription)eventData.append('subdescription', formDataInputs.subdescription);
       if (formDataInputs.interests) eventData.append('interests', formDataInputs.interests);
       if (formDataInputs.address) eventData.append('address', formDataInputs.address);
       if (formDataInputs.city) eventData.append('city', formDataInputs.city);
@@ -173,7 +174,7 @@ const AssociationPage = () => {
   const [formDataInputs, setFormDataInputs] = useState({
     eventName: '',
     description: '',
-    // location: '',
+    subdescription: '',
     interests: '',
     address: '',
     creationdate: '',
@@ -454,6 +455,14 @@ const handleDateChange = (date) => {
               />
         </div>
         <div>
+            <label className="block text-sm font-medium">Résumé</label>
+            <textarea 
+              name="subdescription" 
+              className="w-full border rounded-lg p-2" 
+              onChange={handleEventInputChange}
+              />
+        </div>
+        <div>
             <label className="block text-sm font-medium">Description</label>
             <textarea 
               name="description" 
@@ -461,35 +470,15 @@ const handleDateChange = (date) => {
               onChange={handleEventInputChange}
               />
         </div>
-        {/* <div>
-            <label className="block text-sm font-medium">Description</label>
-            <textarea 
-              name="description" 
-              className="w-full border rounded-lg p-2" 
-              onChange={handleEventInputChange}
-              />
-        </div> */}
         <div>
-            <label className="block text-sm font-medium">Adresse</label>
-            <CitySearch 
-                formData={formDataInputs} 
-                setFormData={setFormDataInputs}
-              />   
-            {/* <input
-                type="text"
-                name="address"
-                onChange={handleEventInputChange}
-                className="w-full border rounded-lg p-2"
-              /> */}
+          <label className="block text-sm font-medium">Adresse</label>
+          <CitySearch 
+              formData={formDataInputs} 
+              setFormData={setFormDataInputs}
+            />   
         </div>
         <div>
           <label className="block text-sm font-medium">Date et heure de l'événement</label>
-          {/* <input
-            type="date"            
-            name="creationdate"
-            onChange={handleEventInputChange}
-            className="w-full border rounded-lg p-2"
-          /> */}
           <DatePicker
             name="creationdate"
             selected={formDataInputs.creationdate || null}
@@ -587,16 +576,6 @@ const handleDateChange = (date) => {
                 setFormData={setFormData}
               />              
             </div>
-            {/* <div> 
-              <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            
-              <input
-                type="text"
-                name="address"
-                defaultValue={profile.address}
-                onChange={handleInputChange}
-                className="w-full border rounded-lg p-2"
-              />
-            </div> */}
             <div>
             <label className="block text-sm font-medium">Création</label>
             <input 

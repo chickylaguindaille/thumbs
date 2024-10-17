@@ -68,6 +68,7 @@ const EventsPage = () => {
               photo={event.photo}
               eventName={event.eventName}
               subdescription={event.subdescription}
+              creationdate={event.creationdate}
               interests={getEventInterestNames(event.interests)}
               city={event.city}
             />
