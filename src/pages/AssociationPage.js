@@ -34,7 +34,6 @@ const AssociationPage = () => {
   const [modalCreateEventIsOpen, setModalCreateEventIsOpen] = useState(false);
   const [logoutModalIsOpen, setLogoutModalIsOpen] = useState(false);
   const [deleteAccountModalIsOpen, setDeleteAccountModalIsOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const dispatch = useDispatch();
 
   useEffect(() => {
