@@ -71,6 +71,7 @@ const EventsPage = () => {
               creationdate={event.creationdate}
               interests={getEventInterestNames(event.interests)}
               city={event.city}
+              organisator={event.organisator}
             />
           ))
         ) : (

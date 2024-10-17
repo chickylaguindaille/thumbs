@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaChevronLeft } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import makeAnimated from 'react-select/animated';
 import Modal from '../components/Modal';
 import CitySearch from '../components/CitySearch';
@@ -209,7 +210,10 @@ const EventPage = () => {
             <p className="text-gray-600 text-gray-500 font-bold">
               {eventInterestNames}
             </p>
-            <span className="text-sm font-bold text-blue-600 hover:text-blue-400"><p>Organisateur</p>{/*<p>{event.organisator}</p><p>{user._id}</p>*/}</span>
+            <Link to={`/association/${event.organisator}`} className="text-sm font-bold text-blue-600 hover:text-blue-400">
+              Organisateur
+            </Link>
+
           </div>
           <div className='text-right absolute right-4'>
             <div className="flex items-center space-x-1 text-blue-600">
