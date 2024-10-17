@@ -12,6 +12,7 @@ import AssociationsPage from './pages/AssociationsPage';
 import AssociationPage from './pages/AssociationPage';
 import LoginPage from './pages/LoginPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import SignupPage from './pages/SignupPage';
 import TermsPage from './pages/TermsPage';
 
@@ -45,7 +46,7 @@ function MainLayout() {
     }
   };
 
-  const isPublicRoute = location.pathname === '/login' || location.pathname === '/forgot-password' || location.pathname === '/signup' || location.pathname === '/terms';
+  const isPublicRoute = location.pathname === '/login' || location.pathname === '/forgot-password' || location.pathname.startsWith('/reset-password') || location.pathname === '/signup' || location.pathname === '/terms';
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -82,6 +83,7 @@ function MainLayout() {
           <Route path="/association/:id" element={<ProtectedRoute element={<AssociationPage />} />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
           <Route path="/signup" element={<SignupPage />} />
         </Routes>
       </div>
