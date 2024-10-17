@@ -126,12 +126,14 @@ const EventPage = () => {
 
         {/* Affichage de la date et l'heure */}
         <div>
-          <p className="text-gray-600">
-            {new Date(event.creationdate).toLocaleString('fr-FR', {
-              dateStyle: 'medium',
-              timeStyle: 'short'
-            })}
-          </p>
+          {event.creationdate ? (
+            <p className="text-gray-600">
+              {new Date(event.creationdate).toLocaleString('fr-FR', {
+                dateStyle: 'medium',
+                timeStyle: 'short'
+              })}
+            </p>
+          ) : null}
         </div>
 
         <p className="text-gray-600 mb-2 text-gray-500">{event.subdescription}</p>
