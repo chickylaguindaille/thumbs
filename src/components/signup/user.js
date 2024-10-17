@@ -256,7 +256,7 @@ const UserForm = ({ onBack, onNext }) => {
               {errors.birthdate && <p className="text-red-500">{errors.birthdate}</p>}
             </div>
             <div> 
-              <label className="block text-sm font-medium">Ville et code postal <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>
               <CitySearch 
                 formData={formData} 
                 setFormData={setFormData} 
@@ -264,7 +264,7 @@ const UserForm = ({ onBack, onNext }) => {
               />              
               {errors.city && <p className="text-red-500">{errors.city}</p>}
             </div>
-            <div> 
+            {/* <div> 
               <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            
               <input
                 type="text"
@@ -274,7 +274,7 @@ const UserForm = ({ onBack, onNext }) => {
                 className="w-full border rounded-lg p-2"
               />
               {errors.address && <p className="text-red-500">{errors.address}</p>}
-            </div>
+            </div> */}
           </div>
           <div className="flex justify-between mt-4">
             <button

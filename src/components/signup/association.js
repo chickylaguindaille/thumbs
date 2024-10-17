@@ -260,7 +260,7 @@ const AssociationForm = ({ onBack, onNext }) => {
           {errors.logo && <p className="text-red-500">{errors.logo}</p>}
         </div>
         <div> 
-              <label className="block text-sm font-medium">Ville et code postal <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>
               <CitySearch 
                 formData={formData} 
                 setFormData={setFormData} 
@@ -268,7 +268,7 @@ const AssociationForm = ({ onBack, onNext }) => {
               />              
               {errors.city && <p className="text-red-500">{errors.city}</p>}
             </div>
-            <div> 
+            {/* <div> 
               <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            
               <input
                 type="text"
@@ -278,7 +278,7 @@ const AssociationForm = ({ onBack, onNext }) => {
                 className="w-full border rounded-lg p-2"
               />
               {errors.address && <p className="text-red-500">{errors.address}</p>}
-            </div>
+            </div> */}
         <div>
           <label className="block text-sm font-medium">Site web</label>
           <input

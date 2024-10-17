@@ -71,6 +71,7 @@ import React, { useRef } from 'react';
 import { LoadScript, Autocomplete } from '@react-google-maps/api';
 
 const libraries = ['places'];
+const googleMapsApiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const CitySearch = ({ formData, setFormData }) => {
   const autocompleteRef = useRef(null);
@@ -78,17 +79,6 @@ const CitySearch = ({ formData, setFormData }) => {
   const onLoad = (autocomplete) => {
     autocompleteRef.current = autocomplete;
   };
-
-  // const onPlaceChanged = () => {
-  //   const place = autocompleteRef.current.getPlace();
-
-  //   if (place && place.formatted_address) {
-  //     setFormData({
-  //       ...formData,
-  //       address: place.formatted_address,
-  //     });
-  //   }
-  // };
 
   const onPlaceChanged = () => {
     const place = autocompleteRef.current.getPlace();
@@ -130,7 +120,7 @@ const CitySearch = ({ formData, setFormData }) => {
   };
 
   return (
-    <LoadScript googleMapsApiKey="AIzaSyDe24CliPMGXfMF4t_qAW7vPgy3ztJuqY4" libraries={libraries}>
+    <LoadScript googleMapsApiKey={googleMapsApiKey} libraries={libraries}>
       <Autocomplete
         onLoad={onLoad}
         onPlaceChanged={onPlaceChanged}
