@@ -132,6 +132,7 @@ const AssociationPage = () => {
       // eventData.append('location', formDataInputs.location);
       eventData.append('interests', formDataInputs.interests);
       eventData.append('address', formDataInputs.address);
+      eventData.append('creationdate', formDataInputs.creationdate);
       eventData.append('photo', formDataInputs.photo);
 
 
@@ -159,6 +160,7 @@ const AssociationPage = () => {
     // location: '',
     interests: '',
     address: '',
+    creationdate: '',
     photo: null
   });
 
@@ -454,6 +456,16 @@ const handleEventInputChange = (e) => {
               />
         </div>
         <div>
+          <label className="block text-sm font-medium">Date de l'événement</label>
+          <input
+            type="date"            
+            name="creationdate"
+            value={formDataInputs.creationdate}
+            onChange={handleEventInputChange}
+            className="w-full border rounded-lg p-2"
+          />
+        </div>
+        <div>
             <label className="block text-sm font-medium">Intérêts</label>
             <Select
               closeMenuOnSelect={false}
@@ -549,7 +561,6 @@ const handleEventInputChange = (e) => {
                 onChange={handleInputChange}
                 className="w-full border rounded-lg p-2"
               />
-              {/* {errors.address && <p className="text-red-500">{errors.address}</p>} */}
             </div>
             <div>
             <label className="block text-sm font-medium">Création</label>
@@ -557,7 +568,7 @@ const handleEventInputChange = (e) => {
               type="date" 
               name="creationdate" 
               className="w-full border rounded-lg p-2" 
-              defaultValue={profile.birthdate}
+              defaultValue={profile.creationdate}
               onChange={handleInputChange} 
             />
           </div>
