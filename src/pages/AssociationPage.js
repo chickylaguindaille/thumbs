@@ -263,7 +263,7 @@ const handleDateChange = (date) => {
   const handleDeleteAccount = async () => {
     try {
       const token = localStorage.getItem('authToken');
-      await axios.delete('https://back-thumbs.vercel.app/asso/delete', {}, {
+      await axios.delete('https://back-thumbs.vercel.app/asso/delete', {
         headers: {
             Authorization: `Bearer ${token}`,        
         }
@@ -331,7 +331,7 @@ const handleDateChange = (date) => {
                 <div className='mb-4'>
                   {profile.telephone && (
                     <div>
-                      <p className="text-gray-800 text-sm">Numéro de téléphone : 0{profile.telephone || ""}</p>
+                      <p className="text-gray-800 text-sm">Numéro de téléphone : {profile.telephone || ""}</p>
                     </div>
                   )}
                   {profile.website && (

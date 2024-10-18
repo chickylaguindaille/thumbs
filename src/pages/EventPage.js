@@ -198,7 +198,7 @@ const EventPage = () => {
   const handleDeleteEvent = async () => {
     try {
       const token = localStorage.getItem('authToken');
-      await axios.delete(`https://back-thumbs.vercel.app/event/delete-event/${id}`, {}, {
+      await axios.delete(`https://back-thumbs.vercel.app/event/delete-event/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         }
