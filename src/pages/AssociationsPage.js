@@ -35,7 +35,7 @@ const AssociationsPage = () => {
         >
           {interest.nom}
         </span>
-        : 'Unknown';
+        : '';
     })
   };
 
