@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FaBars, FaSearch, FaTimes, FaChevronLeft, FaUser, FaEnvelope } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
-import SearchBar from './Searchbar';
 
 const Header = ({ contactName, contactId, toggleSidebar, isSidebarOpen }) => {
-  const [isSearchBarVisible, setIsSearchBarVisible] = useState(false);
   const [title, setTitle] = useState('Événements');
   const location = useLocation();
   const isAssociationsPage = location.pathname === '/associations';
@@ -113,9 +111,6 @@ const Header = ({ contactName, contactId, toggleSidebar, isSidebarOpen }) => {
     }
   };
 
-  // Vérifie si la barre de recherche doit être affichée
-  const shouldShowSearchBar = location.pathname === '/events' || location.pathname === '/associations';
-
   return (
     <header
       className={`fixed top-0 left-0 right-0 bg-customPurple text-white py-2 px-2 flex items-center justify-between z-50 ${isSidebarOpen ? 'md:ml-64' : 'md:ml-0'}`}
@@ -128,15 +123,6 @@ const Header = ({ contactName, contactId, toggleSidebar, isSidebarOpen }) => {
       </h1>
 
       {renderActionButton()}
-
-      {/* Afficher la barre de recherche uniquement sur les pages /events et /associations */}
-      {shouldShowSearchBar && (
-        <SearchBar
-          isVisible={isSearchBarVisible}
-          // onClose={() => setIsSearchBarVisible(false)}
-          isAssociationsPage={isAssociationsPage}
-        />
-      )}
     </header>
   );
 };
