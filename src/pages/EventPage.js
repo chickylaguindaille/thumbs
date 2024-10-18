@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FaChevronLeft } from 'react-icons/fa';
+import { FaChevronLeft, FaInfoCircle, FaTimes } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import makeAnimated from 'react-select/animated';
@@ -18,9 +18,13 @@ const EventPage = () => {
   const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
   const [optionsLoisirs, setOptionsLoisirs] = useState([]);
   const [event, setEvent] = useState(null);
+  const [organisatorName, setOrganisatorName] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [isModalParticipantOpen, setIsModalParticipantOpen] = useState(false);
   const [error, setError] = useState(null);
   const [isParticipant, setIsParticipant] = useState(false);
   const [modalModifyEventIsOpen, setModalModifyEventIsOpen] = useState(false);
+  const [deleteEventModalIsOpen, setDeleteEventModalIsOpen] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
   const [interestsData, setInterestsData] = useState([]);
@@ -49,6 +53,29 @@ const EventPage = () => {
     fetchInterests();
   }, []);
 
+  //Récupérer les infos de l'organisateur
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        const response = await axios.get(`https://back-thumbs.vercel.app/asso/getDetails-asso/${event.organisator}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+        if (response.data && response.data.asso && response.data.asso.nameasso) {
+          setOrganisatorName(response.data.asso.nameasso);
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération du profil asso:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [event]);
+
   // Récupération des infos de l'event
   useEffect(() => {
     const fetchEvent = async () => {
@@ -63,7 +90,7 @@ const EventPage = () => {
         setEvent(response.data.event);
 
         const userId = user._id;
-        const isUserParticipant = response.data.event.participants.some(participantId => participantId === userId);
+        const isUserParticipant = response.data.event.participants.some(participant => participant.userId === userId);
         setIsParticipant(isUserParticipant);
 
       } catch (error) {
@@ -84,7 +111,9 @@ const EventPage = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setIsParticipant((prev) => !prev); // On inverse l'état après la requête
+      setIsParticipant((prev) => !prev);
+      window.location.reload();
+
     } catch (error) {
       console.error('Erreur lors de la participation:', error);
       setError('Erreur lors de la participation');
@@ -94,6 +123,14 @@ const EventPage = () => {
   // Modal Update Event
   const openModalModifyEvent = () => setModalModifyEventIsOpen(true);
   const closeModalModifyEvent = () => setModalModifyEventIsOpen(false);
+
+    // Modal Delete Event
+  const openDeleteEventModal = () => setDeleteEventModalIsOpen(true);
+  const closeDeleteEventModal = () => setDeleteEventModalIsOpen(false);
+
+  // Modal Participant Event
+  const openModalParticipant = () => { setIsModalParticipantOpen(true)};
+  const closeModalParticipant = () => { setIsModalParticipantOpen(false)};
 
   const [formDataInputs, setFormDataInputs] = useState({
     eventName: '',
@@ -151,17 +188,24 @@ const EventPage = () => {
       });
       console.log('Event mis à jour avec succès:', response.data);
 
-      // setProfile((prevProfile) => ({
-      //     ...prevProfile,
-      //     ...response.data,
-      // }));
-
-      // dispatch(updateUser(response.data));
-
     // window.location.reload();
 
     } catch (error) {
       console.error('Erreur lors de la mise à jour du profil:', error);
+    }
+  };
+
+  const handleDeleteEvent = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      await axios.delete(`https://back-thumbs.vercel.app/event/delete-event/${id}`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
+      window.location.href = '/events'; // Redirection vers la page de events après la suppression de l'event
+    } catch (error) {
+      console.error('Erreur lors de la suppression de l\'événement:', error);
     }
   };
 
@@ -189,8 +233,8 @@ const EventPage = () => {
 
   //       console.log(response.data);
   //     } catch (error) {
-  //       console.error('Erreur lors de la récupération des événements:', error);
-  //       setError('Erreur lors de la récupération des événements');
+  //       console.error('Erreur lors de la récupération des users de l\'événement:', error);
+  //       setError('Erreur lors de la récupération des users de l\'événement');
   //     }
   //   };
 
@@ -242,12 +286,12 @@ const EventPage = () => {
               {eventInterestNames}
             </p>
             <Link to={`/association/${event.organisator}`} className="text-sm font-bold text-blue-600 hover:text-blue-400">
-              Organisateur
+              {organisatorName}
             </Link>
 
           </div>
           <div className='text-right absolute right-4'>
-            <div className="flex items-center space-x-1 text-blue-600">
+            <div className="space-x-1 text-blue-600">
               <span className="text-sm">{event.address}</span>
             </div>
             {/* Affichage de la date et l'heure */}
@@ -264,30 +308,57 @@ const EventPage = () => {
             <div>
               {event.organisator === user?._id && (
                 <div>
-                  <button
-                    type="button"
-                    className="px-2 py-1 bg-blue-600 text-white rounded-lg mt-2"
-                    onClick={openModalModifyEvent}
-                  >
-                    <span className="text-sm">Modifier l'événement</span>
-                  </button>
+                  <div className='space-x-1'>
+                    <button
+                      type="button"
+                      className="px-2 py-1 bg-blue-600 text-white rounded-lg mt-2"
+                      onClick={openModalModifyEvent}
+                    >
+                      <span className="text-sm">Modifier l'événement</span>
+                    </button>
+                  {/* </div>
+                  <div> */}
+                    <button
+                      type="button"
+                      className="px-2 py-1 bg-red-600 text-white rounded-lg mt-2"
+                      onClick={openDeleteEventModal}
+                    >
+                      Supprimer l'événement
+                    </button>
+                  </div>
                 </div>
+
               )}
             </div>
           </div>
         </div>
           
-        <h1 className="text-2xl font-bold">{event.eventName}</h1>
+        <h1 className="text-2xl font-bold mb-2">{event.eventName}</h1>
         <p className="text-gray-600 mb-2 text-gray-500">{event.subdescription}</p>
         <p>{event.description}</p>
 
         {/* Bouton de participation */}
-        <button
-          onClick={toggleParticipation}
-          className={`mt-4 py-2 px-4 rounded ${isParticipant ? 'bg-red-500' : 'bg-green-500'} text-white`}
-        >
-          {isParticipant ? 'Se retirer' : 'Participe'}
-        </button>
+        <div className='flex items-center justify-center mt-4 space-x-4'>
+          {user.type === "user" && (
+            <div>
+              <button
+                onClick={toggleParticipation}
+                className={`py-2 px-4 rounded ${isParticipant ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} text-white`}
+              >
+                {isParticipant ? 'Se retirer' : 'Participe'}
+              </button>
+            </div>
+          )}
+          <div>
+            <button
+              onClick={openModalParticipant}
+              className="flex items-center bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition-colors duration-200"
+            >
+              <FaInfoCircle className="mr-2" />
+              Nombre de participants: {event.participants.length}
+            </button>
+          </div>
+        </div>
       </div>
 
       <Modal isOpen={modalModifyEventIsOpen} onClose={closeModalModifyEvent} size="w-[90%] h-[90%]">
@@ -371,22 +442,85 @@ const EventPage = () => {
             />
           </div>
         <div className="flex justify-end mt-4">
+            <div>
+              <button
+                type="button"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg mr-2"
+                onClick={handleModifyEvent}
+              >
+                Modifier
+              </button>
+              <button
+                type="button"
+                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg"
+                onClick={closeModalModifyEvent}
+              >
+                Annuler
+              </button>
+            </div>
+          </div>
+        </form>
+      </Modal>
+      <Modal isOpen={deleteEventModalIsOpen} onClose={closeDeleteEventModal}>
+        <div className="p-4">
+          <h2 className="text-xl font-semibold text-red-500">Supprimer mon événement</h2>
+          <p>Êtes-vous sûr de vouloir supprimer votre événement ? Cette action est irréversible.</p>
+          <div className="mt-4 flex justify-between">
             <button
-              type="button"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg mr-2"
-              onClick={handleModifyEvent}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg"
+              onClick={handleDeleteEvent}
             >
-              Modifier
+              Supprimer
             </button>
             <button
-              type="button"
-              className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg"
-              onClick={closeModalModifyEvent}
+              className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg"
+              onClick={closeDeleteEventModal}
             >
               Annuler
             </button>
           </div>
-        </form>
+        </div>
+      </Modal>
+      {/* Modal pour afficher la liste des participants */}
+      <Modal
+        isOpen={isModalParticipantOpen}
+        onRequestClose={closeModalParticipant}
+        contentLabel="Participants"
+        className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+      >
+        <h2 className="text-xl font-bold mb-4">Liste des Participants</h2>
+        <ul className="mb-6">
+          {event.participants.length > 0 ? (
+            event.participants.map((participant) => (
+              <Link 
+                key={participant.userId} 
+                to={`/profile/${participant.userId}`} 
+                className="block py-4 px-4 border-b hover:bg-blue-50 transition-colors duration-200 flex items-center"
+              >
+                <img 
+                  src={participant.photo} 
+                  alt={`${participant.firstName} ${participant.lastName}`} 
+                  className="inline-block w-10 h-10 rounded-full mr-4" 
+                />
+                <span className="text-black-500 font-bold">
+                  {participant.firstName} {participant.lastName}
+                </span>
+              </Link>
+            ))
+          ) : (
+            <li className="text-gray-500">Aucun participant inscrit.</li>
+          )}
+        </ul>
+        <div className='flex justify-end'>
+          <button
+            onClick={closeModalParticipant}
+            className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition-colors duration-200"
+          >
+            <FaTimes className="inline-block mr-2" />
+            Fermer
+          </button>
+        </div>
       </Modal>
     </div>
   );

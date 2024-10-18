@@ -262,9 +262,10 @@ const handleDateChange = (date) => {
 
   const handleDeleteAccount = async () => {
     try {
-      await axios.post('https://back-thumbs.vercel.app/auth/delete-account', {}, {
+      const token = localStorage.getItem('authToken');
+      await axios.delete('https://back-thumbs.vercel.app/asso/delete', {}, {
         headers: {
-
+            Authorization: `Bearer ${token}`,        
         }
       });
       window.location.href = '/login'; // Redirection vers la page de connexion après suppression de compte
