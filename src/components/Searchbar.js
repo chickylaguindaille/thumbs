@@ -18,38 +18,40 @@ const SearchBar = ({ onClose, isAssociationsPage }) => {
         </button>
       </div>
 
+      {/* Dropdowns below the search input */}
       <div className="mt-4 flex justify-between space-x-4">
+        {/* Display all dropdowns if not on /associations */}
         {!isAssociationsPage && (
-          <>
-            {/* Dropdown date */}
-            <div className="relative w-1/3">
-              <select className="block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                <option value="">Trier par</option>
-                <option value="recent">Plus récent</option>
-                <option value="older">Plus ancien</option>
-              </select>
-            </div>
+          <div className="relative w-1/3">
+            {/* Date Dropdown */}
+            <select className="block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="">Trier par</option>
+              <option value="recent">Plus récent</option>
+              <option value="older">Plus ancien</option>
+            </select>
+          </div>
+        )}
 
-            {/* Dropdown des intérêts */}
-            <div className="relative w-1/3">
-              <select className="block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                <option value="">Choisir des intérêts</option>
-                <option value="interest1">Intérêt 1</option>
-                <option value="interest2">Intérêt 2</option>
-                <option value="interest3">Intérêt 3</option>
-              </select>
-            </div>
+        {/* Dropdown des intérêts (toujours affiché) */}
+        <div className="relative w-1/3">
+          <select className="block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <option value="">Choisir des intérêts</option>
+            <option value="interest1">Intérêt 1</option>
+            <option value="interest2">Intérêt 2</option>
+            <option value="interest3">Intérêt 3</option>
+          </select>
+        </div>
 
-            {/* Dropdown distance */}
-            <div className="relative w-1/3">
-              <select className="block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                <option value="">Distance</option>
-                <option value="5km">5 km</option>
-                <option value="30km">30 km</option>
-                <option value="50km">50 km</option>
-              </select>
-            </div>
-          </>
+        {!isAssociationsPage && (
+          <div className="relative w-1/3">            
+            {/* Distance Dropdown */}
+            <select className="block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="">Distance</option>
+              <option value="5km">5 km</option>
+              <option value="30km">30 km</option>
+              <option value="50km">50 km</option>
+            </select>
+          </div>
         )}
 
 

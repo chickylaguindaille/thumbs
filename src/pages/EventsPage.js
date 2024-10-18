@@ -49,7 +49,6 @@ const EventsPage = () => {
   }, []);
 
   const getEventInterestNames = (eventInterests) => {
-    // console.log(interestsData);
     return eventInterests
       .map(interestId => {
         const interest = interestsData.find(i => Number(i.id) === Number(interestId));

@@ -5,6 +5,39 @@ import axios from 'axios';
 const AssociationsPage = () => {
   const [associations, setAssociations] = useState([]);
   const [error, setError] = useState(null);
+  const [interestsData, setInterestsData] = useState([]);
+
+  useEffect(() => {
+    const fetchInterests = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        const response = await axios.get('https://back-thumbs.vercel.app/profil/interests', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setInterestsData(response.data.interests); // Sauvegarde les intérêts récupérés
+      } catch (error) {
+        console.error('Erreur lors de la récupération des centres d\'intérêts:', error);
+      }
+    };
+  
+    fetchInterests();
+  }, []);
+
+  const getEventInterestNames = (eventInterests) => {
+  return eventInterests
+    .map(interestId => {
+      const interest = interestsData.find(i => Number(i.id) === Number(interestId));
+      return interest ? 
+        <span
+          className="bg-gray-200 text-gray-700 text-xs font-semibold rounded-full px-2 py-0.5 mr-2 mb-2"
+        >
+          {interest.nom}
+        </span>
+        : 'Unknown';
+    })
+  };
 
   useEffect(() => {
     const fetchAllAssociations = async () => {
@@ -51,14 +84,9 @@ const AssociationsPage = () => {
                 
                 {/* Intérêts affichés en badges non cliquables */}
                 <div className="flex flex-wrap items-center ml-4">
-                  {association.interests.map((interest, i) => (
-                    <span
-                      key={i}
-                      className="bg-gray-200 text-gray-700 text-xs font-semibold rounded-full px-2 py-0.5 mr-2 mb-2"
-                    >
-                      {interest}
-                    </span>
-                  ))}
+
+                {getEventInterestNames(association.interests)}
+
                 </div>
               </li>
             </Link>
