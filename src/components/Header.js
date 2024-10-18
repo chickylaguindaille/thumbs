@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaBars, FaSearch, FaTimes, FaChevronLeft, FaUser, FaEnvelope } from 'react-icons/fa';
+import { FaBars, FaChevronLeft, FaUser, FaEnvelope } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const Header = ({ contactName, contactId, toggleSidebar, isSidebarOpen }) => {

@@ -59,7 +59,7 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
         distance: distance,
       });
     }
-  }, [selectedInterests, namesearch, sortOrder, distance]);
+  }, [selectedInterests, namesearch, sortOrder, distance, onFiltersChange]);
 
   // Gérer le changement dans l'input de recherche
   const handleInputChange = (e) => {

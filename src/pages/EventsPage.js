@@ -3,6 +3,7 @@ import axios from 'axios';
 import EventCard from '../components/EventCard';
 import SearchBar from '../components/Searchbar';
 import { useSelector } from 'react-redux';
+import { useCallback } from 'react';
 
 const EventsPage = () => {
   const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
@@ -67,7 +68,7 @@ const EventsPage = () => {
     };
 
   // Fonction pour récupérer les events basées sur les intérêts sélectionnés et l'input search
-  const fetchEvents = async (filters) => {
+  const fetchEvents = useCallback(async (filters) => {
     try {
       const token = localStorage.getItem('authToken');
 
@@ -96,12 +97,12 @@ const EventsPage = () => {
       setEvents([]); // Vider les associations en cas d'erreur
       setError('Aucun évenement trouvé.'); // Message d'erreur
     }
-  };
+  }, []);
 
   // Effectuer le filtrage des associations lorsqu'un filtre est appliqué
   useEffect(() => {
     fetchEvents({ interests: selectedInterests, namesearch, sortOrder, distance });
-  }, [selectedInterests, namesearch, sortOrder, distance]); // Mettre à jour quand selectedInterests change
+  }, [selectedInterests, namesearch, sortOrder, distance, fetchEvents]); // Mettre à jour quand selectedInterests change
 
   return (
     <div>
