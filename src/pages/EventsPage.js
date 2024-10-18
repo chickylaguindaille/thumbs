@@ -97,7 +97,7 @@ const EventsPage = () => {
       setEvents([]); // Vider les associations en cas d'erreur
       setError('Aucun évenement trouvé.'); // Message d'erreur
     }
-  }, []);
+  }, [user.location.coordinates]);
 
   // Effectuer le filtrage des associations lorsqu'un filtre est appliqué
   useEffect(() => {

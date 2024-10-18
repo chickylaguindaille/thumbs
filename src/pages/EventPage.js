@@ -19,7 +19,6 @@ const EventPage = () => {
   const [optionsLoisirs, setOptionsLoisirs] = useState([]);
   const [event, setEvent] = useState(null);
   const [organisatorName, setOrganisatorName] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
   const [isModalParticipantOpen, setIsModalParticipantOpen] = useState(false);
   const [error, setError] = useState(null);
   const [isParticipant, setIsParticipant] = useState(false);
@@ -68,8 +67,6 @@ const EventPage = () => {
         }
       } catch (error) {
         console.error('Erreur lors de la récupération du profil asso:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
 

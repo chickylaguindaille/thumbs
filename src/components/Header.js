@@ -5,7 +5,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const Header = ({ contactName, contactId, toggleSidebar, isSidebarOpen }) => {
   const [title, setTitle] = useState('Événements');
   const location = useLocation();
-  const isAssociationsPage = location.pathname === '/associations';
   const navigate = useNavigate();
 
   // Fonction pour retourner en arrière

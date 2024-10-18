@@ -78,7 +78,7 @@ const ProfilePage = () => {
     };
 
     fetchProfile();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     const fetchInterests = async () => {

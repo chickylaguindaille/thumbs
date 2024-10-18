@@ -79,7 +79,7 @@ const AssociationPage = () => {
     };
 
     fetchProfile();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     const fetchInterests = async () => {
