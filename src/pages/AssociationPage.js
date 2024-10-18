@@ -292,9 +292,8 @@ const handleDateChange = (date) => {
         <div>
           <p className="text-gray-600">{profile.description || "Pas de description"}</p>
         </div>
-
         <div className="mt-2 text-blue-600">
-          <p className="text-sm font-semibold">{profile.city || "Pas de localisation"}</p>
+          <p className="text-sm font-semibold">{profile.address || "Pas de localisation"}</p>
         </div>
 
         <div className="mt-4 w-full">
@@ -328,7 +327,45 @@ const handleDateChange = (date) => {
              <div> 
               <div>
                 <h2 className="text-xl font-semibold">Informations sur {profile.nameasso || "asso"}</h2>
-                <p>{ profile.presentation || "Pas de présentation"}</p>
+                <div className='mb-4'>
+                  {profile.telephone && (
+                    <div>
+                      <p className="text-gray-800 text-sm">Numéro de téléphone : 0{profile.telephone || ""}</p>
+                    </div>
+                  )}
+                  {profile.website && (
+                    <div>
+                      <p className="text-gray-800 text-sm">Site internet : {profile.website || ""}</p>
+                    </div>
+                  )}
+                  {profile.creationdate && (
+                    <div className='flex'>
+                      <span className="text-gray-800 text-sm">Date de création : </span>              
+                        {profile.creationdate ? (
+                          <span className="text-gray-600 text-sm ml-1">
+                            {new Date(profile.creationdate).toLocaleString('fr-FR', {
+                              dateStyle: 'medium',
+                            })}
+                          </span>
+                        ) : null}
+                    </div>
+                  )}
+                  {profile.siret && (
+                    <div>
+                      <p className="text-gray-800 text-sm">Siret : {profile.siret || ""}</p>
+                    </div>
+                  )}
+                </div>
+                {profile.presentation && (
+                  <div>
+                    <div className='text-xl font-semibold'>
+                      Présentation :
+                    </div>
+                    <div className='ml-1'>
+                      { profile.presentation || "Pas de présentation"}
+                    </div>
+                  </div>
+                )}
               </div>
 
                 <h2 className="text-xl font-semibold mt-4">Intérêts</h2>
