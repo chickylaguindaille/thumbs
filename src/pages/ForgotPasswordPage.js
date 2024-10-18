@@ -7,7 +7,7 @@ function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [role, setRole] = useState('user'); // Rôle par défaut sur "user"
+  const [role, setRole] = useState('user');
   const navigate = useNavigate();
 
   let url;

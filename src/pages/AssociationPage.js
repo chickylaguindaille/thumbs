@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { FaInfoCircle, FaChartBar, FaCog, FaChevronRight } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../authSlice';
@@ -28,6 +29,7 @@ const AssociationPage = () => {
     presentation: ''
   });
   const [formData, setFormData] = useState(profile);
+  const { id } = useParams();
   const [optionsLoisirs, setOptionsLoisirs] = useState([]);
   const [activeTab, setActiveTab] = useState('info');
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -36,19 +38,41 @@ const AssociationPage = () => {
   const [deleteAccountModalIsOpen, setDeleteAccountModalIsOpen] = useState(false);
   const dispatch = useDispatch();
 
+  // useEffect(() => {
+  //   const fetchProfile = async () => {
+  //     try {
+  //       const token = localStorage.getItem('authToken');
+
+  //       const response = await axios.get('https://back-thumbs.vercel.app/asso/asso-details', {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         }
+  //       });
+  //       setProfile(response.data);
+  //       setFormData(response.data);
+  //       console.log(response.data);
+  //     } catch (error) {
+  //       console.error('Erreur lors de la récupération du profil asso:', error);
+  //     }
+  //   };
+
+  //   fetchProfile();
+  // }, []);
+
+  
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('authToken');
 
-        const response = await axios.get('https://back-thumbs.vercel.app/asso/asso-details', {
+        const response = await axios.get(`https://back-thumbs.vercel.app/asso/getDetails-asso/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           }
         });
-        setProfile(response.data);
-        setFormData(response.data);
-        // console.log(response.data);
+        setProfile(response.data.asso);
+        setFormData(response.data.asso);
+        console.log(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération du profil asso:', error);
       }
@@ -56,7 +80,6 @@ const AssociationPage = () => {
 
     fetchProfile();
   }, []);
-
 
   useEffect(() => {
     const fetchInterests = async () => {

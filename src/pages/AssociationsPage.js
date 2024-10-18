@@ -29,7 +29,7 @@ const AssociationsPage = () => {
   }, []);
 
   return (
-    <div className="flex pt-[56px]">
+    <div className="flex pt-[180px]">
       {/* Liste des associations */}
       <div className="w-full p-4">
         {error && <p className="text-red-500">{error}</p>} {/* Message d'erreur */}

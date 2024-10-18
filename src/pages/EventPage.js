@@ -79,7 +79,7 @@ const EventPage = () => {
   const toggleParticipation = async () => {
     try {
       const token = localStorage.getItem('authToken');
-      await axios.post(`https://back-thumbs.vercel.app/event/${id}/toggle-participant`, {}, {
+      await axios.post(`https://back-thumbs.vercel.app/event/toggle-participant/${id}`, {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -143,7 +143,7 @@ const EventPage = () => {
 
     try {
       const token = localStorage.getItem('authToken');
-      const response = await axios.put('https://back-thumbs.vercel.app/asso/update-asso', eventData, {
+      const response = await axios.put(`https://back-thumbs.vercel.app/event/update-event/${id}`, eventData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
@@ -291,7 +291,7 @@ const EventPage = () => {
       </div>
 
       <Modal isOpen={modalModifyEventIsOpen} onClose={closeModalModifyEvent} size="w-[90%] h-[90%]">
-      <h2 className="text-xl font-semibold mb-4">Créer un événement</h2>
+      <h2 className="text-xl font-semibold mb-4">Modifier un événement</h2>
        
         <form className="space-y-4">
         <div>

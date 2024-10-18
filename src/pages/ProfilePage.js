@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { FaInfoCircle, FaChartBar, FaCog, FaChevronRight } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../authSlice';
@@ -27,6 +28,7 @@ const ProfilePage = () => {
     presentation: ''
   });
   const [formData, setFormData] = useState(profile);
+  const { id } = useParams();
   const [optionsLoisirs, setOptionsLoisirs] = useState([]);
   const [activeTab, setActiveTab] = useState('info');
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -35,26 +37,47 @@ const ProfilePage = () => {
   const dispatch = useDispatch();
 
   // Récupère les infos du profil
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem('authToken');
+  // useEffect(() => {
+  //   const fetchProfile = async () => {
+  //     try {
+  //       const token = localStorage.getItem('authToken');
 
-        const response = await axios.get('https://back-thumbs.vercel.app/profil/details', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
-        });
-        // console.log(response.data);
-        setProfile(response.data);
-        setFormData(response.data);
-      } catch (error) {
-        console.error('Erreur lors de la récupération du profil user:', error);
-      }
-    };
+  //       const response = await axios.get('https://back-thumbs.vercel.app/profil/details', {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         }
+  //       });
+  //       // console.log(response.data);
+  //       setProfile(response.data);
+  //       setFormData(response.data);
+  //     } catch (error) {
+  //       console.error('Erreur lors de la récupération du profil user:', error);
+  //     }
+  //   };
     
-    fetchProfile();
-  }, []);
+  //   fetchProfile();
+  // }, []);
+
+  // useEffect(() => {
+  //   const fetchProfile = async () => {
+  //     try {
+  //       const token = localStorage.getItem('authToken');
+
+  //       const response = await axios.get(`https://back-thumbs.vercel.app/getDetails-asso/${id}`, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         }
+  //       });
+  //       // console.log(response.data);
+  //       setProfile(response.data);
+  //       setFormData(response.data);
+  //     } catch (error) {
+  //       console.error('Erreur lors de la récupération du profil user:', error);
+  //     }
+  //   };
+    
+  //   fetchProfile();
+  // }, []);
 
   useEffect(() => {
     const fetchInterests = async () => {

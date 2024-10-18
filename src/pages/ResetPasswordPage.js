@@ -9,7 +9,15 @@ function ResetPasswordPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [role, setRole] = useState('user');
   const navigate = useNavigate();
+
+  let url;
+  if (role === 'asso') {
+    url = `https://back-thumbs.vercel.app/auth-asso/reset-password/${token}`;
+  } else {
+    url = `https://back-thumbs.vercel.app/auth/reset-password/${token}`;
+  }
 
   // Fonction de gestion du formulaire de soumission
   const handleSubmit = async (e) => {
@@ -22,7 +30,7 @@ function ResetPasswordPage() {
     }
 
     try {
-      const response = await axios.post(`https://back-thumbs.vercel.app/auth/reset-password/${token}`, {
+      const response = await axios.post(url, {
         password,
       });
 
@@ -85,6 +93,36 @@ function ResetPasswordPage() {
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             required
           />
+        </div>
+
+        {/* Sélection du rôle avec apparence d'onglets */}
+        <div className="flex justify-center mb-4 p-2 rounded-lg">
+          <label
+            className={`cursor-pointer px-4 py-2 mx-2 rounded ${role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+          >
+            <input
+              type="radio"
+              name="role"
+              value="user"
+              checked={role === 'user'}
+              onChange={(e) => setRole(e.target.value)}
+              className="hidden"
+            />
+            Utilisateur
+          </label>
+          <label
+            className={`cursor-pointer px-4 py-2 mx-2 rounded ${role === 'asso' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+          >
+            <input
+              type="radio"
+              name="role"
+              value="asso"
+              checked={role === 'asso'}
+              onChange={(e) => setRole(e.target.value)}
+              className="hidden"
+            />
+            Association
+          </label>
         </div>
 
         <div className="flex items-center justify-center">
