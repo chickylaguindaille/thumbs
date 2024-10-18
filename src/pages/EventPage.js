@@ -97,7 +97,7 @@ const EventPage = () => {
     };
 
     fetchEvent();
-  }, [id]);
+  }, [id, user._id]);
 
   // Mettre participe ou non
   const toggleParticipation = async () => {
