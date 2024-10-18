@@ -227,7 +227,7 @@ const handleDateChange = (date) => {
   }));
 };
 
-  const tabWidth = profile.id === user?.id ? 'w-1/3' : 'w-1/2';
+  const tabWidth = profile._id === user?._id ? 'w-1/3' : 'w-1/2';
   
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
@@ -312,7 +312,7 @@ const handleDateChange = (date) => {
               >
                 <FaChartBar className="inline-block text-xl" />
               </li>
-              {profile.id === user?.id && (
+              {profile._id === user?._id && (
                 <li
                   className={`cursor-pointer text-center pb-2 w-1/3 ${activeTab === 'settings' ? 'border-b-2 border-blue-500 text-blue-600' : ''}`}
                   onClick={() => setActiveTab('settings')}
@@ -360,20 +360,22 @@ const handleDateChange = (date) => {
                 </div>
             </div>
             )}
-            {activeTab === 'activity' && (
+            {activeTab === 'activity' &&(
               <div>
-                <div className="text-center">
-                  <button
-                    type="button"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg mr-2 mb-4"
-                    onClick={openModalCreateEvent}
-                  >
-                    <span className="text-lg font-medium">Créer un événement</span>
-                  </button>
-                </div>
+                {profile._id === user?._id && (
+                  <div className="text-center">
+                    <button
+                      type="button"
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg mr-2 mb-4"
+                      onClick={openModalCreateEvent}
+                    >
+                      <span className="text-lg font-medium">Créer un événement</span>
+                    </button>
+                  </div>
+                )}
 
                 {/* Mes événements */}
-                <h2 className="text-xl font-semibold mt-4 mb-2">Mes événements</h2>
+                <h2 className="text-xl font-semibold mt-4 mb-2">{profile._id === user?._id ? 'Mes événements' : "Événements de l'association"}</h2>
                 <div className="space-y-4">
                   <div className="flex flex-col space-y-2">
                     {optionsLoisirs.filter((loisir) => 
@@ -402,38 +404,42 @@ const handleDateChange = (date) => {
                 </div>
 
                 {/* Les événements auxquels je participe*/}
-                <h2 className="text-xl font-semibold mt-4 mb-2">Événements auxquels je participe</h2>
-                <div className="space-y-4">
-                  <div className="flex flex-col space-y-2">
-                    {optionsLoisirs.filter((loisir) => 
-                      profile.interests.some((interest) => interest === loisir.value)
-                    ).length > 0 ? (
-                      optionsLoisirs
-                        .filter((loisir) => profile.interests.some((interest) => interest === loisir.value))
-                        .map((loisir) => (
-                          <div key={loisir.value} className="flex items-center border p-2 rounded-lg shadow-sm">
-                            <img
-                              src={loisir.image}
-                              alt={loisir.label}
-                              className="w-12 h-12 object-cover rounded-lg mr-4"
-                            />
-                            <span className="text-lg font-medium">
-                              {loisir.label}
-                            </span>
+                {profile._id === user?._id && (
+                  <div>
+                    <h2 className="text-xl font-semibold mt-4 mb-2">Événements auxquels je participe</h2>
+                    <div className="space-y-4">
+                      <div className="flex flex-col space-y-2">
+                        {optionsLoisirs.filter((loisir) => 
+                          profile.interests.some((interest) => interest === loisir.value)
+                        ).length > 0 ? (
+                          optionsLoisirs
+                            .filter((loisir) => profile.interests.some((interest) => interest === loisir.value))
+                            .map((loisir) => (
+                              <div key={loisir.value} className="flex items-center border p-2 rounded-lg shadow-sm">
+                                <img
+                                  src={loisir.image}
+                                  alt={loisir.label}
+                                  className="w-12 h-12 object-cover rounded-lg mr-4"
+                                />
+                                <span className="text-lg font-medium">
+                                  {loisir.label}
+                                </span>
+                              </div>
+                            ))
+                        ) : (
+                          <div className="">
+                            Pas d'événement créé
                           </div>
-                        ))
-                    ) : (
-                      <div className="">
-                        Pas d'événement créé
+                        )}
                       </div>
-                    )}
+                    </div>
                   </div>
-                </div>
+                )}
 
 
               </div>
             )}
-            {activeTab === 'settings' && profile.id === user?.id && (
+            {activeTab === 'settings' && profile._id === user?._id && (
               <div>
                 <div className="space-y-4">
                   <div

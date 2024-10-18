@@ -58,26 +58,27 @@ const ProfilePage = () => {
   //   fetchProfile();
   // }, []);
 
-  // useEffect(() => {
-  //   const fetchProfile = async () => {
-  //     try {
-  //       const token = localStorage.getItem('authToken');
+  
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
 
-  //       const response = await axios.get(`https://back-thumbs.vercel.app/getDetails-asso/${id}`, {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         }
-  //       });
-  //       // console.log(response.data);
-  //       setProfile(response.data);
-  //       setFormData(response.data);
-  //     } catch (error) {
-  //       console.error('Erreur lors de la récupération du profil user:', error);
-  //     }
-  //   };
-    
-  //   fetchProfile();
-  // }, []);
+        const response = await axios.get(`https://back-thumbs.vercel.app/profil/getDetails-user/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+        setProfile(response.data.user);
+        setFormData(response.data.user);
+        // console.log(response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération du profil asso:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   useEffect(() => {
     const fetchInterests = async () => {
@@ -299,7 +300,7 @@ const ProfilePage = () => {
             {activeTab === 'activity' && (
               <div>
                 {/* Les événements auxquels je participe*/}
-                <h2 className="text-xl font-semibold mt-4 mb-2">Événements auxquels je participe</h2>
+                <h2 className="text-xl font-semibold mt-4 mb-2">{profile.id === user?.id ? 'Événements auxquels je participe' : "Événements auxquels la personne participe"}</h2>
                 <div className="space-y-4">
                   <div className="flex flex-col space-y-2">
                     {optionsLoisirs.filter((loisir) => 
@@ -328,7 +329,7 @@ const ProfilePage = () => {
                 </div>
               </div>
             )}
-            {activeTab === 'settings' && profile.id && (
+            {activeTab === 'settings' && profile.id === user.id && (
               <div>
                 <div className="space-y-4">
                   <div
