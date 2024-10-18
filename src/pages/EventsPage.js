@@ -2,13 +2,17 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import EventCard from '../components/EventCard';
 import SearchBar from '../components/Searchbar';
+import { useSelector } from 'react-redux';
 
 const EventsPage = () => {
+  const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
   const [events, setEvents] = useState([]);
   const [error, setError] = useState(null);
   const [interestsData, setInterestsData] = useState([]);
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [namesearch, setNameSearch] = useState('');
+  const [sortOrder, setsortOrder] = useState('');
+  const [distance, setDistance] = useState('');
 
   useEffect(() => {
     const fetchInterests = async () => {
@@ -66,14 +70,24 @@ const EventsPage = () => {
   const fetchEvents = async (filters) => {
     try {
       const token = localStorage.getItem('authToken');
+
+      const params = {
+        interests: filters.interests, // Ceci permet de passer plusieurs intérêts
+        eventName: filters.namesearch,
+        sort: filters.sortOrder,
+      };
+
+      if (filters.distance) {
+        params.distance = filters.distance;
+        params.latitude = user.location.coordinates[1];
+        params.longitude = user.location.coordinates[0];
+      }
+
       const response = await axios.get('https://back-thumbs.vercel.app/event/filter', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        params: { 
-          interests: filters.interests, // Ceci permet de passer plusieurs intérêts
-          eventName: filters.namesearch
-        },
+        params: params,
       });
       setEvents(response.data.events || []); // Assurez-vous que associations est un tableau
       setError(null); // Réinitialiser l'erreur si tout se passe bien
@@ -86,8 +100,8 @@ const EventsPage = () => {
 
   // Effectuer le filtrage des associations lorsqu'un filtre est appliqué
   useEffect(() => {
-    fetchEvents({ interests: selectedInterests, namesearch });
-  }, [selectedInterests, namesearch]); // Mettre à jour quand selectedInterests change
+    fetchEvents({ interests: selectedInterests, namesearch, sortOrder, distance });
+  }, [selectedInterests, namesearch, sortOrder, distance]); // Mettre à jour quand selectedInterests change
 
   return (
     <div>
@@ -95,9 +109,11 @@ const EventsPage = () => {
         <div className='w-full p-4 shadow-lg'>
             {/* Ajout de la SearchBar */}
             <SearchBar 
-              onFiltersChange={({ interests, namesearch }) => {
+              onFiltersChange={({ interests, namesearch, sortOrder, distance }) => {
                 setSelectedInterests(interests); // Mettre à jour les intérêts sélectionnés
                 setNameSearch(namesearch); // Mettre à jour le nom de l'association
+                setsortOrder(sortOrder); // Mettre à jour le sort order
+                setDistance(distance); // Mettre à jour le sort order
               }} 
               isAssociationsPage={false} // Indiquer que nous sommes sur la page des associations
             />

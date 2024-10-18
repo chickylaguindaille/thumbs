@@ -8,6 +8,8 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [namesearch, setSearchName] = useState('');
+  const [sortOrder, setSortOrder] = useState('');
+  const [distance, setDistance] = useState('');
 
   // Récupérer la liste des intérêts
   useEffect(() => {
@@ -53,25 +55,26 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
       onFiltersChange({
         interests: selectedInterests,
         namesearch: namesearch,
+        sortOrder: sortOrder,
+        distance: distance,
       });
     }
-  }, [selectedInterests, namesearch, onFiltersChange]);
+  }, [selectedInterests, namesearch, sortOrder, distance]);
 
   // Gérer le changement dans l'input de recherche
   const handleInputChange = (e) => {
     setSearchName(e.target.value);
   };
 
-  // Fonction de recherche (peut être retirée si non utilisée)
-  // const handleSearch = () => {
-  //   if (onFiltersChange) {
-  //     onFiltersChange({
-  //       interests: selectedInterests,
-  //       namesearch: namesearch,
-  //     });
-  //   }
-  //   console.log('Rechercher avec les filtres:', { selectedInterests, namesearch });
-  // };
+  // Gérer le changement de tri (asc/desc)
+  const handleSortChange = (e) => {
+    setSortOrder(e.target.value);
+  };
+
+  // Gérer le changement de distance
+  const handleDistanceChange = (e) => {
+    setDistance(e.target.value);
+  };
 
   return (
     <div className="bg-white" style={{ zIndex: 10 }}>
@@ -84,22 +87,20 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
           value={namesearch}
           onChange={handleInputChange}
         />
-        {/* <button
-          onClick={handleSearch}
-          className="ml-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300"
-        >
-          <span className="text-sm font-semibold">Rechercher</span>
-        </button> */}
       </div>
 
       {/* Dropdowns en dessous du search input */}
       <div className="mt-4 flex justify-between space-x-4">
         {!isAssociationsPage && (
           <div className="relative w-1/3">
-            <select className="block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <select
+              value={sortOrder}
+              onChange={handleSortChange}
+              className="block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >              
               <option value="">Trier par</option>
-              <option value="recent">Plus récent</option>
-              <option value="older">Plus ancien</option>
+              <option value="asc">Plus récent</option>
+              <option value="desc">Plus ancien</option>
             </select>
           </div>
         )}
@@ -130,11 +131,17 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
 
         {!isAssociationsPage && (
           <div className="relative w-1/3">
-            <select className="block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <select
+              value={distance}
+              onChange={handleDistanceChange}
+              className="block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >                 
               <option value="">Distance</option>
-              <option value="5km">5 km</option>
-              <option value="30km">30 km</option>
-              <option value="50km">50 km</option>
+              <option value="5">5 km</option>
+              <option value="30">30 km</option>
+              <option value="50">50 km</option>
+              <option value="100">100 km</option>
+              <option value="1000">1000 km</option>
             </select>
           </div>
         )}
