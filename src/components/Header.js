@@ -6,7 +6,6 @@ const Header = ({ contactName, contactId, toggleSidebar, isSidebarOpen }) => {
   const [title, setTitle] = useState('Événements');
   const location = useLocation();
   const isAssociationsPage = location.pathname === '/associations';
-  console.log(isAssociationsPage);
   const navigate = useNavigate();
 
   // Fonction pour retourner en arrière
