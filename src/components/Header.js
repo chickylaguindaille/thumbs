@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { FaBars, FaChevronLeft, FaUser, FaEnvelope } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -6,6 +7,7 @@ const Header = ({ contactName, contactId, toggleSidebar, isSidebarOpen }) => {
   const [title, setTitle] = useState('Événements');
   const location = useLocation();
   const navigate = useNavigate();
+  const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
 
   // Fonction pour retourner en arrière
   const handleBackButtonClick = () => {
@@ -64,7 +66,9 @@ const Header = ({ contactName, contactId, toggleSidebar, isSidebarOpen }) => {
   // Déterminer quel bouton afficher en fonction de la route
   const renderActionButton = () => {
     const path = location.pathname;
-    if (path.startsWith('/profile/') && contactId !== 1) {
+    if (path.startsWith('/profile/') && contactId !== user.id) {
+      console.log(user.id)
+      console.log(contactId)
       return (
         <button
           onClick={handleMessagesButtonClick}
