@@ -10,6 +10,7 @@ import axios from 'axios';
 import CitySearch from '../components/CitySearch';
 import { updateUser } from '../authSlice';
 import { format, parseISO } from 'date-fns';
+import { Link } from 'react-router-dom';
 
 const animatedComponents = makeAnimated();
 
@@ -34,6 +35,7 @@ const ProfilePage = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [logoutModalIsOpen, setLogoutModalIsOpen] = useState(false);
   const [deleteAccountModalIsOpen, setDeleteAccountModalIsOpen] = useState(false);
+  const [eventsParticipation, setEventsParticipation] = useState([]);
   const dispatch = useDispatch();
 
   // Récupère les infos du profil
@@ -176,9 +178,8 @@ const ProfilePage = () => {
             Authorization: `Bearer ${token}`,
           }
         });
-        console.log(response.data);
-        // setProfile(response.data.user);
-        // setFormData(response.data.user);
+        setEventsParticipation(response.data.events);
+
       } catch (error) {
         console.error('Erreur lors de la récupération du profil asso:', error);
       }
@@ -325,22 +326,22 @@ const ProfilePage = () => {
                 <h2 className="text-xl font-semibold mt-4 mb-2">{profile.id === user?.id ? 'Événements auxquels je participe' : "Événements auxquels la personne participe"}</h2>
                 <div className="space-y-4">
                   <div className="flex flex-col space-y-2">
-                    {optionsLoisirs.filter((loisir) => 
-                      profile.interests.some((interest) => interest === loisir.value)
-                    ).length > 0 ? (
-                      optionsLoisirs
-                        .filter((loisir) => profile.interests.some((interest) => interest === loisir.value))
-                        .map((loisir) => (
-                          <div key={loisir.value} className="flex items-center border p-2 rounded-lg shadow-sm">
+                    {eventsParticipation.length > 0 ? (
+                        eventsParticipation.map((event) => (
+                          <Link 
+                            key={event._id} 
+                            to={`/events/${event._id}`}
+                            className="flex items-center border p-2 rounded-lg shadow-sm hover:bg-gray-100 transition duration-200"
+                          >              
                             <img
-                              src={loisir.image}
-                              alt={loisir.label}
+                              src={event.photo}
+                              alt={event.eventName}
                               className="w-12 h-12 object-cover rounded-lg mr-4"
                             />
                             <span className="text-lg font-medium">
-                              {loisir.label}
+                              {event.eventName}
                             </span>
-                          </div>
+                          </Link>
                         ))
                     ) : (
                       <div className="">
@@ -439,22 +440,12 @@ const ProfilePage = () => {
             />
           </div>
           <div> 
-              <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>
-              <CitySearch 
-                formData={formData} 
-                setFormData={setFormData}
-              />              
-            </div>
-            {/* <div> 
-              <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            
-              <input
-                type="text"
-                name="address"
-                defaultValue={profile.address}
-                onChange={handleInputChange}
-                className="w-full border rounded-lg p-2"
-              />
-            </div> */}
+            <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>
+            <CitySearch 
+              formData={formData} 
+              setFormData={setFormData}
+            />              
+          </div>
           <div>
                 <label className="block text-sm font-medium">Intérêts</label>
                 <Select

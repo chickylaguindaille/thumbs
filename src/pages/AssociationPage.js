@@ -13,6 +13,7 @@ import { format, parseISO } from 'date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { fr } from 'date-fns/locale';
+import { Link } from 'react-router-dom';
 
 const animatedComponents = makeAnimated();
 
@@ -36,6 +37,7 @@ const AssociationPage = () => {
   const [modalCreateEventIsOpen, setModalCreateEventIsOpen] = useState(false);
   const [logoutModalIsOpen, setLogoutModalIsOpen] = useState(false);
   const [deleteAccountModalIsOpen, setDeleteAccountModalIsOpen] = useState(false);
+  const [eventsOrganized, setEventsOrganized] = useState([]);
   const dispatch = useDispatch();
 
   // useEffect(() => {
@@ -71,7 +73,7 @@ const AssociationPage = () => {
         });
         setProfile(response.data.asso);
         setFormData(response.data.asso);
-        console.log(response.data);
+        // console.log(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération du profil asso:', error);
       }
@@ -292,9 +294,8 @@ const handleDateChange = (date) => {
             Authorization: `Bearer ${token}`,
           }
         });
-        console.log(response.data);
-        // setProfile(response.data.user);
-        // setFormData(response.data.user);
+        setEventsOrganized(response.data.events);
+
       } catch (error) {
         console.error('Erreur lors de la récupération du profil asso:', error);
       }
@@ -442,22 +443,22 @@ const handleDateChange = (date) => {
                 <h2 className="text-xl font-semibold mt-4 mb-2">{profile._id === user?._id ? 'Mes événements' : "Événements de l'association"}</h2>
                 <div className="space-y-4">
                   <div className="flex flex-col space-y-2">
-                    {optionsLoisirs.filter((loisir) => 
-                      profile.interests.some((interest) => interest === loisir.value)
-                    ).length > 0 ? (
-                      optionsLoisirs
-                        .filter((loisir) => profile.interests.some((interest) => interest === loisir.value))
-                        .map((loisir) => (
-                          <div key={loisir.value} className="flex items-center border p-2 rounded-lg shadow-sm">
+                    {eventsOrganized.length > 0 ? (
+                        eventsOrganized.map((event) => (
+                          <Link 
+                            key={event._id} 
+                            to={`/events/${event._id}`}
+                            className="flex items-center border p-2 rounded-lg shadow-sm hover:bg-gray-100 transition duration-200"
+                          >              
                             <img
-                              src={loisir.image}
-                              alt={loisir.label}
+                              src={event.photo}
+                              alt={event.eventName}
                               className="w-12 h-12 object-cover rounded-lg mr-4"
                             />
                             <span className="text-lg font-medium">
-                              {loisir.label}
+                              {event.eventName}
                             </span>
-                          </div>
+                          </Link>
                         ))
                     ) : (
                       <div className="">
