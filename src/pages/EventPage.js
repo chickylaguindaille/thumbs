@@ -198,7 +198,7 @@ const EventPage = () => {
       });
       console.log('Event mis à jour avec succès:', response.data);
 
-    // window.location.reload();
+    window.location.reload();
 
     } catch (error) {
       console.error('Erreur lors de la mise à jour du profil:', error);

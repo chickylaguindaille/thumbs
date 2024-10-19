@@ -194,8 +194,7 @@ const AssociationPage = () => {
       });
       console.log('Event créé avec succès:', response.data);
       setProfile(response.data);
-      // Rediriger vers la page de l'événement
-      // window.location.reload();
+      window.location.reload();
     } catch (error) {
       console.error('Erreur lors de la création de l\'event:', error);
     }
