@@ -63,15 +63,6 @@ function MainLayout() {
 
         {/* Routes */}
         <Routes>
-          {/* <Route path="/events" element={<EventsPage />} />
-          <Route path="/events/:id" element={<EventPage />} />
-          <Route path="/messages" element={<MessagesPage />} />
-          <Route path="/messages/:id" element={<ChatPage />} />
-          <Route path="/profile/:id" element={<ProfilePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/signup" element={<SignupPage />} /> */}
-
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/" element={<ProtectedRoute element={<EventsPage />} />} /> 
           <Route path="/events" element={<ProtectedRoute element={<EventsPage />} />} />

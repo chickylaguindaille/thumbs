@@ -198,7 +198,7 @@ const EventPage = () => {
       });
       console.log('Event mis à jour avec succès:', response.data);
 
-    // window.location.reload();
+    window.location.reload();
 
     } catch (error) {
       console.error('Erreur lors de la mise à jour du profil:', error);
@@ -355,7 +355,7 @@ const EventPage = () => {
                 onClick={toggleParticipation}
                 className={`py-2 px-4 rounded ${isParticipant ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} text-white`}
               >
-                {isParticipant ? 'Se retirer' : 'Participe'}
+                {isParticipant ? 'Se retirer' : 'Je participe'}
               </button>
             </div>
           )}

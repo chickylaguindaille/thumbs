@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { FaBars, FaChevronLeft, FaUser, FaEnvelope } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -6,6 +7,7 @@ const Header = ({ contactName, contactId, toggleSidebar, isSidebarOpen }) => {
   const [title, setTitle] = useState('Événements');
   const location = useLocation();
   const navigate = useNavigate();
+  const profilId = location.pathname.split('/profile/')[1] || location.pathname.split('/messages/')[1];
 
   // Fonction pour retourner en arrière
   const handleBackButtonClick = () => {
@@ -14,8 +16,8 @@ const Header = ({ contactName, contactId, toggleSidebar, isSidebarOpen }) => {
 
   // Fonction pour naviguer vers la page de profil
   const handleProfileButtonClick = () => {
-    if (contactId) {
-      navigate(`/profile/${contactId}`);
+    if (profilId) {
+      navigate(`/profile/${profilId}`);
     } else {
       navigate('/profile');
     }
@@ -23,8 +25,11 @@ const Header = ({ contactName, contactId, toggleSidebar, isSidebarOpen }) => {
 
   // Fonction pour naviguer vers la page de messages
   const handleMessagesButtonClick = () => {
-    if (contactId) {
-      navigate(`/messages`);
+    console.log(profilId)
+    if (profilId) {
+      navigate(`/messages/${profilId}`);
+    } else {
+      navigate('/messages');
     }
   };
 
