@@ -282,6 +282,27 @@ const handleDateChange = (date) => {
     }
   };
 
+  useEffect(() => {
+    const fetchEventFromAsso = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+
+        const response = await axios.get(`https://back-thumbs.vercel.app/asso/organized-events/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+        console.log(response.data);
+        // setProfile(response.data.user);
+        // setFormData(response.data.user);
+      } catch (error) {
+        console.error('Erreur lors de la récupération du profil asso:', error);
+      }
+    };
+
+    fetchEventFromAsso();
+  }, [id]);
+
   return (
     <div className="pt-[56px]">
       <div className="p-4 flex flex-col items-start">
@@ -445,41 +466,6 @@ const handleDateChange = (date) => {
                     )}
                   </div>
                 </div>
-
-                {/* Les événements auxquels je participe*/}
-                {profile._id === user?._id && (
-                  <div>
-                    <h2 className="text-xl font-semibold mt-4 mb-2">Événements auxquels je participe</h2>
-                    <div className="space-y-4">
-                      <div className="flex flex-col space-y-2">
-                        {optionsLoisirs.filter((loisir) => 
-                          profile.interests.some((interest) => interest === loisir.value)
-                        ).length > 0 ? (
-                          optionsLoisirs
-                            .filter((loisir) => profile.interests.some((interest) => interest === loisir.value))
-                            .map((loisir) => (
-                              <div key={loisir.value} className="flex items-center border p-2 rounded-lg shadow-sm">
-                                <img
-                                  src={loisir.image}
-                                  alt={loisir.label}
-                                  className="w-12 h-12 object-cover rounded-lg mr-4"
-                                />
-                                <span className="text-lg font-medium">
-                                  {loisir.label}
-                                </span>
-                              </div>
-                            ))
-                        ) : (
-                          <div className="">
-                            Pas d'événement créé
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-
               </div>
             )}
             {activeTab === 'settings' && profile._id === user?._id && (

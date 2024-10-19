@@ -166,6 +166,27 @@ const ProfilePage = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchEventParcipationFromUser = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+
+        const response = await axios.get(`https://back-thumbs.vercel.app/event/getUser-event/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+        console.log(response.data);
+        // setProfile(response.data.user);
+        // setFormData(response.data.user);
+      } catch (error) {
+        console.error('Erreur lors de la récupération du profil asso:', error);
+      }
+    };
+
+    fetchEventParcipationFromUser();
+  }, [id]);
+
   const tabWidth = profile.id === user?.id ? 'w-1/3' : 'w-1/2';
 
   const openModal = () => setModalIsOpen(true);
