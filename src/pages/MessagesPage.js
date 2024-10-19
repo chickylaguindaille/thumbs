@@ -1,14 +1,63 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import contactsData from '../examples/contacts.json';
-import messagesData from '../examples/messages.json'; // Assurez-vous que ce fichier est importé
+import messagesData from '../examples/messages.json';
 import { FaCircle } from 'react-icons/fa';
+import axios from "axios";
 
 const MessagesPage = () => {
-  const { id } = useParams();
   const [contacts, setContacts] = useState([]);
   const [messages, setMessages] = useState({});
-  // const [selectedContact, setSelectedContact] = useState(null);
+  const [contact, setContact] = useState(null);
+
+  const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
+
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+
+        // Récupérer les messages du contact
+        const response = await axios.get(
+          `https://back-thumbs.vercel.app/messages/get/${user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setMessages(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des messages:", error);
+      }
+    };
+
+    const fetchContact = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(
+          `https://back-thumbs.vercel.app/profil/getDetails-user/${user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setContact(response.data.user);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des infos de contact:",
+          error
+        );
+      }
+    };
+
+    fetchMessages();
+    fetchContact();
+  }, [user.id]);
 
   useEffect(() => {
     // Charger les contacts
@@ -22,7 +71,7 @@ const MessagesPage = () => {
     //   const contact = contactsData.find(contact => contact.id === parseInt(id, 10));
     //   setSelectedContact(contact);
     // }
-  }, [id]);
+  }, [user.id]);
 
   // Fonction pour obtenir le dernier message pour un contact
   const getLastMessage = (contactId) => {
