@@ -127,7 +127,7 @@ const ProfilePage = () => {
 
     if (formData.firstName) formDataToSend.append('firstName', formData.firstName);
     if (formData.lastName) formDataToSend.append('lastName', formData.lastName);
-    if (formData.password && formData.password != "") formDataToSend.append('password', formData.password);
+    if (formData.password && formData.password !== user.password) formDataToSend.append('password', formData.password);
     if (formData.interests && Array.isArray(formData.interests)) {
       formData.interests.forEach((interest) => {
         formDataToSend.append('interests[]', interest);
