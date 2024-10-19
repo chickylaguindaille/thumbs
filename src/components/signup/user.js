@@ -124,7 +124,11 @@ const UserForm = ({ onBack, onNext }) => {
     formDataToSend.append('email', formData.email);
     formDataToSend.append('password', formData.password);
     formDataToSend.append('confirmPassword', formData.confirmPassword);
-    formDataToSend.append('interests', formData.interests);
+    if (formData.interests && Array.isArray(formData.interests)) {
+      formData.interests.forEach((interest) => {
+        formDataToSend.append('interests[]', interest);
+      });
+    }   
     formDataToSend.append('acceptTerms', formData.acceptTerms);
     formDataToSend.append('description', formData.description);
     formDataToSend.append('presentation', formData.presentation);

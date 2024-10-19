@@ -64,7 +64,6 @@ const AssociationPage = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('authToken');
-
         const response = await axios.get(`https://back-thumbs.vercel.app/asso/getDetails-asso/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -125,13 +124,19 @@ const AssociationPage = () => {
     const formDataToSend = new FormData();
     if (formData.type) formDataToSend.append('type', formData.type);
     if (formData.nameasso) formDataToSend.append('nameasso', formData.nameasso);
-    if (formData.password) formDataToSend.append('password', formData.password);
+    // if (formData.password) formDataToSend.append('password', formData.password);
     if (formData.siret) formDataToSend.append('siret', formData.siret);
     if (formData.address) formDataToSend.append('address', formData.address);
     if (formData.city) formDataToSend.append('city', formData.city);
     if (formData.postalcode) formDataToSend.append('postalcode', formData.postalcode);
-    if (formData.interests) formDataToSend.append('interests', formData.interests);
-    if (formData.creation) formDataToSend.append('creation', formData.creation);
+    if (formData.creationdate) formDataToSend.append('creationdate', formData.creationdate);
+    if (formData.website) formDataToSend.append('website', formData.website);
+    if (formData.telephone) formDataToSend.append('telephone', formData.telephone);
+    if (formData.interests && Array.isArray(formData.interests)) {
+      formData.interests.forEach((interest) => {
+        formDataToSend.append('interests[]', interest);
+      });
+    }   
     if (formData.description) formDataToSend.append('description', formData.description);
     if (formData.presentation) formDataToSend.append('presentation', formData.presentation);
     if (formData.logo) formDataToSend.append('logo', formData.logo);
@@ -140,7 +145,7 @@ const AssociationPage = () => {
       console.log(formData);
       console.log(formDataToSend);
       const token = localStorage.getItem('authToken');
-      const response = await axios.put('https://back-thumbs.vercel.app/asso/update-asso', formData, {
+      const response = await axios.put('https://back-thumbs.vercel.app/asso/update-asso', formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
@@ -155,7 +160,7 @@ const AssociationPage = () => {
 
       dispatch(updateUser(response.data));
 
-    // window.location.reload();
+    window.location.reload();
 
 
     } catch (error) {
@@ -170,7 +175,13 @@ const AssociationPage = () => {
       if (formDataInputs.eventName) eventData.append('eventName', formDataInputs.eventName);
       if (formDataInputs.description)eventData.append('description', formDataInputs.description);
       if (formDataInputs.subdescription)eventData.append('subdescription', formDataInputs.subdescription);
-      if (formDataInputs.interests) eventData.append('interests', formDataInputs.interests);
+
+      if (formDataInputs.interests && Array.isArray(formDataInputs.interests)) {
+        formDataInputs.interests.forEach((interest) => {
+          eventData.append('interests[]', interest);
+        });
+      }    
+
       if (formDataInputs.address) eventData.append('address', formDataInputs.address);
       if (formDataInputs.city) eventData.append('city', formDataInputs.city);
       if (formDataInputs.creationdate) eventData.append('creationdate', formDataInputs.creationdate.toISOString());

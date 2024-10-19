@@ -16,6 +16,15 @@ const animatedComponents = makeAnimated();
 
 const EventPage = () => {
   const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
+  const [formDataInputs, setFormDataInputs] = useState({
+    eventName: '',
+    description: '',
+    subdescription: '',
+    interests: '',
+    address: '',
+    creationdate: '',
+    photo: null
+  });
   const [optionsLoisirs, setOptionsLoisirs] = useState([]);
   const [event, setEvent] = useState(null);
   const [organisatorName, setOrganisatorName] = useState('');
@@ -85,6 +94,12 @@ const EventPage = () => {
         });
 
         setEvent(response.data.event);
+        setFormDataInputs(response.data.event)
+
+        // console.log(event)
+        // formDataInputs.address = response.data.event.address;
+        // console.log(formDataInputs)
+
 
         const userId = user._id;
         const isUserParticipant = response.data.event.participants.some(participant => participant.userId === userId);
@@ -129,15 +144,7 @@ const EventPage = () => {
   const openModalParticipant = () => { setIsModalParticipantOpen(true)};
   const closeModalParticipant = () => { setIsModalParticipantOpen(false)};
 
-  const [formDataInputs, setFormDataInputs] = useState({
-    eventName: '',
-    description: '',
-    subdescription: '',
-    interests: '',
-    address: '',
-    creationdate: '',
-    photo: null
-  });
+
 
   const handleEventInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -169,10 +176,16 @@ const EventPage = () => {
     if (formDataInputs.eventName) eventData.append('eventName', formDataInputs.eventName);
     if (formDataInputs.description)eventData.append('description', formDataInputs.description);
     if (formDataInputs.subdescription)eventData.append('subdescription', formDataInputs.subdescription);
-    if (formDataInputs.interests) eventData.append('interests', formDataInputs.interests);
+    if (formDataInputs.interests && Array.isArray(formDataInputs.interests)) {
+      formDataInputs.interests.forEach((interest) => {
+        eventData.append('interests[]', interest);
+      });
+    }   
     if (formDataInputs.address) eventData.append('address', formDataInputs.address);
     if (formDataInputs.city) eventData.append('city', formDataInputs.city);
-    if (formDataInputs.creationdate) eventData.append('creationdate', formDataInputs.creationdate.toISOString());
+    // if (formDataInputs.creationdate) eventData.append('creationdate', formDataInputs.creationdate.toISOString());
+    if (formDataInputs.creationdate) eventData.append('creationdate', formDataInputs.creationdate);
+
     if (formDataInputs.photo) eventData.append('photo', formDataInputs.photo);
 
     try {
@@ -393,7 +406,7 @@ const EventPage = () => {
         <div>
           <label className="block text-sm font-medium">Adresse</label>
           <CitySearch 
-              formData={event} 
+              formData={formDataInputs} 
               setFormData={setFormDataInputs}
             />   
         </div>
@@ -401,7 +414,7 @@ const EventPage = () => {
           <label className="block text-sm font-medium">Date et heure de l'événement</label>
           <DatePicker
             name="creationdate"
-            selected={event.creationdate || null}
+            selected={formDataInputs.creationdate ? new Date(formDataInputs.creationdate) : null}
             onChange={handleDateChange}
             showTimeSelect
             timeFormat="HH:mm"
@@ -419,7 +432,7 @@ const EventPage = () => {
               isMulti
               options={optionsLoisirs}
               placeholder=""
-              value={optionsLoisirs.filter(option => event.interests.includes(option.value))}
+              value={optionsLoisirs.filter(option => formDataInputs.interests.includes(option.value))}
               onChange={(selectedOptions) =>
                 setFormDataInputs({
                   ...formDataInputs,

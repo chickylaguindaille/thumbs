@@ -125,7 +125,11 @@ const AssociationForm = ({ onBack, onNext }) => {
     formDataToSend.append('website', formData.website);
     formDataToSend.append('telephone', formData.telephone);
     formDataToSend.append('creationdate', formData.creationdate);
-    formDataToSend.append('interests', JSON.stringify(formData.interests));
+    if (formData.interests && Array.isArray(formData.interests)) {
+      formData.interests.forEach((interest) => {
+        formDataToSend.append('interests[]', interest);
+      });
+    }       
     formDataToSend.append('description', formData.description);
     formDataToSend.append('presentation', formData.presentation);
 

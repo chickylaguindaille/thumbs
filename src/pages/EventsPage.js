@@ -119,8 +119,8 @@ const EventsPage = () => {
               isAssociationsPage={false} // Indiquer que nous sommes sur la page des associations
             />
         </div>
-        <div className="px-8 space-y-6 py-5">
-        <div className='text-center mt-4'>{error && <p className="text-black-500">{error}</p>}</div> {/* Message d'erreur */}
+        <div className="px-8 space-y-6 pb-5">
+        <div className='text-center'>{error && <p className="text-black-500 mt-4">{error}</p>}</div> {/* Message d'erreur */}
           {events.length > 0 ? (
             events.map((event) => (
               <EventCard

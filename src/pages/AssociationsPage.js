@@ -85,7 +85,7 @@ const AssociationsPage = () => {
             isAssociationsPage={true} // Indiquer que nous sommes sur la page des associations
           />
         </div>
-        <div className='text-center mt-4'>{error && <p className="text-black-500">{error}</p>}</div> {/* Message d'erreur */}
+        <div className='text-center'>{error && <p className="text-black-500 mt-4">{error}</p>}</div> {/* Message d'erreur */}
         {associations.length === 0 && !error ? (
           <p className="text-gray-500 text-center mt-4">Chargement des associations...</p>
         ) : (

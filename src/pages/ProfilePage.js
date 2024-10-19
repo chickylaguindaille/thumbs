@@ -71,7 +71,6 @@ const ProfilePage = () => {
         });
         setProfile(response.data.user);
         setFormData(response.data.user);
-        // console.log(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération du profil asso:', error);
       }
@@ -94,7 +93,6 @@ const ProfilePage = () => {
           label: `${interest.nom} (${interest.thematique})`
         }));
         setOptionsLoisirs(options);
-        console.log(options);
       } catch (error) {
         console.error('Erreur lors de la récupération des centres d\'intérêts:', error);
       }
@@ -124,11 +122,14 @@ const ProfilePage = () => {
     e.preventDefault();
 
     const formDataToSend = new FormData();
-
     if (formData.firstName) formDataToSend.append('firstName', formData.firstName);
     if (formData.lastName) formDataToSend.append('lastName', formData.lastName);
     if (formData.password) formDataToSend.append('password', formData.password);
-    if (formData.interests) formDataToSend.append('interests', formData.interests);
+    if (formData.interests && Array.isArray(formData.interests)) {
+      formData.interests.forEach((interest) => {
+        formDataToSend.append('interests[]', interest);
+      });
+    }    
     if (formData.photo) formDataToSend.append('photo', formData.photo);
     if (formData.genre) formDataToSend.append('genre', formData.genre);
     if (formData.birthdate) formDataToSend.append('birthdate', formData.birthdate);
@@ -144,7 +145,7 @@ const ProfilePage = () => {
       const token = localStorage.getItem('authToken');
       const response = await axios.post('https://back-thumbs.vercel.app/profil/profilupdate', formDataToSend, {
         headers: {
-          // 'Content-Type': 'multipart/form-data',
+          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
         }
       });
@@ -157,7 +158,7 @@ const ProfilePage = () => {
 
       dispatch(updateUser(response.data));
 
-      // window.location.reload();
+      window.location.reload();
 
 
     } catch (error) {
