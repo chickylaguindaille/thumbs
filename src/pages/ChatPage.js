@@ -4,6 +4,9 @@ import { FaPaperPlane } from "react-icons/fa";
 import axios from "axios";
 import Header from "../components/Header";
 import { jwtDecode } from "jwt-decode";
+import { io } from "socket.io-client"; // Importer socket.io-client
+
+const socket = io("https://back-thumbs.vercel.app"); // Remplacer par ton URL backend si nécessaire
 
 const MessageBubble = ({ message, isSender }) => {
   return (
@@ -74,6 +77,15 @@ const ChatPage = () => {
 
     fetchMessages();
     fetchContact();
+
+    // Écouter les nouveaux messages envoyés via Socket.IO
+    socket.on("receive_message", (message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
+
+    return () => {
+      socket.off("receive_message"); // Nettoyer l'écouteur lors de la destruction du composant
+    };
   }, [id]);
 
   useEffect(() => {
@@ -81,6 +93,7 @@ const ChatPage = () => {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
+
   const handleSendMessage = async () => {
     if (newMessage.trim()) {
       try {
@@ -111,6 +124,13 @@ const ChatPage = () => {
 
         setMessages([...messages, newMsg]);
         setNewMessage("");
+
+        // Envoyer le message via Socket.IO
+        socket.emit("send_message", {
+          senderId,
+          receiverId: id,
+          content: newMessage,
+        });
       } catch (error) {
         console.error("Erreur lors de l'envoi du message:", error);
       }
