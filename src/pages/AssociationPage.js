@@ -144,7 +144,7 @@ const AssociationPage = () => {
       console.log(formData);
       console.log(formDataToSend);
       const token = localStorage.getItem('authToken');
-      const response = await axios.put('https://back-thumbs.vercel.app/asso/update-asso', formData, {
+      const response = await axios.put('https://back-thumbs.vercel.app/asso/update-asso', formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
@@ -159,7 +159,7 @@ const AssociationPage = () => {
 
       dispatch(updateUser(response.data));
 
-    // window.location.reload();
+    window.location.reload();
 
 
     } catch (error) {

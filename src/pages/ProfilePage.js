@@ -161,7 +161,7 @@ const ProfilePage = () => {
 
       dispatch(updateUser(response.data));
 
-      // window.location.reload();
+      window.location.reload();
 
 
     } catch (error) {
