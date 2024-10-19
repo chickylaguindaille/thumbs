@@ -13,6 +13,7 @@ import { format, parseISO } from 'date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { fr } from 'date-fns/locale';
+import { Link } from 'react-router-dom';
 
 const animatedComponents = makeAnimated();
 
@@ -36,6 +37,7 @@ const AssociationPage = () => {
   const [modalCreateEventIsOpen, setModalCreateEventIsOpen] = useState(false);
   const [logoutModalIsOpen, setLogoutModalIsOpen] = useState(false);
   const [deleteAccountModalIsOpen, setDeleteAccountModalIsOpen] = useState(false);
+  const [eventsOrganized, setEventsOrganized] = useState([]);
   const dispatch = useDispatch();
 
   // useEffect(() => {
@@ -71,7 +73,7 @@ const AssociationPage = () => {
         });
         setProfile(response.data.asso);
         setFormData(response.data.asso);
-        console.log(response.data);
+        // console.log(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération du profil asso:', error);
       }
@@ -124,19 +126,13 @@ const AssociationPage = () => {
     const formDataToSend = new FormData();
     if (formData.type) formDataToSend.append('type', formData.type);
     if (formData.nameasso) formDataToSend.append('nameasso', formData.nameasso);
-    // if (formData.password) formDataToSend.append('password', formData.password);
+    if (formData.password && formData.password !== user.password) formDataToSend.append('password', formData.password);
     if (formData.siret) formDataToSend.append('siret', formData.siret);
     if (formData.address) formDataToSend.append('address', formData.address);
     if (formData.city) formDataToSend.append('city', formData.city);
     if (formData.postalcode) formDataToSend.append('postalcode', formData.postalcode);
-    if (formData.creationdate) formDataToSend.append('creationdate', formData.creationdate);
-    if (formData.website) formDataToSend.append('website', formData.website);
-    if (formData.telephone) formDataToSend.append('telephone', formData.telephone);
-    if (formData.interests && Array.isArray(formData.interests)) {
-      formData.interests.forEach((interest) => {
-        formDataToSend.append('interests[]', interest);
-      });
-    }   
+    if (formData.interests) formDataToSend.append('interests', formData.interests);
+    if (formData.creation) formDataToSend.append('creation', formData.creation);
     if (formData.description) formDataToSend.append('description', formData.description);
     if (formData.presentation) formDataToSend.append('presentation', formData.presentation);
     if (formData.logo) formDataToSend.append('logo', formData.logo);
@@ -198,8 +194,7 @@ const AssociationPage = () => {
       });
       console.log('Event créé avec succès:', response.data);
       setProfile(response.data);
-      // Rediriger vers la page de l'événement
-      // window.location.reload();
+      window.location.reload();
     } catch (error) {
       console.error('Erreur lors de la création de l\'event:', error);
     }
@@ -287,6 +282,26 @@ const handleDateChange = (date) => {
       closeDeleteAccountModal();
     }
   };
+
+  useEffect(() => {
+    const fetchEventFromAsso = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+
+        const response = await axios.get(`https://back-thumbs.vercel.app/asso/organized-events/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+        setEventsOrganized(response.data.events);
+
+      } catch (error) {
+        console.error('Erreur lors de la récupération du profil asso:', error);
+      }
+    };
+
+    fetchEventFromAsso();
+  }, [id]);
 
   return (
     <div className="pt-[56px]">
@@ -427,22 +442,22 @@ const handleDateChange = (date) => {
                 <h2 className="text-xl font-semibold mt-4 mb-2">{profile._id === user?._id ? 'Mes événements' : "Événements de l'association"}</h2>
                 <div className="space-y-4">
                   <div className="flex flex-col space-y-2">
-                    {optionsLoisirs.filter((loisir) => 
-                      profile.interests.some((interest) => interest === loisir.value)
-                    ).length > 0 ? (
-                      optionsLoisirs
-                        .filter((loisir) => profile.interests.some((interest) => interest === loisir.value))
-                        .map((loisir) => (
-                          <div key={loisir.value} className="flex items-center border p-2 rounded-lg shadow-sm">
+                    {eventsOrganized.length > 0 ? (
+                        eventsOrganized.map((event) => (
+                          <Link 
+                            key={event._id} 
+                            to={`/events/${event._id}`}
+                            className="flex items-center border p-2 rounded-lg shadow-sm hover:bg-gray-100 transition duration-200"
+                          >              
                             <img
-                              src={loisir.image}
-                              alt={loisir.label}
+                              src={event.photo}
+                              alt={event.eventName}
                               className="w-12 h-12 object-cover rounded-lg mr-4"
                             />
                             <span className="text-lg font-medium">
-                              {loisir.label}
+                              {event.eventName}
                             </span>
-                          </div>
+                          </Link>
                         ))
                     ) : (
                       <div className="">
@@ -451,41 +466,6 @@ const handleDateChange = (date) => {
                     )}
                   </div>
                 </div>
-
-                {/* Les événements auxquels je participe*/}
-                {profile._id === user?._id && (
-                  <div>
-                    <h2 className="text-xl font-semibold mt-4 mb-2">Événements auxquels je participe</h2>
-                    <div className="space-y-4">
-                      <div className="flex flex-col space-y-2">
-                        {optionsLoisirs.filter((loisir) => 
-                          profile.interests.some((interest) => interest === loisir.value)
-                        ).length > 0 ? (
-                          optionsLoisirs
-                            .filter((loisir) => profile.interests.some((interest) => interest === loisir.value))
-                            .map((loisir) => (
-                              <div key={loisir.value} className="flex items-center border p-2 rounded-lg shadow-sm">
-                                <img
-                                  src={loisir.image}
-                                  alt={loisir.label}
-                                  className="w-12 h-12 object-cover rounded-lg mr-4"
-                                />
-                                <span className="text-lg font-medium">
-                                  {loisir.label}
-                                </span>
-                              </div>
-                            ))
-                        ) : (
-                          <div className="">
-                            Pas d'événement créé
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-
               </div>
             )}
             {activeTab === 'settings' && profile._id === user?._id && (

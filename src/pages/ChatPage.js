@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
+import { useSelector } from 'react-redux';
 import { FaPaperPlane } from "react-icons/fa";
 import axios from "axios";
 import Header from "../components/Header";
@@ -11,7 +12,7 @@ const MessageBubble = ({ message, isSender }) => {
       className={`flex ${
         isSender ? "justify-end" : "justify-start"
       } mb-4 items-start`}
-    >
+    >{message.isSender}
       <div
         className={`p-3 rounded-lg max-w-xs ${
           isSender ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
@@ -33,11 +34,15 @@ const ChatPage = () => {
   const [contact, setContact] = useState(null);
   const messagesEndRef = useRef(null);
 
+  // Récupérer l'utilisateur connecté depuis le store Redux
+  const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
+
   useEffect(() => {
     const fetchMessages = async () => {
       try {
         const token = localStorage.getItem("authToken");
 
+        // Récupérer les messages du contact
         const response = await axios.get(
           `https://back-thumbs.vercel.app/messages/get/${id}`,
           {
@@ -80,13 +85,17 @@ const ChatPage = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
+    console.log(messages);
   }, [messages]);
+
   const handleSendMessage = async () => {
     if (newMessage.trim()) {
       try {
         const token = localStorage.getItem("authToken");
         const decodedToken = jwtDecode(token);
         const senderId = decodedToken.userId;
+
+        // Envoyer un nouveau message
         const response = await axios.post(
           "https://back-thumbs.vercel.app/messages/send",
           {
@@ -104,7 +113,7 @@ const ChatPage = () => {
         const newMsg = {
           ...response.data,
           content: newMessage,
-          senderId,
+          sender: { id: senderId },
           receiverId: id,
           sentAt: new Date().toISOString(),
         };
@@ -128,13 +137,14 @@ const ChatPage = () => {
         {messages.map((message, index) => (
           <MessageBubble
             key={index}
+            // message={message}
             message={message}
-            isSender={message.senderId === localStorage.getItem("userId")}
-          />
+            // Comparer l'ID de l'utilisateur connecté avec l'ID de l'expéditeur du message
+            isSender={message?.sender?.id && user?.id && message.sender.id === user.id}
+            />
         ))}
         <div ref={messagesEndRef} />
       </div>
-
       <div className="flex-shrink-0 p-4 bg-white border-t flex items-center">
         <input
           type="text"
