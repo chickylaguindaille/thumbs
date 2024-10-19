@@ -1,127 +1,137 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
-import { FaPaperPlane } from 'react-icons/fa';
-import messagesData from '../examples/messages.json';
-import contactsData from '../examples/contacts.json';
-import Header from '../components/Header'; // Assurez-vous que le chemin d'importation est correct
+import React, { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
+import { FaPaperPlane } from "react-icons/fa";
+import axios from "axios";
+import Header from "../components/Header";
+import { jwtDecode } from "jwt-decode";
 
-const MessageBubble = ({ message, isSender, showProfile, profileImage }) => {
+const MessageBubble = ({ message, isSender }) => {
   return (
-    <div className={`flex ${isSender ? 'justify-end' : 'justify-start'} mb-4 items-start`}>
-      {!isSender && (
-        showProfile ? (
-          <img
-            src={profileImage}
-            alt="Profil"
-            className="w-8 h-8 rounded-full mr-3"
-          />
-        ) : (
-          <div className="w-8 h-8 mr-3"></div>
-        )
-      )}
-      <div className={`p-3 rounded-lg max-w-xs ${isSender ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}>
+    <div
+      className={`flex ${
+        isSender ? "justify-end" : "justify-start"
+      } mb-4 items-start`}
+    >
+      <div
+        className={`p-3 rounded-lg max-w-xs ${
+          isSender ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
+        }`}
+      >
         <p>{message.content}</p>
-        <span className="text-xs text-gray-400">{new Date(message.date).toLocaleTimeString()}</span>
+        <span className="text-xs text-gray-400">
+          {new Date(message.sentAt).toLocaleTimeString()}
+        </span>
       </div>
     </div>
   );
 };
 
-// Fonction utilitaire pour formater la date
-const formatDate = (dateString) => {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(dateString).toLocaleDateString(undefined, options);
-};
-
 const ChatPage = () => {
-  const { id } = useParams(); // ID du contact
+  const { id } = useParams(); // ID du contact avec qui on parle
   const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
   const [contact, setContact] = useState(null);
-  const [newMessage, setNewMessage] = useState('');
-  const messagesEndRef = useRef(null); // Référence à la fin des messages
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    // Charger les messages et le contact sélectionné
-    if (id && messagesData[id]) {
-      setMessages(messagesData[id]);
-      const selectedContact = contactsData.find((contact) => contact.id === parseInt(id, 10));
-      setContact(selectedContact);
-    }
+    const fetchMessages = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+
+        const response = await axios.get(
+          `https://back-thumbs.vercel.app/messages/get/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setMessages(response.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des messages:", error);
+      }
+    };
+
+    const fetchContact = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(
+          `https://back-thumbs.vercel.app/profil/getDetails-user/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setContact(response.data.user);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des infos de contact:",
+          error
+        );
+      }
+    };
+
+    fetchMessages();
+    fetchContact();
   }, [id]);
 
   useEffect(() => {
-    // Faire défiler jusqu'au bas chaque fois que les messages changent
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
-
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (newMessage.trim()) {
-      const newMsg = {
-        id: messages.length + 1,
-        sender: 1, // L'utilisateur actuel a l'ID 1
-        content: newMessage,
-        date: new Date().toISOString(),
-      };
+      try {
+        const token = localStorage.getItem("authToken");
+        const decodedToken = jwtDecode(token);
+        const senderId = decodedToken.userId;
+        const response = await axios.post(
+          "https://back-thumbs.vercel.app/messages/send",
+          {
+            senderId,
+            receiverId: id,
+            content: newMessage,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      // Ajouter le nouveau message à la liste
-      setMessages((prevMessages) => [...prevMessages, newMsg]);
-      setNewMessage(''); // Réinitialiser le champ de saisie
+        const newMsg = {
+          ...response.data,
+          content: newMessage,
+          senderId,
+          receiverId: id,
+          sentAt: new Date().toISOString(),
+        };
+
+        setMessages([...messages, newMsg]);
+        setNewMessage("");
+      } catch (error) {
+        console.error("Erreur lors de l'envoi du message:", error);
+      }
     }
-  };
-
-  // Fonction pour déterminer si c'est le premier message d'une nouvelle journée
-  const isFirstMessageOfDay = (currentMessage, previousMessage) => {
-    const currentDate = new Date(currentMessage.date).toDateString();
-    const previousDate = previousMessage ? new Date(previousMessage.date).toDateString() : null;
-    return currentDate !== previousDate;
-  };
-
-  // Fonction pour déterminer si la photo de profil doit être affichée
-  const shouldShowProfile = (message, index) => {
-    if (message.sender === 1) return false; // Ne pas afficher la photo pour les messages de l'utilisateur
-
-    // Trouver le premier message du jour envoyé par le contact
-    const currentMessageDate = new Date(message.date).toDateString();
-    const previousMessages = messages.slice(0, index);
-    const firstMessageOfDay = previousMessages.reverse().find(msg => {
-      const msgDate = new Date(msg.date).toDateString();
-      return msg.sender !== 1 && msgDate === currentMessageDate;
-    });
-
-    return !firstMessageOfDay; // Afficher la photo seulement si ce n'est pas le premier message du jour pour le contact
   };
 
   return (
     <div className="flex flex-col h-screen pt-[56px]">
-      <div>
-        <Header 
-          contactName={contact ? contact.name : ''} 
-          showBackButton={true}
-          contactId={contact ? contact.id : null}
-        />
-      </div>
-      
+      <Header
+        contactName={contact ? `${contact.firstName} ${contact.lastName}` : ""}
+        showBackButton={true}
+      />
+
       <div className="flex-grow overflow-y-auto px-4 pt-4">
         {messages.map((message, index) => (
-          <div key={message.id}>
-            {/* Afficher la date au-dessus du premier message de la journée */}
-            {index === 0 || isFirstMessageOfDay(message, messages[index - 1]) ? (
-              <div className="text-center text-gray-500 text-xs mb-2">
-                {formatDate(message.date)}
-              </div>
-            ) : null}
-
-            <MessageBubble
-              message={message}
-              isSender={message.sender === 1} // Comparer avec l'ID de l'utilisateur actuel
-              showProfile={shouldShowProfile(message, index)} // Afficher la photo de profil uniquement si c'est le premier message du jour pour ce contact
-              profileImage={contact ? contact.profileImage : ''}
-            />
-          </div>
+          <MessageBubble
+            key={index}
+            message={message}
+            isSender={message.senderId === localStorage.getItem("userId")}
+          />
         ))}
-        {/* Référence invisible pour faire défiler jusqu'en bas */}
         <div ref={messagesEndRef} />
       </div>
 
