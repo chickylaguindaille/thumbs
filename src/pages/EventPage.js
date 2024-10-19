@@ -345,7 +345,7 @@ const EventPage = () => {
                 onClick={toggleParticipation}
                 className={`py-2 px-4 rounded ${isParticipant ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} text-white`}
               >
-                {isParticipant ? 'Se retirer' : 'Participe'}
+                {isParticipant ? 'Se retirer' : 'Je participe'}
               </button>
             </div>
           )}

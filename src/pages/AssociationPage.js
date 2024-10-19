@@ -125,7 +125,10 @@ const AssociationPage = () => {
     const formDataToSend = new FormData();
     if (formData.type) formDataToSend.append('type', formData.type);
     if (formData.nameasso) formDataToSend.append('nameasso', formData.nameasso);
+
+    console.log(formData.password)
     if (formData.password) formDataToSend.append('password', formData.password);
+
     if (formData.siret) formDataToSend.append('siret', formData.siret);
     if (formData.address) formDataToSend.append('address', formData.address);
     if (formData.city) formDataToSend.append('city', formData.city);

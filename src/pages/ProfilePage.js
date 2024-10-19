@@ -127,8 +127,12 @@ const ProfilePage = () => {
 
     if (formData.firstName) formDataToSend.append('firstName', formData.firstName);
     if (formData.lastName) formDataToSend.append('lastName', formData.lastName);
-    if (formData.password) formDataToSend.append('password', formData.password);
-    if (formData.interests) formDataToSend.append('interests', formData.interests);
+    if (formData.password && formData.password != "") formDataToSend.append('password', formData.password);
+    if (formData.interests && Array.isArray(formData.interests)) {
+      formData.interests.forEach((interest) => {
+        formDataToSend.append('interests[]', interest);
+      });
+    }    
     if (formData.photo) formDataToSend.append('photo', formData.photo);
     if (formData.genre) formDataToSend.append('genre', formData.genre);
     if (formData.birthdate) formDataToSend.append('birthdate', formData.birthdate);
