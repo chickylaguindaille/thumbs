@@ -38,6 +38,7 @@ const AssociationPage = () => {
   const [logoutModalIsOpen, setLogoutModalIsOpen] = useState(false);
   const [deleteAccountModalIsOpen, setDeleteAccountModalIsOpen] = useState(false);
   const [eventsOrganized, setEventsOrganized] = useState([]);
+  const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
 
   // useEffect(() => {
@@ -132,7 +133,11 @@ const AssociationPage = () => {
     if (formData.address) formDataToSend.append('address', formData.address);
     if (formData.city) formDataToSend.append('city', formData.city);
     if (formData.postalcode) formDataToSend.append('postalcode', formData.postalcode);
-    if (formData.interests) formDataToSend.append('interests', formData.interests);
+    if (formData.interests && Array.isArray(formData.interests)) {
+      formData.interests.forEach((interest) => {
+        formDataToSend.append('interests[]', interest);
+      });
+    }    
     if (formData.creation) formDataToSend.append('creation', formData.creation);
     if (formData.description) formDataToSend.append('description', formData.description);
     if (formData.presentation) formDataToSend.append('presentation', formData.presentation);
@@ -166,6 +171,21 @@ const AssociationPage = () => {
   };
 
   const handleCreateEvent = async () => {
+    let newErrors = {};
+  
+    if (!formDataInputs.eventName) newErrors.eventName = 'Le nom de l\'événement est obligatoire';
+    if (!formDataInputs.description) newErrors.description = 'Une description de l\'événement est obligatoire';
+    if (!formDataInputs.address) newErrors.address = 'Une adresse de l\'événement est obligatoire';
+    if (!formDataInputs.city) newErrors.city = 'Une ville pour l\'événement est obligatoire';
+    if (!formDataInputs.creationdate) newErrors.creationdate = 'La date de l\'événement est obligatoire';
+    if (!formDataInputs.photo) newErrors.photo = 'Une photo pour l\'événement est obligatoire';
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
     try {
       const eventData = new FormData();
       eventData.append('organisator', user._id);
@@ -520,13 +540,14 @@ const handleDateChange = (date) => {
        
         <form className="space-y-4">
         <div>
-            <label className="block text-sm font-medium">Nom de l'événement</label>
+            <label className="block text-sm font-medium">Nom de l'événement <span className="text-red-500">*</span></label>
             <input 
               type="text" 
               name="eventName" 
               className="w-full border rounded-lg p-2" 
               onChange={handleEventInputChange}
               />
+              {errors.eventName && <p className="text-red-500">{errors.eventName}</p>}
         </div>
         <div>
             <label className="block text-sm font-medium">Résumé</label>
@@ -537,22 +558,25 @@ const handleDateChange = (date) => {
               />
         </div>
         <div>
-            <label className="block text-sm font-medium">Description</label>
+            <label className="block text-sm font-medium">Description <span className="text-red-500">*</span></label>
             <textarea 
               name="description" 
               className="w-full border rounded-lg p-2" 
               onChange={handleEventInputChange}
               />
+            {errors.description && <p className="text-red-500">{errors.description}</p>}
         </div>
         <div>
-          <label className="block text-sm font-medium">Adresse</label>
+          <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>
           <CitySearch 
               formData={formDataInputs} 
               setFormData={setFormDataInputs}
-            />   
+            />
+            {errors.address && <p className="text-red-500">{errors.address}</p>}
+            {errors.city && <p className="text-red-500">{errors.city}</p>}
         </div>
         <div>
-          <label className="block text-sm font-medium">Date et heure de l'événement</label>
+          <label className="block text-sm font-medium">Date et heure de l'événement <span className="text-red-500">*</span></label>
           <DatePicker
             name="creationdate"
             selected={formDataInputs.creationdate || null}
@@ -564,6 +588,7 @@ const handleDateChange = (date) => {
             locale={fr}
             className="w-full border rounded-lg p-2"
           />
+          {errors.creationdate && <p className="text-red-500">{errors.creationdate}</p>}
         </div>
         <div>
             <label className="block text-sm font-medium">Intérêts</label>
@@ -582,7 +607,7 @@ const handleDateChange = (date) => {
               />
         </div>
         <div>
-            <label className="block text-sm font-medium">Photo</label>
+            <label className="block text-sm font-medium">Photo <span className="text-red-500">*</span></label>
             <input 
               type="file"
               name="photo"
@@ -590,6 +615,7 @@ const handleDateChange = (date) => {
               className="w-full border rounded-lg p-2" 
               onChange={handleEventInputChange} 
             />
+            {errors.photo && <p className="text-red-500">{errors.photo}</p>}
           </div>
         <div className="flex justify-end mt-4">
             <button
