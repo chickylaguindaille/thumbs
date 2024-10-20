@@ -27,8 +27,6 @@ const Header = ({ contactName, toggleSidebar, isSidebarOpen }) => {
     navigate('/messages');
   };
 
-  console.log(type);
-
   // Fonction pour naviguer vers la page de profil
   const handleProfileButtonClick = () => {
     if (profilId && type === "user") {

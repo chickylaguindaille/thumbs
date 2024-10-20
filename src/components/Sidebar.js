@@ -40,9 +40,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     try {
       const token = localStorage.getItem("authToken");
       await axios.post(
-        "https://back-thumbs.vercel.app/auth/logout",
-        {},
-        {
+        "https://back-thumbs.vercel.app/auth/logout", {}, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

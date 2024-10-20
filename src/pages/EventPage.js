@@ -18,6 +18,7 @@ const EventPage = () => {
   const user = useSelector((state) =>
     state.auth.user ? state.auth.user.user : null
   );
+  const [isLoadingRequest, setIsLoadingRequest] = useState(false);
   const [formDataInputs, setFormDataInputs] = useState({
     eventName: "",
     description: "",
@@ -211,6 +212,7 @@ const EventPage = () => {
     if (formDataInputs.photo) eventData.append("photo", formDataInputs.photo);
 
     try {
+      setIsLoadingRequest(true);
       const token = localStorage.getItem("authToken");
       const response = await axios.put(
         `https://back-thumbs.vercel.app/event/update-event/${id}`,
@@ -226,11 +228,14 @@ const EventPage = () => {
       window.location.reload();
     } catch (error) {
       console.error("Erreur lors de la mise à jour du profil:", error);
+    } finally {
+      setIsLoadingRequest(false);
     }
   };
 
   const handleDeleteEvent = async () => {
     try {
+      setIsLoadingRequest(true);
       const token = localStorage.getItem("authToken");
       await axios.delete(
         `https://back-thumbs.vercel.app/event/delete-event/${id}`,
@@ -243,6 +248,8 @@ const EventPage = () => {
       window.location.href = "/events"; // Redirection vers la page des events après la suppression de l'event
     } catch (error) {
       console.error("Erreur lors de la suppression de l'événement:", error);
+    } finally {
+      setIsLoadingRequest(false);
     }
   };
 
@@ -261,8 +268,8 @@ const EventPage = () => {
 
   if (!event && !error) {
     return (
-      <div className="pt-[56px]">
-        <p>Chargement de l'événement...</p>
+      <div className="flex items-center justify-center h-screen">
+        <div className="loader"></div>
       </div>
     );
   }
@@ -480,8 +487,13 @@ const EventPage = () => {
                 type="button"
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg mr-2"
                 onClick={handleModifyEvent}
+                disabled={isLoadingRequest}
               >
-                Modifier
+              {isLoadingRequest ? (
+                <span>Envoi...</span>
+              ) : (
+                "Modifier"
+              )}    
               </button>
               <button
                 type="button"
@@ -508,8 +520,13 @@ const EventPage = () => {
             <button
               className="bg-red-500 text-white px-4 py-2 rounded-lg"
               onClick={handleDeleteEvent}
+              disabled={isLoadingRequest}
             >
-              Supprimer
+              {isLoadingRequest ? (
+                <span>Suppression...</span>
+              ) : (
+                "Supprimer"
+              )}                 
             </button>
             <button
               className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg"

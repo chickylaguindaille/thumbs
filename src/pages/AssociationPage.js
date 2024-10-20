@@ -19,6 +19,8 @@ const animatedComponents = makeAnimated();
 
 const AssociationPage = () => {
   const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
+  const [loading, setLoading] = useState(true);
+  const [isLoadingRequest, setIsLoadingRequest] = useState(false);
   const [profile, setProfile] = useState({
     type: "user",
     logo: null,    
@@ -65,6 +67,7 @@ const AssociationPage = () => {
   
   useEffect(() => {
     const fetchProfile = async () => {
+      setLoading(true);
       try {
         const token = localStorage.getItem('authToken');
         const response = await axios.get(`https://back-thumbs.vercel.app/asso/getDetails-asso/${id}`, {
@@ -77,6 +80,8 @@ const AssociationPage = () => {
         // console.log(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération du profil asso:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -144,6 +149,7 @@ const AssociationPage = () => {
     if (formData.logo) formDataToSend.append('logo', formData.logo);
 
     try {
+      setIsLoadingRequest(true);
       console.log(formData);
       console.log(formDataToSend);
       const token = localStorage.getItem('authToken');
@@ -167,6 +173,8 @@ const AssociationPage = () => {
 
     } catch (error) {
       console.error('Erreur lors de la mise à jour du profil:', error);
+    } finally {
+      setIsLoadingRequest(false);
     }
   };
 
@@ -187,6 +195,8 @@ const AssociationPage = () => {
     }
 
     try {
+      setIsLoadingRequest(true);
+
       const eventData = new FormData();
       eventData.append('organisator', user._id);
       if (formDataInputs.eventName) eventData.append('eventName', formDataInputs.eventName);
@@ -218,6 +228,8 @@ const AssociationPage = () => {
       window.location.reload();
     } catch (error) {
       console.error('Erreur lors de la création de l\'event:', error);
+    } finally {
+      setIsLoadingRequest(false);
     }
   };
 
@@ -270,25 +282,27 @@ const handleDateChange = (date) => {
 
   const handleLogout = async () => {
     try {
+      setIsLoadingRequest(true);
       const token = localStorage.getItem('authToken');
       await axios.post('https://back-thumbs.vercel.app/auth/logout', {}, {
         headers: {
-          Authorization: `Bearer ${token}`,        }
+          Authorization: `Bearer ${token}`,        
+        }
       });
 
       dispatch(logout());
-
-
-      // window.location.href = '/login';
+      window.location.href = '/login';
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);
     } finally {
-      closeLogoutModal();
+      setIsLoadingRequest(false);
     }
   };
 
   const handleDeleteAccount = async () => {
     try {
+      setIsLoadingRequest(true);
+
       const token = localStorage.getItem('authToken');
       await axios.delete('https://back-thumbs.vercel.app/asso/delete', {
         headers: {
@@ -300,6 +314,7 @@ const handleDateChange = (date) => {
       console.error('Erreur lors de la suppression du compte:', error);
       // Afficher un message d'erreur si nécessaire
     } finally {
+      setIsLoadingRequest(false);
       closeDeleteAccountModal();
     }
   };
@@ -323,6 +338,14 @@ const handleDateChange = (date) => {
 
     fetchEventFromAsso();
   }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="loader"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-[56px]">
@@ -622,8 +645,13 @@ const handleDateChange = (date) => {
               type="button"
               className="px-4 py-2 bg-blue-600 text-white rounded-lg mr-2"
               onClick={handleCreateEvent}
+              disabled={isLoadingRequest}
             >
-              Créer
+              {isLoadingRequest ? (
+                <span>Envoi...</span>
+              ) : (
+                "Créer"
+              )}                 
             </button>
             <button
               type="button"
@@ -756,8 +784,13 @@ const handleDateChange = (date) => {
               type="button"
               className="px-4 py-2 bg-blue-600 text-white rounded-lg mr-2"
               onClick={handleUpdateProfile}
+              disabled={isLoadingRequest}
             >
-              Enregistrer
+              {isLoadingRequest ? (
+                <span>Envoi...</span>
+              ) : (
+                "Enregistrer"
+              )}            
             </button>
             <button
               type="button"
@@ -778,8 +811,13 @@ const handleDateChange = (date) => {
             <button
               className="px-4 py-2 bg-red-600 text-white rounded-lg mr-2"
               onClick={handleLogout}
+              disabled={isLoadingRequest}
             >
-              Déconnexion
+              {isLoadingRequest ? (
+                <span>Déconnexion...</span>
+              ) : (
+                "Déconnexion"
+              )}               
             </button>
             <button
               className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg"
@@ -799,9 +837,14 @@ const handleDateChange = (date) => {
             <button
               className="bg-red-500 text-white px-4 py-2 rounded-lg"
               onClick={handleDeleteAccount}
+              disabled={isLoadingRequest}
             >
-              Supprimer
-            </button>
+              {isLoadingRequest ? (
+                <span>Suppression...</span>
+              ) : (
+                "Supprimer"
+              )}               
+              </button>
             <button
               className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg"
               onClick={closeDeleteAccountModal}

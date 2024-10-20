@@ -8,6 +8,7 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user");
+  const [isLoadingRequest, setIsLoadingRequest] = useState(false);
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ function LoginPage() {
     setError("");
 
     try {
+      setIsLoadingRequest(true);
       const response = await axios.post(url, {
         email,
         password,
@@ -41,6 +43,8 @@ function LoginPage() {
         "Erreur lors de la connexion. Veuillez vérifier vos informations."
       );
       console.error("Erreur de connexion:", err);
+    } finally {
+      setIsLoadingRequest(false);
     }
   };
 
@@ -152,9 +156,14 @@ function LoginPage() {
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-lg transition duration-300"
+            disabled={isLoadingRequest}
           >
-            Connexion
-          </button>
+              {isLoadingRequest ? (
+                <span>Connexion...</span>
+              ) : (
+                "Connexion"
+              )}               
+            </button>
         </div>
       </form>
     </div>

@@ -16,6 +16,8 @@ const animatedComponents = makeAnimated();
 
 const ProfilePage = () => {
   const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
+  const [loading, setLoading] = useState(true);
+  const [isLoadingRequest, setIsLoadingRequest] = useState(false);
   const [profile, setProfile] = useState({
     _id: '',
     firstName: '',
@@ -62,6 +64,7 @@ const ProfilePage = () => {
 
   
   useEffect(() => {
+    setLoading(true);
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('authToken');
@@ -75,6 +78,8 @@ const ProfilePage = () => {
         setFormData(response.data.user);
       } catch (error) {
         console.error('Erreur lors de la récupération du profil asso:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -144,7 +149,7 @@ const ProfilePage = () => {
 
 
     try {
-      // console.log(formData);
+      setIsLoadingRequest(true);
       const token = localStorage.getItem('authToken');
       const response = await axios.post('https://back-thumbs.vercel.app/profil/profilupdate', formDataToSend, {
         headers: {
@@ -166,6 +171,8 @@ const ProfilePage = () => {
 
     } catch (error) {
       console.error('Erreur lors de la mise à jour du profil:', error);
+    } finally {
+      setIsLoadingRequest(false);
     }
   };
 
@@ -202,6 +209,7 @@ const ProfilePage = () => {
 
   const handleLogout = async () => {
     try {
+      setIsLoadingRequest(true);
       const token = localStorage.getItem('authToken');
       await axios.post('https://back-thumbs.vercel.app/auth/logout', {}, {
         headers: {
@@ -210,17 +218,17 @@ const ProfilePage = () => {
       });
 
       dispatch(logout());
-
-      // window.location.href = '/login';
+      window.location.href = '/login';
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);
     } finally {
-      closeLogoutModal();
+      setIsLoadingRequest(false);
     }
   };
 
   const handleDeleteAccount = async () => {
     try {
+      setIsLoadingRequest(true);
       const token = localStorage.getItem('authToken');
       await axios.delete('https://back-thumbs.vercel.app/profil/delete-profil', {
         headers: {
@@ -232,9 +240,18 @@ const ProfilePage = () => {
       console.error('Erreur lors de la suppression du compte:', error);
       // Afficher un message d'erreur si nécessaire
     } finally {
+      setIsLoadingRequest(false);
       closeDeleteAccountModal();
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="loader"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-[56px]">
@@ -339,23 +356,23 @@ const ProfilePage = () => {
             {activeTab === 'activity' && (
               <div>
                 {/* Les événements auxquels je participe*/}
-                <h2 className="text-xl font-semibold mt-4 mb-2">{profile.id === user?.id ? 'Événements auxquels je participe' : "Événements auxquels la personne participe"}</h2>
+                <h2 className="text-xl font-semibold mt-4 mb-2">{profile?._id === user?._id ? 'Événements auxquels je participe' : "Événements auxquels la personne participe"}</h2>
                 <div className="space-y-4">
                   <div className="flex flex-col space-y-2">
                     {eventsParticipation.length > 0 ? (
                         eventsParticipation.map((event) => (
                           <Link 
-                            key={event._id} 
-                            to={`/events/${event._id}`}
+                            key={event?._id} 
+                            to={`/events/${event?._id}`}
                             className="flex items-center border p-2 rounded-lg shadow-sm hover:bg-gray-100 transition duration-200"
                           >              
                             <img
-                              src={event.photo}
-                              alt={event.eventName}
+                              src={event?.photo}
+                              alt={event?.eventName}
                               className="w-12 h-12 object-cover rounded-lg mr-4"
                             />
                             <span className="text-lg font-medium">
-                              {event.eventName}
+                              {event?.eventName}
                             </span>
                           </Link>
                         ))
@@ -368,7 +385,7 @@ const ProfilePage = () => {
                 </div>
               </div>
             )}
-            {activeTab === 'settings' && profile.id === user.id && (
+            {activeTab === 'settings' && profile?._id === user?._id && (
               <div>
                 <div className="space-y-4">
                   <div
@@ -512,8 +529,13 @@ const ProfilePage = () => {
               type="button"
               className="px-4 py-2 bg-blue-600 text-white rounded-lg mr-2"
               onClick={handleUpdateProfile}
+              disabled={isLoadingRequest}
             >
-              Enregistrer
+              {isLoadingRequest ? (
+                <span>Envoi...</span>
+              ) : (
+                "Créer"
+              )}                 
             </button>
             <button
               type="button"
@@ -534,8 +556,13 @@ const ProfilePage = () => {
             <button
               className="px-4 py-2 bg-red-600 text-white rounded-lg mr-2"
               onClick={handleLogout}
+              disabled={isLoadingRequest}
             >
-              Déconnexion
+              {isLoadingRequest ? (
+                <span>Déconnexion...</span>
+              ) : (
+                "Déconnexion"
+              )}               
             </button>
             <button
               className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg"
@@ -555,8 +582,13 @@ const ProfilePage = () => {
             <button
               className="bg-red-500 text-white px-4 py-2 rounded-lg"
               onClick={handleDeleteAccount}
+              disabled={isLoadingRequest}
             >
-              Supprimer
+              {isLoadingRequest ? (
+                <span>Suppression...</span>
+              ) : (
+                "Supprimer"
+              )}                
             </button>
             <button
               className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg"

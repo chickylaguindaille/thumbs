@@ -8,7 +8,9 @@ const AssociationsPage = () => {
   const [error, setError] = useState(null);
   const [interestsData, setInterestsData] = useState([]);
   const [selectedInterests, setSelectedInterests] = useState([]);
-  const [namesearch, setNameSearch] = useState('');
+  const [namesearch, setNameSearch] = useState('');  
+  const [isLoading, setIsLoading] = useState(true);
+
 
   useEffect(() => {
     const fetchInterests = async () => {
@@ -46,6 +48,7 @@ const AssociationsPage = () => {
   // Fonction pour récupérer les associations basées sur les intérêts sélectionnés et l'input search
   const fetchAssociations = async (filters) => {
     try {
+      setIsLoading(true); // Début du chargement
       const token = localStorage.getItem('authToken');
       const response = await axios.get('https://back-thumbs.vercel.app/asso/filter', {
         headers: {
@@ -63,6 +66,8 @@ const AssociationsPage = () => {
       console.error('Erreur lors de la récupération des associations:', error);
       setAssociations([]); // Vider les associations en cas d'erreur
       setError('Aucune association trouvée.'); // Message d'erreur
+    } finally {
+      setIsLoading(false); // Fin du chargement
     }
   };
 
@@ -86,8 +91,14 @@ const AssociationsPage = () => {
           />
         </div>
         <div className='text-center'>{error && <p className="text-black-500 mt-4">{error}</p>}</div> {/* Message d'erreur */}
-        {associations.length === 0 && !error ? (
-          <p className="text-gray-500 text-center mt-4">Chargement des associations...</p>
+
+
+        {isLoading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="loader">
+            </div>
+          </div>        ) : associations.length === 0 && !error ? (
+          <p className="text-gray-500 text-center mt-4">Aucune association disponible.</p>
         ) : (
           <div className="p-4">
             <ul>

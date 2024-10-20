@@ -6,10 +6,12 @@ import axios from "axios";
 
 const MessagesPage = () => {
   const [conversations, setConversations] = useState([]);
+  const [loading, setLoading] = useState(true);
   const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
 
   useEffect(() => {
     const fetchMessages = async () => {
+      setLoading(true);
       try {
         const token = localStorage.getItem("authToken");
 
@@ -29,14 +31,24 @@ const MessagesPage = () => {
         });
 
         setConversations(sortedConversations);
-        console.log(response.data);
       } catch (error) {
         console.error("Erreur lors de la récupération des messages:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchMessages();
   }, [user?.id]);
+
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="loader"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex pt-[56px]">
@@ -60,7 +72,7 @@ const MessagesPage = () => {
                       </p>
                       {conversation.sentAt && (
                           <span className="text-xs text-gray-400 ml-2">
-                            {new Date(conversation.sentAt	).toLocaleDateString('fr-FR', {
+                            {new Date(conversation.sentAt).toLocaleDateString('fr-FR', {
                               hour: '2-digit',
                               minute: '2-digit',
                             })}
