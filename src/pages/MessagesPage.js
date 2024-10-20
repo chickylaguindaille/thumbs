@@ -63,7 +63,7 @@ const MessagesPage = () => {
             <Link to={`/messages/${conversation.person.id}`} key={index} className="block">
               <li className={`flex items-center bg-white hover:bg-gray-200 rounded-lg h-16 ${index < conversations.length - 1 ? 'border-b border-gray-300' : ''}`}>
                 <img
-                  src={conversation.person.photo || '/default-profile.png'} // Affiche une image par défaut si pas de photo
+                  src={conversation.person.photo || '/images/default-profile.jpg'} // Affiche une image par défaut si pas de photo
                   alt={conversation.person.name}
                   className="w-12 h-12 rounded-full mr-3"
                 />

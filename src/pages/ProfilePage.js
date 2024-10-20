@@ -92,7 +92,8 @@ const ProfilePage = () => {
         });
         const options = response.data.interests.map((interest) => ({
           value: interest.id.toString(),
-          label: `${interest.nom} (${interest.thematique})`
+          label: `${interest.nom} (${interest.thematique})`,
+          logo: `${interest.logo}`
         }));
         setOptionsLoisirs(options);
       } catch (error) {
@@ -301,7 +302,7 @@ const ProfilePage = () => {
                         .map((loisir) => (
                           <div key={loisir.value} className="flex items-center border p-2 rounded-lg shadow-sm">
                             <img
-                              src={loisir.image}
+                              src={loisir.logo}
                               alt={loisir.label}
                               className="w-12 h-12 object-cover rounded-lg mr-4"
                             />
