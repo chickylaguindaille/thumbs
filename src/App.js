@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import EventsPage from './pages/EventsPage';
