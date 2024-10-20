@@ -137,13 +137,24 @@ const ChatPage = () => {
 
   const handleSendMessage = async () => {
     if (newMessage.trim()) {
+      const token = localStorage.getItem("authToken");
+      const decodedToken = jwtDecode(token);
+      const senderId = decodedToken.userId; // Vérifiez que 'userId' est bien la clé dans votre JWT
+  
+      const newMsg = {
+        content: newMessage,
+        sender: { _id: senderId }, // Utilisez '_id' pour faire correspondre à votre structure
+        receiverId: id,
+        sentAt: new Date().toISOString(),
+      };
+  
+      // Ajoutez le message à l'état avant d'envoyer la requête
+      setMessages((prevMessages) => [...prevMessages, newMsg]);
+      setNewMessage("");
+  
       try {
-        const token = localStorage.getItem("authToken");
-        const decodedToken = jwtDecode(token);
-        const senderId = decodedToken.userId; // Vérifiez que 'userId' est bien la clé dans votre JWT
-
-        // Envoyer un nouveau message
-        const response = await axios.post(
+        // Envoyer un nouveau message à l'API
+        await axios.post(
           "https://back-thumbs.vercel.app/messages/send",
           {
             senderId,
@@ -156,22 +167,12 @@ const ChatPage = () => {
             },
           }
         );
-
-        const newMsg = {
-          ...response.data,
-          content: newMessage,
-          sender: { id: senderId },
-          receiverId: id,
-          sentAt: new Date().toISOString(),
-        };
-
-        setMessages([...messages, newMsg]);
-        setNewMessage("");
       } catch (error) {
         console.error("Erreur lors de l'envoi du message:", error);
       }
     }
   };
+  
 
   return (
     <div className="flex flex-col h-screen pt-[56px]">

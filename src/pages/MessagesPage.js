@@ -23,6 +23,11 @@ const MessagesPage = () => {
           }
         );
         const conversationsData = Array.isArray(response.data) ? response.data : [];
+
+        const sortedConversations = conversationsData.sort((a, b) => {
+          return new Date(b.sentAt) - new Date(a.sentAt);
+        });
+
         setConversations(conversationsData);
         console.log(response.data);
       } catch (error) {
@@ -49,9 +54,19 @@ const MessagesPage = () => {
                   />
                   <div className="flex-grow min-w-0">
                     <p className="font-semibold">{conversation.person.name}</p>
-                    <p className={`text-gray-600 text-ellipsis overflow-hidden whitespace-nowrap`}>
-                      {conversation.lastMessage || "Pas de message"}
-                    </p>
+                    <div className='flex items-center justify-between'>
+                      <p className={`text-gray-600 text-ellipsis overflow-hidden whitespace-nowrap`}>
+                        {conversation.lastMessage || "Pas de message"}
+                      </p>
+                      {conversation.sentAt && (
+                          <span className="text-xs text-gray-400 ml-2">
+                            {new Date(conversation.sentAt	).toLocaleDateString('fr-FR', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </span>
+                        )}
+                    </div>
                   </div>
                   <div className="flex items-center ml-2">
                     {conversation.hasUnreadMessage && <FaCircle className="text-blue-500 text-xs mr-1" />}

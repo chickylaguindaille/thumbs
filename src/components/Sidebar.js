@@ -73,7 +73,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         {/* Image de profil */}
         <img
           src={
-            user.type === "asso"
+            user?.type === "asso"
               ? user.logo ||
                 "https://www.photoprof.fr/images_dp/photographes/profil_vide.jpg"
               : user.photo ||
@@ -86,7 +86,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         {/* Contenu du profil */}
         <div className="flex flex-col">
           <span className="text-lg font-semibold">
-            {user.type === "asso"
+            {user?.type === "asso"
               ? user.nameasso
               : `${user.firstName} ${user.lastName}`}
           </span>
@@ -146,7 +146,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         {/* Ligne 4 : Mon profil */}
         <a
           href={
-            user.type === "asso"
+            user?.type === "asso"
               ? `/association/${user._id}`
               : `/profile/${user._id}`
           }
