@@ -70,13 +70,13 @@
       "id": 12,
       "nom": "Randonnée",
       "thematique": "Aventure",
-      "logo": "/build/images/icon-interest/Randonnee_interest.png"
+      "logo": "/build/images/icon-interest/Randonnée_interest.png"
     },
     {
       "id": 13,
       "nom": "Méditation",
       "thematique": "Bien-être",
-      "logo": "/build/images/icon-interest/Meditation_interest.png"
+      "logo": "/build/images/icon-interest/Méditation_interest.png"
     },
     {
       "id": 14,
