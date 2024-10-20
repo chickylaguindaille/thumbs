@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import EventCard from "../components/EventCard";
 import SearchBar from "../components/Searchbar";
 import { useSelector } from "react-redux";
-import { useCallback } from "react";
 
 const EventsPage = () => {
   const user = useSelector((state) =>
@@ -17,6 +16,7 @@ const EventsPage = () => {
   const [sortOrder, setsortOrder] = useState("");
   const [distance, setDistance] = useState("");
 
+  // Fetch des intérêts
   useEffect(() => {
     const fetchInterests = async () => {
       try {
@@ -29,8 +29,7 @@ const EventsPage = () => {
             },
           }
         );
-        // console.log(response.data)
-        setInterestsData(response.data.interests); // Sauvegarde les intérêts récupérés
+        setInterestsData(response.data.interests);
       } catch (error) {
         console.error(
           "Erreur lors de la récupération des centres d'intérêts:",
@@ -38,49 +37,26 @@ const EventsPage = () => {
         );
       }
     };
-
     fetchInterests();
   }, []);
-
-  // useEffect(() => {
-  //   const fetchAllEvents = async () => {
-  //     try {
-  //       const token = localStorage.getItem('authToken');
-
-  //       const response = await axios.get('https://back-thumbs.vercel.app/event/events', {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       });
-
-  //       setEvents(response.data.events);
-  //       console.log(response.data);
-  //     } catch (error) {
-  //       console.error('Erreur lors de la récupération des événements:', error);
-  //       setError('Erreur lors de la récupération des événements');
-  //     }
-  //   };
-
-  //   fetchAllEvents();
-  // }, []);
 
   const getEventInterestNames = (eventInterests) => {
     return eventInterests.map((interestId) => {
       const interest = interestsData.find(
         (i) => Number(i.id) === Number(interestId)
       );
-      return interest ? interest.nom : "Unknown";
+      return interest ? interest.nom : "Inconnu";
     });
   };
 
-  // Fonction pour récupérer les events basées sur les intérêts sélectionnés et l'input search
+  // Fonction de filtrage des événements
   const fetchEvents = useCallback(
     async (filters) => {
       try {
         const token = localStorage.getItem("authToken");
 
         const params = {
-          interests: filters.interests, // Ceci permet de passer plusieurs intérêts
+          interests: filters.interests,
           eventName: filters.namesearch,
           sort: filters.sortOrder,
         };
@@ -100,18 +76,17 @@ const EventsPage = () => {
             params: params,
           }
         );
-        setEvents(response.data.events || []); // Assurez-vous que associations est un tableau
-        setError(null); // Réinitialiser l'erreur si tout se passe bien
+        setEvents(response.data.events || []);
+        setError(null);
       } catch (error) {
         console.error("Erreur lors de la récupération des évents:", error);
-        setEvents([]); // Vider les associations en cas d'erreur
-        setError("Aucun évenement trouvé."); // Message d'erreur
+        setEvents([]);
+        setError("Aucun évenement trouvé.");
       }
     },
     [user?.location.coordinates]
   );
 
-  // Effectuer le filtrage des associations lorsqu'un filtre est appliqué
   useEffect(() => {
     fetchEvents({
       interests: selectedInterests,
@@ -119,37 +94,32 @@ const EventsPage = () => {
       sortOrder,
       distance,
     });
-  }, [selectedInterests, namesearch, sortOrder, distance, fetchEvents]); // Mettre à jour quand selectedInterests change
+  }, [selectedInterests, namesearch, sortOrder, distance, fetchEvents]);
 
   return (
-    <div>
-      <div className="pt-[56px]">
-        <div className="w-full p-4 shadow-lg">
-          {/* Ajout de la SearchBar */}
-          <SearchBar
-            onFiltersChange={({
-              interests,
-              namesearch,
-              sortOrder,
-              distance,
-            }) => {
-              setSelectedInterests(interests); // Mettre à jour les intérêts sélectionnés
-              setNameSearch(namesearch); // Mettre à jour le nom de l'association
-              setsortOrder(sortOrder); // Mettre à jour le sort order
-              setDistance(distance); // Mettre à jour le sort order
-            }}
-            isAssociationsPage={false} // Indiquer que nous sommes sur la page des associations
-          />
-        </div>
-        <div className="px-8 space-y-6 pb-5">
-          <div className="text-center">
-            {error && <p className="text-black-500 mt-4">{error}</p>}
-          </div>{" "}
-          {/* Message d'erreur */}
-          {events.length > 0 ? (
-            events.map((event) => (
+    <div className="pt-[56px] bg-gray-50 min-h-screen">
+      <div className="w-full bg-white shadow-md py-4 px-6">
+        {/* Barre de recherche */}
+        <SearchBar
+          onFiltersChange={({ interests, namesearch, sortOrder, distance }) => {
+            setSelectedInterests(interests);
+            setNameSearch(namesearch);
+            setsortOrder(sortOrder);
+            setDistance(distance);
+          }}
+          isAssociationsPage={false}
+        />
+      </div>
+
+      {/* Contenu des événements */}
+      <div className="px-4 md:px-8 py-8">
+        {error && <p className="text-red-500 text-center">{error}</p>}
+
+        {events.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {events.map((event) => (
               <EventCard
-                // key={event.id}
+                key={event._id}
                 id={event._id}
                 photo={event.photo}
                 eventName={event.eventName}
@@ -159,11 +129,13 @@ const EventsPage = () => {
                 city={event.city}
                 organisator={event.organisator}
               />
-            ))
-          ) : (
-            <p>{/*Aucun événement disponible.*/}</p>
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-500">
+            Aucun événement disponible.
+          </p>
+        )}
       </div>
     </div>
   );
