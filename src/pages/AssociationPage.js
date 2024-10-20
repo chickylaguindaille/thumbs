@@ -331,20 +331,35 @@ const handleDateChange = (date) => {
                 className={`cursor-pointer text-center pb-2 ${tabWidth} ${activeTab === 'info' ? 'border-b-2 border-blue-500 text-blue-600' : ''}`}
                 onClick={() => setActiveTab('info')}
               >
-                <FaInfoCircle className="inline-block text-xl" />
+                <div className='flex items-center justify-center space-x-2'>
+                  <span className="flex-shrink-0">
+                    <FaInfoCircle className="text-xl align-middle" />
+                  </span>
+                  <span className="hidden sm:block align-middle">Informations</span>
+                </div>
               </li>
               <li
                 className={`cursor-pointer text-center pb-2 ${tabWidth} ${activeTab === 'activity' ? 'border-b-2 border-blue-500 text-blue-600' : ''}`}
                 onClick={() => setActiveTab('activity')}
               >
-                <FaChartBar className="inline-block text-xl" />
+                <div className='flex items-center justify-center space-x-2'>
+                  <span className="flex-shrink-0">
+                    <FaChartBar className="text-xl align-middle" />
+                  </span>
+                  <span className="hidden sm:block align-middle">Événements</span>
+                </div>              
               </li>
               {profile._id === user?._id && (
                 <li
                   className={`cursor-pointer text-center pb-2 w-1/3 ${activeTab === 'settings' ? 'border-b-2 border-blue-500 text-blue-600' : ''}`}
                   onClick={() => setActiveTab('settings')}
                 >
-                  <FaCog className="inline-block text-xl" />
+                  <div className='flex items-center justify-center space-x-2'>
+                    <span className="flex-shrink-0">
+                      <FaCog className="text-xl align-middle" />
+                    </span>
+                    <span className="hidden sm:block align-middle">Réglages</span>
+                  </div>                   
                 </li>
               )}
             </ul>

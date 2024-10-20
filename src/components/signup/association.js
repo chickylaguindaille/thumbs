@@ -92,8 +92,9 @@ const AssociationForm = ({ onBack, onNext }) => {
     
     if (step === 2) {
       if (!formData.logo) newErrors.logo = "Un logo est obligatoire";
-      if (!formData.city) newErrors.city = "La ville est obligatoire";
-      if (!formData.address) newErrors.address = "L'adresse est obligatoire";
+      if (!formData.city) newErrors.city = 'La ville est obligatoire';
+      if (!formData.postalcode) newErrors.postalcode = 'Le code postal est obligatoire';
+      if (!formData.address) newErrors.address = 'L\'adresse est obligatoire';
       if (!formData.telephone) newErrors.telephone = "Le numéro de téléphone est obligatoire";
     }
 
@@ -271,18 +272,9 @@ const AssociationForm = ({ onBack, onNext }) => {
                 errors={errors}
               />              
               {errors.city && <p className="text-red-500">{errors.city}</p>}
-            </div>
-            {/* <div> 
-              <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2"
-              />
+              {errors.postalcode && <p className="text-red-500">{errors.postalcode}</p>}
               {errors.address && <p className="text-red-500">{errors.address}</p>}
-            </div> */}
+            </div>
         <div>
           <label className="block text-sm font-medium">Site web</label>
           <input

@@ -70,7 +70,7 @@ const Header = ({ contactName, toggleSidebar, isSidebarOpen }) => {
   // Déterminer quel bouton afficher en fonction de la route
   const renderActionButton = () => {
     const path = location.pathname;
-    if (path.startsWith('/profile/') && profilId !== user.id) {
+    if (path.startsWith('/profile/') && profilId !== user?.id) {
       return (
         <button
           onClick={handleMessagesButtonClick}
