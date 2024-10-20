@@ -121,6 +121,12 @@ const EventPage = () => {
         );
         setIsParticipant(isUserParticipant);
       } catch (error) {
+
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem("authToken");
+          window.location.href = '/login';
+        }
+
         console.error("Erreur lors de la récupération des événements:", error);
         setError("Erreur lors de la récupération des événements");
       }

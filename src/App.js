@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { checkTokenValidity } from './authActions';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import EventsPage from './pages/EventsPage';
@@ -23,22 +22,6 @@ const ProtectedRoute = ({ element }) => {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
   const token = useSelector(state => state.auth.token); // Assurez-vous d'avoir le token dans votre state
-
-  // Vérifiez la validité du token lorsque le composant est monté
-  useEffect(() => {
-    const validateToken = async () => {
-      if (token) {
-        const isValid = await dispatch(checkTokenValidity(token));
-        if (!isValid) {
-          // Si le token n'est pas valide, vous pouvez déconnecter l'utilisateur ici
-          // Cela peut impliquer de mettre à jour l'état d'authentification dans Redux
-          console.log('Token is not valid, redirecting to login...');
-          return <Navigate to="/login" />;
-        }
-      }
-    };
-    validateToken();
-  }, [dispatch, token]);
 
   return isAuthenticated ? element : <Navigate to="/login" />;
 };

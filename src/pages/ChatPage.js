@@ -111,6 +111,12 @@ const ChatPage = () => {
         }
 
       } catch (error) {
+
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem("authToken");
+          window.location.href = '/login';
+        }
+
         console.error(
           "Erreur lors de la récupération des infos de contact:",
           error

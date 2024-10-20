@@ -92,9 +92,15 @@ const EventsPage = () => {
         setEvents(upcomingEvents);
         setError(null);
       } catch (error) {
+
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem("authToken");
+          window.location.href = '/login';
+        }
+
         console.error("Erreur lors de la récupération des événements:", error);
         setEvents([]);
-        setError("Aucun événement trouvé.");
+        setError("");
       } finally {
         setLoading(false);
       }

@@ -77,6 +77,12 @@ const ProfilePage = () => {
         setProfile(response.data.user);
         setFormData(response.data.user);
       } catch (error) {
+
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem("authToken");
+          window.location.href = '/login';
+        }
+
         console.error('Erreur lors de la récupération du profil asso:', error);
       } finally {
         setLoading(false);

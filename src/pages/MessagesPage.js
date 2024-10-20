@@ -32,6 +32,12 @@ const MessagesPage = () => {
 
         setConversations(sortedConversations);
       } catch (error) {
+
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem("authToken");
+          window.location.href = '/login';
+        }
+
         console.error("Erreur lors de la récupération des messages:", error);
       } finally {
         setLoading(false);
