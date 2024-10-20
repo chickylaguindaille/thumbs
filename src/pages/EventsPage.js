@@ -79,7 +79,18 @@ const EventsPage = () => {
             params: params,
           }
         );
-        setEvents(response.data.events || []);
+
+        // Obtenir la date actuelle
+        const currentDate = new Date();
+
+        // Filtrer les événements pour exclure ceux dont la date est passée
+        const upcomingEvents = response.data.events?.filter(event => {
+          console.log(response.data.events)
+          const eventDate = new Date(event.creationdate);
+          return eventDate >= currentDate; // Gardez uniquement les événements à venir
+        }) || [];
+
+        setEvents(upcomingEvents);
         setError(null);
       } catch (error) {
         console.error("Erreur lors de la récupération des événements:", error);
