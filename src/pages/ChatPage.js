@@ -100,7 +100,7 @@ const ChatPage = () => {
           }
         );
 
-        console.log(response.data)
+        // console.log(response.data)
 
         if (type === 'user') {
           setContact(response.data.user);

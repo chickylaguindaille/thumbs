@@ -156,8 +156,8 @@ const AssociationPage = () => {
 
     try {
       setIsLoadingRequest(true);
-      console.log(formData);
-      console.log(formDataToSend);
+      // console.log(formData);
+      // console.log(formDataToSend);
       const token = localStorage.getItem('authToken');
       const response = await axios.put('https://back-thumbs.vercel.app/asso/update-asso', formDataToSend, {
         headers: {
@@ -220,7 +220,7 @@ const AssociationPage = () => {
       if (formDataInputs.creationdate) eventData.append('creationdate', formDataInputs.creationdate.toISOString());
       if (formDataInputs.photo) eventData.append('photo', formDataInputs.photo);
 
-      console.log(eventData);
+      // console.log(eventData);
 
       const token = localStorage.getItem('authToken');
       const response = await axios.post('https://back-thumbs.vercel.app/event/create-event', eventData, {
@@ -338,7 +338,10 @@ const handleDateChange = (date) => {
         setEventsOrganized(response.data.events);
 
       } catch (error) {
-        console.error('Erreur lors de la récupération du profil asso:', error);
+        if (error.response && error.response.status !== 404) {
+          // Afficher uniquement les erreurs qui ne sont pas 404
+          console.error('Erreur lors de la récupération du profil asso:', error);
+        }
       }
     };
 
