@@ -127,7 +127,7 @@ const ChatPage = () => {
     }, 1500);
 
     return () => clearInterval(pollingInterval); // Nettoyer l'intervalle lors du démontage
-  }, [id]);
+  }, [id, type]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
