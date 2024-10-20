@@ -19,9 +19,9 @@ import TermsPage from './pages/TermsPage';
 
 // Composant pour protéger les routes
 const ProtectedRoute = ({ element }) => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
-  const token = useSelector(state => state.auth.token); // Assurez-vous d'avoir le token dans votre state
+  // const token = useSelector(state => state.auth.token); // Assurez-vous d'avoir le token dans votre state
 
   return isAuthenticated ? element : <Navigate to="/login" />;
 };
