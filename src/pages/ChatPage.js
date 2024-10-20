@@ -37,11 +37,25 @@ const ChatPage = () => {
   const [newMessage, setNewMessage] = useState("");
   const [contact, setContact] = useState(null);
   const messagesEndRef = useRef(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Récupérer l'utilisateur connecté depuis le store Redux
   const user = useSelector((state) =>
     state.auth.user ? state.auth.user.user : null
   );
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsSidebarOpen(true);
+      }
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -100,7 +114,7 @@ const ChatPage = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-    console.log(messages);
+    // console.log(messages);
   }, [messages]);
 
   const handleSendMessage = async () => {
@@ -152,6 +166,7 @@ const ChatPage = () => {
       <Header
         contactName={contact ? `${contact.firstName} ${contact.lastName}` : ""}
         showBackButton={true}
+        isSidebarOpen={isSidebarOpen}
       />
 
       <div className="flex-grow overflow-y-auto px-4 pt-4">

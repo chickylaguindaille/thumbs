@@ -1,156 +1,90 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
-import { FaPaperPlane } from "react-icons/fa";
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { FaCircle } from 'react-icons/fa';
 import axios from "axios";
-import Header from "../components/Header";
 
-const MessageBubble = ({ message, isSender }) => {
-  return (
-    <div
-      className={`flex ${
-        isSender ? "justify-end" : "justify-start"
-      } mb-4 items-start`}
-    >
-      <div
-        className={`p-3 rounded-lg max-w-xs ${
-          isSender ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
-        }`}
-      >
-        <p>{message.content}</p>
-        <span className="text-xs text-gray-400">
-          {new Date(message.sentAt).toLocaleTimeString()}
-        </span>
-      </div>
-    </div>
-  );
-};
-
-const ChatPage = () => {
-  const { id } = useParams(); // ID du contact avec qui on parle
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState("");
+const MessagesPage = () => {
+  const [conversations, setConversations] = useState([]);
   const [contact, setContact] = useState(null);
-  const messagesEndRef = useRef(null);
+
+  // Récupérer l'utilisateur connecté depuis Redux
+  const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
 
   useEffect(() => {
     const fetchMessages = async () => {
       try {
         const token = localStorage.getItem("authToken");
+
+        // Récupérer les conversations
         const response = await axios.get(
-          `https://back-thumbs.vercel.app/messages/get/${id}`,
+          `https://back-thumbs.vercel.app/messages/conversations`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        setMessages(response.data);
+        setConversations(response.data); // Stocker les conversations
+        console.log(response.data);
       } catch (error) {
         console.error("Erreur lors de la récupération des messages:", error);
       }
     };
 
-    const fetchContact = async () => {
-      try {
-        const token = localStorage.getItem("authToken");
-        const response = await axios.get(
-          `https://back-thumbs.vercel.app/profil/getDetails-user/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setContact(response.data.user);
-      } catch (error) {
-        console.error(
-          "Erreur lors de la récupération des infos de contact:",
-          error
-        );
-      }
-    };
+    // const fetchContact = async () => {
+    //   try {
+    //     const token = localStorage.getItem("authToken");
+    //     const response = await axios.get(
+    //       `https://back-thumbs.vercel.app/profil/getDetails-user/${user.id}`,
+    //       {
+    //         headers: {
+    //           Authorization: `Bearer ${token}`,
+    //         },
+    //       }
+    //     );
+    //     setContact(response.data.user);
+    //   } catch (error) {
+    //     console.error("Erreur lors de la récupération des infos de contact:", error);
+    //   }
+    // };
 
     fetchMessages();
-    fetchContact();
-  }, [id]);
-
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages]);
-
-  const handleSendMessage = async () => {
-    if (newMessage.trim()) {
-      try {
-        const token = localStorage.getItem("authToken");
-        const senderId = localStorage.getItem("userId"); // Ton propre ID d'utilisateur
-
-        const response = await axios.post(
-          "https://back-thumbs.vercel.app/messages/send",
-          {
-            senderId,
-            receiverId: id,
-            content: newMessage,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const newMsg = {
-          ...response.data,
-          content: newMessage,
-          senderId,
-          receiverId: id,
-          sentAt: new Date().toISOString(),
-        };
-
-        setMessages([...messages, newMsg]);
-        setNewMessage("");
-      } catch (error) {
-        console.error("Erreur lors de l'envoi du message:", error);
-      }
-    }
-  };
+    // fetchContact();
+  }, [user?.id]
+);
 
   return (
-    <div className="flex flex-col h-screen pt-[56px]">
-      <Header
-        contactName={contact ? `${contact.firstName} ${contact.lastName}` : ""}
-        showBackButton={true}
-      />
-
-      <div className="flex-grow overflow-y-auto px-4 pt-4">
-        {messages.map((message, index) => (
-          <MessageBubble
-            key={index}
-            message={message}
-            isSender={message.senderId === localStorage.getItem("userId")}
-          />
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
-
-      <div className="flex-shrink-0 p-4 bg-white border-t flex items-center">
-        <input
-          type="text"
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Tapez votre message..."
-          className="w-full p-3 border rounded-lg focus:outline-none"
-        />
-        <button
-          onClick={handleSendMessage}
-          className="ml-2 bg-blue-500 text-white p-3 rounded-full hover:bg-blue-600 transition"
-        >
-          <FaPaperPlane className="w-6 h-6" />
-        </button>
+    <div className="flex pt-[56px]">
+      {/* Liste des contacts */}
+      <div className="w-full p-4">
+        <ul>
+          {conversations.map((conversation, index) => (
+            <Link to={`/messages/${conversation.person.id}`} key={index} className="block">
+              <li className={`flex items-center bg-white hover:bg-gray-200 rounded-lg h-16 ${index < conversations.length - 1 ? 'border-b border-gray-300' : ''}`}>
+                <img
+                  src={conversation.person.photo || '/default-profile.png'} // Affiche une image par défaut si pas de photo
+                  alt={conversation.person.name}
+                  className="w-12 h-12 rounded-full mr-3"
+                />
+                <div className="flex-grow min-w-0">
+                  <p className="font-semibold">{conversation.person.name}</p>
+                  <p
+                    className={`text-gray-600 text-ellipsis overflow-hidden whitespace-nowrap`}
+                  >
+                    {conversation.lastMessage || "Pas de message"}
+                  </p>
+                </div>
+                <div className="flex items-center ml-2">
+                  {conversation.hasUnreadMessage && <FaCircle className="text-blue-500 text-xs mr-1" />}
+                </div>
+              </li>
+            </Link>
+          ))}
+        </ul>
       </div>
     </div>
   );
 };
 
-export default ChatPage;
+export default MessagesPage;
