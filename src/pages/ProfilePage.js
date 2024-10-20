@@ -268,7 +268,7 @@ const ProfilePage = () => {
                   <span className="flex-shrink-0">
                     <FaInfoCircle className="text-xl align-middle" />
                   </span>
-                  <span className="align-middle">Informations</span>
+                  <span className="hidden sm:block align-middle">Informations</span>
                 </div>              
               </li>
               <li
@@ -279,7 +279,7 @@ const ProfilePage = () => {
                   <span className="flex-shrink-0">
                     <FaChartBar className="text-xl align-middle" />
                   </span>
-                  <span className="align-middle">Événements</span>
+                  <span className="hidden sm:block align-middle">Événements</span>
                 </div>                 
               </li>
               {profile.id === user?.id && (
@@ -291,7 +291,7 @@ const ProfilePage = () => {
                     <span className="flex-shrink-0">
                       <FaCog className="text-xl align-middle" />
                     </span>
-                    <span className="align-middle">Réglages</span>
+                    <span className="hidden sm:block align-middle">Réglages</span>
                   </div>                  
                 </li>
               )}
