@@ -81,13 +81,15 @@ const AssociationForm = ({ onBack, onNext }) => {
     if (step === 1) {
       if (!formData.nameasso) newErrors.nameasso = "Le nom de l'association est obligatoire";
       if (!formData.email) newErrors.email = "L'adresse email est obligatoire.";
+      if (!formData.password) newErrors.password = "Le mot de passe est obligatoire.";
+      if (!formData.confirmPassword) newErrors.confirmPassword = "La confirmation de mot de passe est obligatoire.";
       if (formData.password !== formData.confirmPassword) {
         newErrors.password = "Les mots de passe ne correspondent pas";
         setIsPasswordMatch(false);
       } else {
         setIsPasswordMatch(true);
       }
-      if (!formData.siret) newErrors.siret = "Le numéro SIRET est obligatoire";
+      if (!formData.siret) newErrors.siret = "Le numéro SIRET est obligatoire et doit être un nombre";
     }
     
     if (step === 2) {
@@ -96,6 +98,7 @@ const AssociationForm = ({ onBack, onNext }) => {
       if (!formData.postalcode) newErrors.postalcode = 'Le code postal est obligatoire';
       if (!formData.address) newErrors.address = 'L\'adresse est obligatoire';
       if (!formData.telephone) newErrors.telephone = "Le numéro de téléphone est obligatoire";
+      if (!formData.creationdate) newErrors.creationdate = "La date de création est obligatoire.";
     }
 
     if (step === 3) {
@@ -202,6 +205,7 @@ const AssociationForm = ({ onBack, onNext }) => {
             onChange={handleChange}
             className="w-full border rounded-lg p-2"
           />
+          {errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword}</p>}
           {!isPasswordMatch && (
             <p className="text-red-500">Les mots de passe ne correspondent pas</p>
           )}
@@ -299,7 +303,7 @@ const AssociationForm = ({ onBack, onNext }) => {
           {errors.telephone && <p className="text-red-500">{errors.telephone}</p>}
         </div>
         <div>
-          <label className="block text-sm font-medium">Date de création</label>
+          <label className="block text-sm font-medium">Date de création <span className="text-red-500">*</span></label>
           <input
             type="date"
             name="creationdate"
@@ -307,6 +311,7 @@ const AssociationForm = ({ onBack, onNext }) => {
             onChange={handleChange}
             className="w-full border rounded-lg p-2"
           />
+          {errors.creationdate && <p className="text-red-500">{errors.creationdate}</p>}
         </div>
         <div className="flex justify-between">
           <button
