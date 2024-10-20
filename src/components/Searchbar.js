@@ -1,16 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import { FaChevronDown } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 
 const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
   const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
   const [optionsLoisirs, setOptionsLoisirs] = useState([]);
   const [selectedInterests, setSelectedInterests] = useState([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [namesearch, setSearchName] = useState('');
   const [sortOrder, setSortOrder] = useState('');
   const [distance, setDistance] = useState('');
+  
+  // États pour contrôler l'ouverture des dropdowns
+  const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+  const [isInterestDropdownOpen, setIsInterestDropdownOpen] = useState(false);
+  const [isDistanceDropdownOpen, setIsDistanceDropdownOpen] = useState(false);
 
+  // Références pour les dropdowns
+  const sortDropdownRef = useRef(null);
+  const interestDropdownRef = useRef(null);
+  const distanceDropdownRef = useRef(null);
+  
   // Récupérer la liste des intérêts
   useEffect(() => {
     const fetchInterests = async () => {
@@ -46,7 +55,6 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
     } else {
       setSelectedInterests([...selectedInterests, value]);
     }
-    setSearchName('');
   };
 
   // Appliquer les filtres lorsque selectedInterests ou namesearch changent
@@ -54,27 +62,43 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
     if (onFiltersChange) {
       onFiltersChange({
         interests: selectedInterests,
-        namesearch: namesearch,
         sortOrder: sortOrder,
         distance: distance,
       });
     }
-  }, [selectedInterests, namesearch, sortOrder, distance, onFiltersChange]);
-
-  // Gérer le changement dans l'input de recherche
-  const handleInputChange = (e) => {
-    setSearchName(e.target.value);
-  };
+  }, [selectedInterests, sortOrder, distance, onFiltersChange]);
 
   // Gérer le changement de tri (asc/desc)
-  const handleSortChange = (e) => {
-    setSortOrder(e.target.value);
+  const handleSortChange = (value) => {
+    setSortOrder(value);
+    setIsSortDropdownOpen(false); // Fermer le dropdown après sélection
   };
 
   // Gérer le changement de distance
-  const handleDistanceChange = (e) => {
-    setDistance(e.target.value);
+  const handleDistanceChange = (value) => {
+    setDistance(value);
+    setIsDistanceDropdownOpen(false); // Fermer le dropdown après sélection
   };
+
+  // Fermer tous les dropdowns si le clic est en dehors
+  const handleClickOutside = (event) => {
+    if (
+      sortDropdownRef.current && !sortDropdownRef.current.contains(event.target) &&
+      interestDropdownRef.current && !interestDropdownRef.current.contains(event.target) &&
+      distanceDropdownRef.current && !distanceDropdownRef.current.contains(event.target)
+    ) {
+      setIsSortDropdownOpen(false);
+      setIsInterestDropdownOpen(false);
+      setIsDistanceDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="bg-white" style={{ zIndex: 10 }}>
@@ -84,35 +108,74 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
           id="search-input"
           className="border border-gray-300 p-2 rounded w-full text-gray-900"
           placeholder="Rechercher..."
-          value={namesearch}
-          onChange={handleInputChange}
         />
       </div>
 
       {/* Dropdowns en dessous du search input */}
       <div className="mt-4 flex justify-between space-x-4">
         {!isAssociationsPage && (
-          <div className="relative w-1/3">
-            <select
-              value={sortOrder}
-              onChange={handleSortChange}
-              className="block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >              
-              <option value="">Trier par</option>
-              <option value="asc">Plus récent</option>
-              <option value="desc">Plus ancien</option>
-            </select>
+          <div className="relative w-1/3" ref={sortDropdownRef}>
+            <div
+              className="flex items-center justify-between block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 cursor-pointer"
+              onClick={() => {
+                setIsSortDropdownOpen(!isSortDropdownOpen);
+                setIsInterestDropdownOpen(false); // Fermer l'autre dropdown
+                setIsDistanceDropdownOpen(false); // Fermer l'autre dropdown
+              }}
+            >
+              <span>Trier par</span>
+              <FaChevronDown className={`transform transition-transform ${isSortDropdownOpen ? 'rotate-180' : 'rotate-0'}`} />
+            </div>
+            {isSortDropdownOpen && (
+              <div className="absolute bg-white border border-gray-300 mt-1 text-gray-900 rounded shadow-lg max-h-60 overflow-y-auto w-full z-20">
+                <label className="flex items-center p-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    value=""
+                    checked={sortOrder === ''}
+                    onChange={() => handleSortChange('')}
+                    className="mr-2"
+                  />
+                  Aucun filtre
+                </label>
+                <label className="flex items-center p-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    value="asc"
+                    checked={sortOrder === 'asc'}
+                    onChange={() => handleSortChange('asc')}
+                    className="mr-2"
+                  />
+                  Date croissante
+                </label>
+                <label className="flex items-center p-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    value="desc"
+                    checked={sortOrder === 'desc'}
+                    onChange={() => handleSortChange('desc')}
+                    className="mr-2"
+                  />
+                  Date décroissante
+                </label>
+              </div>
+            )}
           </div>
         )}
 
-        <div className="relative w-1/3">
+        <div className="relative w-1/3" ref={interestDropdownRef}>
           <div
-            className="block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 cursor-pointer"
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="flex items-center justify-between block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 cursor-pointer"
+            onClick={() => {
+              setIsInterestDropdownOpen(!isInterestDropdownOpen);
+              setIsSortDropdownOpen(false); // Fermer l'autre dropdown
+              setIsDistanceDropdownOpen(false); // Fermer l'autre dropdown
+            }}
           >
-            Choisir des intérêts
+            <span>Choisir des intérêts</span>
+            <FaChevronDown className={`transform transition-transform ${isInterestDropdownOpen ? 'rotate-180' : 'rotate-0'}`} />
           </div>
-          {isDropdownOpen && (
+          {isInterestDropdownOpen && (
             <div className="absolute bg-white border border-gray-300 mt-1 text-gray-900 rounded shadow-lg max-h-60 overflow-y-auto w-full z-20">
               {filteredInterests.map((interest) => (
                 <label key={interest.value} className="flex items-center p-2 cursor-pointer">
@@ -130,19 +193,62 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
         </div>
 
         {!isAssociationsPage && (
-          <div className="relative w-1/3">
-            <select
-              value={distance}
-              onChange={handleDistanceChange}
-              className="block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >                 
-              <option value="">Distance</option>
-              <option value="5">5 km</option>
-              <option value="30">30 km</option>
-              <option value="50">50 km</option>
-              <option value="100">100 km</option>
-              <option value="1000">1000 km</option>
-            </select>
+          <div className="relative w-1/3" ref={distanceDropdownRef}>
+            <div
+              className="flex items-center justify-between block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 cursor-pointer"
+              onClick={() => {
+                setIsDistanceDropdownOpen(!isDistanceDropdownOpen);
+                setIsSortDropdownOpen(false); // Fermer l'autre dropdown
+                setIsInterestDropdownOpen(false); // Fermer l'autre dropdown
+              }}
+            >
+              <span>Distance</span>
+              <FaChevronDown className={`transform transition-transform ${isDistanceDropdownOpen ? 'rotate-180' : 'rotate-0'}`} />
+            </div>
+            {isDistanceDropdownOpen && (
+              <div className="absolute bg-white border border-gray-300 mt-1 text-gray-900 rounded shadow-lg max-h-60 overflow-y-auto w-full z-20">
+                <label className="flex items-center p-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    value=""
+                    checked={distance === ''}
+                    onChange={() => handleDistanceChange('')}
+                    className="mr-2"
+                  />
+                  Aucune
+                </label>
+                <label className="flex items-center p-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    value="10km"
+                    checked={distance === '10km'}
+                    onChange={() => handleDistanceChange('10km')}
+                    className="mr-2"
+                  />
+                  10 km
+                </label>
+                <label className="flex items-center p-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    value="20km"
+                    checked={distance === '20km'}
+                    onChange={() => handleDistanceChange('20km')}
+                    className="mr-2"
+                  />
+                  20 km
+                </label>
+                <label className="flex items-center p-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    value="50km"
+                    checked={distance === '50km'}
+                    onChange={() => handleDistanceChange('50km')}
+                    className="mr-2"
+                  />
+                  50 km
+                </label>
+              </div>
+            )}
           </div>
         )}
       </div>
