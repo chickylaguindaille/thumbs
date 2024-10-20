@@ -111,7 +111,7 @@ const TermsPage = () => {
 
         <h3 className="text-2xl font-semibold text-gray-800">6.8 Cookie</h3>
         <p className="leading-relaxed">
-
+          Nous utilisons des cookies pour améliorer votre expérience sur la plateforme, notamment pour mémoriser vos préférences et vous fournir un contenu personnalisé.
         </p>
       </div>
 
