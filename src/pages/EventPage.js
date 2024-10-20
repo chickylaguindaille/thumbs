@@ -304,7 +304,7 @@ const EventPage = () => {
       <div className="px-4 my-4">
         <div className="flex justify-between">
           <div>
-            <p className="text-gray-600 text-gray-500 font-bold">
+            <p className="text-gray-600 text-gray-500 font-bold max-w-[150px] sm:max-w-full">
               {eventInterestNames}
             </p>
             <Link
@@ -314,7 +314,7 @@ const EventPage = () => {
               {organisatorName}
             </Link>
           </div>
-          <div className="text-right absolute right-4">
+          <div className="text-right absolute right-4 max-w-[200px] md:max-w-full">
             <div className="space-x-1 text-blue-600">
               <span className="text-sm">{event.address}</span>
             </div>

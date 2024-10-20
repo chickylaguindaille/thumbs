@@ -60,12 +60,12 @@ function LoginPage() {
       </div>
 
       {/* Titre */}
-      <h1 className="text-4xl font-bold text-blue-600 mb-4">
+      <h1 className="text-4xl font-bold text-blue-600 mb-4 text-center">
         Bienvenue sur Thumbs
       </h1>
 
       {/* Description */}
-      <p className="text-gray-600 text-lg mb-8">
+      <p className="text-gray-600 text-lg mb-8 text-center">
         Connectez-vous pour découvrir les événements de vos associations !
       </p>
 
