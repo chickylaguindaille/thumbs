@@ -16,7 +16,7 @@ const AssociationsPage = () => {
     const fetchInterests = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        const response = await axios.get('https://back-thumbs.vercel.app/profil/interests', {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/profil/interests`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -50,7 +50,7 @@ const AssociationsPage = () => {
     try {
       setIsLoading(true); // Début du chargement
       const token = localStorage.getItem('authToken');
-      const response = await axios.get('https://back-thumbs.vercel.app/asso/filter', {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/asso/filter`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

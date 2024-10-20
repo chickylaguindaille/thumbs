@@ -48,7 +48,7 @@ const AssociationPage = () => {
   //     try {
   //       const token = localStorage.getItem('authToken');
 
-  //       const response = await axios.get('https://back-thumbs.vercel.app/asso/asso-details', {
+  //       const response = await axios.get(`${process.env.REACT_APP_API_URL}/asso/asso-details`, {
   //         headers: {
   //           Authorization: `Bearer ${token}`,
   //         }
@@ -70,7 +70,7 @@ const AssociationPage = () => {
       setLoading(true);
       try {
         const token = localStorage.getItem('authToken');
-        const response = await axios.get(`https://back-thumbs.vercel.app/asso/getDetails-asso/${id}`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/asso/getDetails-asso/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           }
@@ -98,7 +98,7 @@ const AssociationPage = () => {
     const fetchInterests = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        const response = await axios.get('https://back-thumbs.vercel.app/profil/interests', {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/profil/interests`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -159,7 +159,7 @@ const AssociationPage = () => {
       // console.log(formData);
       // console.log(formDataToSend);
       const token = localStorage.getItem('authToken');
-      const response = await axios.put('https://back-thumbs.vercel.app/asso/update-asso', formDataToSend, {
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/asso/update-asso`, formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
@@ -223,7 +223,7 @@ const AssociationPage = () => {
       // console.log(eventData);
 
       const token = localStorage.getItem('authToken');
-      const response = await axios.post('https://back-thumbs.vercel.app/event/create-event', eventData, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/event/create-event`, eventData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
@@ -290,7 +290,7 @@ const handleDateChange = (date) => {
     try {
       setIsLoadingRequest(true);
       const token = localStorage.getItem('authToken');
-      await axios.post('https://back-thumbs.vercel.app/auth/logout', {}, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/auth/logout`, {}, {
         headers: {
           Authorization: `Bearer ${token}`,        
         }
@@ -310,7 +310,7 @@ const handleDateChange = (date) => {
       setIsLoadingRequest(true);
 
       const token = localStorage.getItem('authToken');
-      await axios.delete('https://back-thumbs.vercel.app/asso/delete', {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/asso/delete`, {
         headers: {
             Authorization: `Bearer ${token}`,        
         }
@@ -330,7 +330,7 @@ const handleDateChange = (date) => {
       try {
         const token = localStorage.getItem('authToken');
 
-        const response = await axios.get(`https://back-thumbs.vercel.app/asso/organized-events/${id}`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/asso/organized-events/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           }

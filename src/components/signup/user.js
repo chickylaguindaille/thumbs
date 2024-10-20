@@ -139,7 +139,7 @@ const UserForm = ({ onBack, onNext }) => {
     try {
       setIsLoadingRequest(true);
 
-      await axios.post('https://back-thumbs.vercel.app/auth/register', formDataToSend, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/auth/register`, formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

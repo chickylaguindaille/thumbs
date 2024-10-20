@@ -11,7 +11,7 @@ const EventCard = ({ id, photo, eventName, subdescription, creationdate, interes
       try {
         const token = localStorage.getItem('authToken');
 
-        const response = await axios.get(`https://back-thumbs.vercel.app/asso/getDetails-asso/${organisator}`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/asso/getDetails-asso/${organisator}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           }

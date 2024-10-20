@@ -46,7 +46,7 @@ const EventPage = () => {
       try {
         const token = localStorage.getItem("authToken");
         const response = await axios.get(
-          "https://back-thumbs.vercel.app/profil/interests",
+          `${process.env.REACT_APP_API_URL}/profil/interests`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -76,7 +76,7 @@ const EventPage = () => {
       try {
         const token = localStorage.getItem("authToken");
         const response = await axios.get(
-          `https://back-thumbs.vercel.app/asso/getDetails-asso/${event?.organisator}`,
+          `${process.env.REACT_APP_API_URL}/asso/getDetails-asso/${event?.organisator}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -104,7 +104,7 @@ const EventPage = () => {
       try {
         const token = localStorage.getItem("authToken");
         const response = await axios.get(
-          `https://back-thumbs.vercel.app/event/getEvent/${id}`,
+          `${process.env.REACT_APP_API_URL}/event/getEvent/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -140,7 +140,7 @@ const EventPage = () => {
     try {
       const token = localStorage.getItem("authToken");
       await axios.post(
-        `https://back-thumbs.vercel.app/event/toggle-participant/${id}`,
+        `${process.env.REACT_APP_API_URL}/event/toggle-participant/${id}`,
         {},
         {
           headers: {
@@ -221,7 +221,7 @@ const EventPage = () => {
       setIsLoadingRequest(true);
       const token = localStorage.getItem("authToken");
       const response = await axios.put(
-        `https://back-thumbs.vercel.app/event/update-event/${id}`,
+        `${process.env.REACT_APP_API_URL}/event/update-event/${id}`,
         eventData,
         {
           headers: {
@@ -244,7 +244,7 @@ const EventPage = () => {
       setIsLoadingRequest(true);
       const token = localStorage.getItem("authToken");
       await axios.delete(
-        `https://back-thumbs.vercel.app/event/delete-event/${id}`,
+        `${process.env.REACT_APP_API_URL}/event/delete-event/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -17,7 +17,7 @@ const MessagesPage = () => {
 
         // Récupérer les conversations
         const response = await axios.get(
-          `https://back-thumbs.vercel.app/messages/conversations`,
+          `${process.env.REACT_APP_API_URL}/messages/conversations`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

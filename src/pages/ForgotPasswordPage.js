@@ -12,9 +12,9 @@ function ForgotPasswordPage() {
 
   let url;
   if (role === 'asso') {
-    url = 'https://back-thumbs.vercel.app/auth-asso/forget-password';
+    url = `${process.env.REACT_APP_API_URL}/auth-asso/forget-password`;
   } else {
-    url = 'https://back-thumbs.vercel.app/auth/forget-password';
+    url = `${process.env.REACT_APP_API_URL}/auth/forget-password`;
   }
 
   // Fonction pour revenir en arrière

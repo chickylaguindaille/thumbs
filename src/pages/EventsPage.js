@@ -23,7 +23,7 @@ const EventsPage = () => {
       try {
         const token = localStorage.getItem("authToken");
         const response = await axios.get(
-          "https://back-thumbs.vercel.app/profil/interests",
+          `${process.env.REACT_APP_API_URL}/profil/interests`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -71,7 +71,7 @@ const EventsPage = () => {
         }
 
         const response = await axios.get(
-          "https://back-thumbs.vercel.app/event/filter",
+          `${process.env.REACT_APP_API_URL}/event/filter`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
