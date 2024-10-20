@@ -108,6 +108,11 @@ const TermsPage = () => {
           suppression, portabilité des données, et opposition. Vous pouvez exercer ces droits en 
           nous contactant.
         </p>
+
+        <h3 className="text-2xl font-semibold text-gray-800">6.8 Cookie</h3>
+        <p className="leading-relaxed">
+
+        </p>
       </div>
 
       <div className="flex justify-end">
