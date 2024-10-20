@@ -85,7 +85,6 @@ const EventsPage = () => {
 
         // Filtrer les événements pour exclure ceux dont la date est passée
         const upcomingEvents = response.data.events?.filter(event => {
-          console.log(response.data.events)
           const eventDate = new Date(event.creationdate);
           return eventDate >= currentDate; // Gardez uniquement les événements à venir
         }) || [];

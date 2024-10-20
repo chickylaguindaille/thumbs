@@ -240,12 +240,12 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
                 <label className="flex items-center p-2 cursor-pointer">
                   <input
                     type="radio"
-                    value="20"
-                    checked={distance === '20'}
-                    onChange={() => handleDistanceChange('20')}
+                    value="30"
+                    checked={distance === '30'}
+                    onChange={() => handleDistanceChange('30')}
                     className="mr-2"
                   />
-                  20 km
+                  30 km
                 </label>
                 {/* <label className="flex items-center p-2 cursor-pointer">
                   <input
