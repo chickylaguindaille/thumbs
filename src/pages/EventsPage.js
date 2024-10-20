@@ -15,9 +15,9 @@ const EventsPage = () => {
   const [namesearch, setNameSearch] = useState("");
   const [sortOrder, setsortOrder] = useState("");
   const [distance, setDistance] = useState("");
-  const [loading, setLoading] = useState(true); // État de chargement
+  const [loading, setLoading] = useState(true);
 
-  // Fetch des intérêts
+  // Fetch des centres d'intérêts
   useEffect(() => {
     const fetchInterests = async () => {
       try {
@@ -30,7 +30,7 @@ const EventsPage = () => {
             },
           }
         );
-        setInterestsData(response.data.interests); // Sauvegarde les intérêts récupérés
+        setInterestsData(response.data.interests);
       } catch (error) {
         console.error(
           "Erreur lors de la récupération des centres d'intérêts:",
@@ -41,6 +41,7 @@ const EventsPage = () => {
     fetchInterests();
   }, []);
 
+  // Obtenir les noms des centres d'intérêt pour chaque événement
   const getEventInterestNames = (eventInterests) => {
     return eventInterests.map((interestId) => {
       const interest = interestsData.find(
@@ -50,9 +51,10 @@ const EventsPage = () => {
     });
   };
 
+  // Fonction de filtrage des événements
   const fetchEvents = useCallback(
     async (filters) => {
-      setLoading(true); // Démarre le chargement
+      setLoading(true);
       try {
         const token = localStorage.getItem("authToken");
 
@@ -81,15 +83,16 @@ const EventsPage = () => {
         setError(null);
       } catch (error) {
         console.error("Erreur lors de la récupération des événements:", error);
-        setEvents([]); // Vider les associations en cas d'erreur
-        setError("Aucun événement trouvé."); // Message d'erreur
+        setEvents([]);
+        setError("Aucun événement trouvé.");
       } finally {
-        setLoading(false); // Indique que le chargement est terminé
+        setLoading(false);
       }
     },
     [user?.location.coordinates]
   );
 
+  // Appliquer les filtres lors des changements
   useEffect(() => {
     fetchEvents({
       interests: selectedInterests,
@@ -100,37 +103,33 @@ const EventsPage = () => {
   }, [selectedInterests, namesearch, sortOrder, distance, fetchEvents]);
 
   return (
-    <div>
-      <div className="pt-[56px]">
-        <div className="w-full p-4 shadow-lg">
-          <SearchBar
-            onFiltersChange={({
-              interests,
-              namesearch,
-              sortOrder,
-              distance,
-            }) => {
-              setSelectedInterests(interests); // Mettre à jour les intérêts sélectionnés
-              setNameSearch(namesearch); // Mettre à jour le nom de l'association
-              setsortOrder(sortOrder); // Mettre à jour le sort order
-              setDistance(distance); // Mettre à jour la distance
-            }}
-            isAssociationsPage={false} // Indiquer que nous sommes sur la page des associations
-          />
-        </div>
-        <div className="px-8 space-y-6 pb-5">
-          <div className="text-center">
-            {error && <p className="text-black-500 mt-4">{error}</p>}
+    <div className="pt-[56px] bg-gray-50 min-h-screen">
+      <div className="w-full bg-white shadow-md py-4 px-6">
+        {/* Barre de recherche */}
+        <SearchBar
+          onFiltersChange={({ interests, namesearch, sortOrder, distance }) => {
+            setSelectedInterests(interests);
+            setNameSearch(namesearch);
+            setsortOrder(sortOrder);
+            setDistance(distance);
+          }}
+          isAssociationsPage={false} // Indiquer que nous sommes sur la page des événements
+        />
+      </div>
+
+      <div className="px-4 md:px-8 py-8">
+        {error && <p className="text-red-500 text-center">{error}</p>}
+
+        {loading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="loader"></div>{" "}
+            {/* Ajouter un loader ou spinner ici */}
           </div>
-          {/* Loader */}
-          {loading ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="loader"></div>
-            </div>
-          ) : events.length > 0 ? (
-            events.map((event) => (
+        ) : events.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {events.map((event) => (
               <EventCard
-                key={event._id} // Ajout de la clé ici
+                key={event._id}
                 id={event._id}
                 photo={event.photo}
                 eventName={event.eventName}
@@ -140,11 +139,13 @@ const EventsPage = () => {
                 city={event.city}
                 organisator={event.organisator}
               />
-            ))
-          ) : (
-            <p></p>
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-500">
+            Aucun événement disponible.
+          </p>
+        )}
       </div>
     </div>
   );
