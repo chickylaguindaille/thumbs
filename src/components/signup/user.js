@@ -31,6 +31,7 @@ const UserForm = ({ onBack, onNext }) => {
   const [isPasswordMatch, setIsPasswordMatch] = useState(false);
   const [errors, setErrors] = useState({});
   const [errorMessage, setErrorMessage] = useState('');
+  const [isLoadingRequest, setIsLoadingRequest] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -102,6 +103,7 @@ const UserForm = ({ onBack, onNext }) => {
   };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
@@ -135,6 +137,8 @@ const UserForm = ({ onBack, onNext }) => {
     formDataToSend.append('presentation', formData.presentation);
   
     try {
+      setIsLoadingRequest(true);
+
       await axios.post('https://back-thumbs.vercel.app/auth/register', formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -148,6 +152,8 @@ const UserForm = ({ onBack, onNext }) => {
         setErrorMessage("Une erreur s'est produite lors de l'inscription.");
       }
       console.error('Erreur lors de l\'inscription:'/*, error */);
+    } finally {
+      setIsLoadingRequest(false);
     }
   };
   
@@ -361,8 +367,13 @@ const UserForm = ({ onBack, onNext }) => {
               type="button"
               onClick={handleNext}
               className="bg-blue-500 text-white p-2 rounded"
+              disabled={isLoadingRequest}
             >
-              Inscription
+              {isLoadingRequest ? (
+                <span>Envoi...</span>
+              ) : (
+                "Inscription"
+              )}
             </button>
           </div>
           {errorMessage && <div className="error-message text-red-500">{errorMessage}</div>}

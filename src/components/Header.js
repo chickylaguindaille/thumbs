@@ -7,8 +7,20 @@ const Header = ({ contactName, toggleSidebar, isSidebarOpen }) => {
   const [title, setTitle] = useState('Événements');
   const location = useLocation();
   const navigate = useNavigate();
-  const profilId = location.pathname.split('/profile/')[1] || location.pathname.split('/messages/')[1];
+  const profilId = location.pathname.split('/profile/')[1] || location.pathname.split('/messages/')[1] || location.pathname.split('/association/')[1];
   const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
+
+  const type = (() => {
+    if (location.pathname.startsWith("/profile")) {
+      return "user";
+    } else if (location.pathname.startsWith("/association")) {
+      return "asso";
+    } else if (location.pathname.startsWith("/messages")) {
+      const queryParams = new URLSearchParams(location.search);
+      return queryParams.get("type") || ""; // Récupérer le type depuis les query params
+    }
+    return ""; // Retourner une chaîne vide si aucun type n'est trouvé
+  })();
 
   // Fonction pour retourner en arrière
   const handleBackButtonClick = () => {
@@ -17,18 +29,19 @@ const Header = ({ contactName, toggleSidebar, isSidebarOpen }) => {
 
   // Fonction pour naviguer vers la page de profil
   const handleProfileButtonClick = () => {
-    if (profilId) {
-      navigate(`/profile/${profilId}`);
+    if (profilId && type === "user") {
+      navigate(`/profile/${profilId}?type=${type}`);
+    } else if (profilId && type === "asso") {
+      navigate(`/association/${profilId}?type=${type}`);
     } else {
-      navigate('/profile');
+      navigate('/messages');
     }
   };
 
   // Fonction pour naviguer vers la page de messages
   const handleMessagesButtonClick = () => {
-    console.log(profilId)
     if (profilId) {
-      navigate(`/messages/${profilId}`);
+      navigate(`/messages/${profilId}?type=${type}`);
     } else {
       navigate('/messages');
     }
@@ -70,7 +83,7 @@ const Header = ({ contactName, toggleSidebar, isSidebarOpen }) => {
   // Déterminer quel bouton afficher en fonction de la route
   const renderActionButton = () => {
     const path = location.pathname;
-    if (path.startsWith('/profile/') && profilId !== user?.id) {
+    if ((path.startsWith('/profile/') || path.startsWith('/association/')) && profilId !== user?._id) {
       return (
         <button
           onClick={handleMessagesButtonClick}
@@ -117,7 +130,7 @@ const Header = ({ contactName, toggleSidebar, isSidebarOpen }) => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 bg-customPurple text-white py-2 px-2 flex items-center justify-between z-50 ${isSidebarOpen ? 'md:ml-64' : 'md:ml-0'}`}
+      className={`fixed top-0 left-0 right-0 bg-customPurple text-white py-2 px-2 flex items-center justify-between z-40 ${isSidebarOpen ? 'md:ml-64' : 'md:ml-0'}`}
       style={{ height: '56px' }}
     >
       {renderHeaderButton()}

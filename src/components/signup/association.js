@@ -33,6 +33,7 @@ const AssociationForm = ({ onBack, onNext }) => {
   const [step, setStep] = useState(1);
   const [isPasswordMatch, setIsPasswordMatch] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isLoadingRequest, setIsLoadingRequest] = useState(false);
   const navigate = useNavigate();
 
 
@@ -110,6 +111,7 @@ const AssociationForm = ({ onBack, onNext }) => {
   };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
 
     if (!validateStep()) return;
@@ -138,6 +140,8 @@ const AssociationForm = ({ onBack, onNext }) => {
     formDataToSend.append('presentation', formData.presentation);
 
     try {
+      setIsLoadingRequest(true);
+
       await axios.post('https://back-thumbs.vercel.app/auth-asso/register-asso', formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -151,6 +155,8 @@ const AssociationForm = ({ onBack, onNext }) => {
         setErrorMessage("Une erreur s'est produite lors de l'inscription.");
       }
       console.error('Erreur lors de l\'inscription:'/*, error */);
+    } finally {
+      setIsLoadingRequest(false); // Fin de l'envoi
     }
   };
 
@@ -403,8 +409,13 @@ const AssociationForm = ({ onBack, onNext }) => {
           <button
             type="submit"
             className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+            disabled={isLoadingRequest}
           >
-            Inscription
+            {isLoadingRequest ? (
+              <span>Envoi...</span>
+            ) : (
+              "Inscription"
+            )}          
           </button>
         </div>
         {errorMessage && <div className="error-message text-red-500">{errorMessage}</div>}

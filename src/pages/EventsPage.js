@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import EventCard from "../components/EventCard";
 import SearchBar from "../components/Searchbar";
@@ -15,6 +16,7 @@ const EventsPage = () => {
   const [namesearch, setNameSearch] = useState("");
   const [sortOrder, setsortOrder] = useState("");
   const [distance, setDistance] = useState("");
+  const [loading, setLoading] = useState(true); // État de chargement
 
   // Fetch des intérêts
   useEffect(() => {
@@ -29,7 +31,7 @@ const EventsPage = () => {
             },
           }
         );
-        setInterestsData(response.data.interests);
+        setInterestsData(response.data.interests); // Sauvegarde les intérêts récupérés
       } catch (error) {
         console.error(
           "Erreur lors de la récupération des centres d'intérêts:",
@@ -49,9 +51,9 @@ const EventsPage = () => {
     });
   };
 
-  // Fonction de filtrage des événements
   const fetchEvents = useCallback(
     async (filters) => {
+      setLoading(true); // Démarre le chargement
       try {
         const token = localStorage.getItem("authToken");
 
@@ -79,9 +81,11 @@ const EventsPage = () => {
         setEvents(response.data.events || []);
         setError(null);
       } catch (error) {
-        console.error("Erreur lors de la récupération des évents:", error);
-        setEvents([]);
-        setError("Aucun évenement trouvé.");
+        console.error("Erreur lors de la récupération des événements:", error);
+        setEvents([]); // Vider les associations en cas d'erreur
+        setError("Aucun événement trouvé."); // Message d'erreur
+      } finally {
+        setLoading(false); // Indique que le chargement est terminé
       }
     },
     [user?.location.coordinates]
@@ -97,29 +101,37 @@ const EventsPage = () => {
   }, [selectedInterests, namesearch, sortOrder, distance, fetchEvents]);
 
   return (
-    <div className="pt-[56px] bg-gray-50 min-h-screen">
-      <div className="w-full bg-white shadow-md py-4 px-6">
-        {/* Barre de recherche */}
-        <SearchBar
-          onFiltersChange={({ interests, namesearch, sortOrder, distance }) => {
-            setSelectedInterests(interests);
-            setNameSearch(namesearch);
-            setsortOrder(sortOrder);
-            setDistance(distance);
-          }}
-          isAssociationsPage={false}
-        />
-      </div>
-
-      {/* Contenu des événements */}
-      <div className="px-4 md:px-8 py-8">
-        {error && <p className="text-red-500 text-center">{error}</p>}
-
-        {events.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.map((event) => (
+    <div>
+      <div className="pt-[56px]">
+        <div className="w-full p-4 shadow-lg">
+          <SearchBar
+            onFiltersChange={({
+              interests,
+              namesearch,
+              sortOrder,
+              distance,
+            }) => {
+              setSelectedInterests(interests); // Mettre à jour les intérêts sélectionnés
+              setNameSearch(namesearch); // Mettre à jour le nom de l'association
+              setsortOrder(sortOrder); // Mettre à jour le sort order
+              setDistance(distance); // Mettre à jour la distance
+            }}
+            isAssociationsPage={false} // Indiquer que nous sommes sur la page des associations
+          />
+        </div>
+        <div className="px-8 space-y-6 pb-5">
+          <div className="text-center">
+            {error && <p className="text-black-500 mt-4">{error}</p>}
+          </div>
+          {/* Loader */}
+          {loading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="loader"></div>
+            </div>
+          ) : events.length > 0 ? (
+            events.map((event) => (
               <EventCard
-                key={event._id}
+                key={event._id} // Ajout de la clé ici
                 id={event._id}
                 photo={event.photo}
                 eventName={event.eventName}
@@ -129,13 +141,11 @@ const EventsPage = () => {
                 city={event.city}
                 organisator={event.organisator}
               />
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-gray-500">
-            Aucun événement disponible.
-          </p>
-        )}
+            ))
+          ) : (
+            <p></p>
+          )}
+        </div>
       </div>
     </div>
   );

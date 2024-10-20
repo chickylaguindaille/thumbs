@@ -19,6 +19,8 @@ const animatedComponents = makeAnimated();
 
 const AssociationPage = () => {
   const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
+  const [loading, setLoading] = useState(true);
+  const [isLoadingRequest, setIsLoadingRequest] = useState(false);
   const [profile, setProfile] = useState({
     type: "user",
     logo: null,    
@@ -38,6 +40,7 @@ const AssociationPage = () => {
   const [logoutModalIsOpen, setLogoutModalIsOpen] = useState(false);
   const [deleteAccountModalIsOpen, setDeleteAccountModalIsOpen] = useState(false);
   const [eventsOrganized, setEventsOrganized] = useState([]);
+  const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
 
   // useEffect(() => {
@@ -64,6 +67,7 @@ const AssociationPage = () => {
   
   useEffect(() => {
     const fetchProfile = async () => {
+      setLoading(true);
       try {
         const token = localStorage.getItem('authToken');
         const response = await axios.get(`https://back-thumbs.vercel.app/asso/getDetails-asso/${id}`, {
@@ -76,6 +80,8 @@ const AssociationPage = () => {
         // console.log(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération du profil asso:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -132,13 +138,18 @@ const AssociationPage = () => {
     if (formData.address) formDataToSend.append('address', formData.address);
     if (formData.city) formDataToSend.append('city', formData.city);
     if (formData.postalcode) formDataToSend.append('postalcode', formData.postalcode);
-    if (formData.interests) formDataToSend.append('interests', formData.interests);
+    if (formData.interests && Array.isArray(formData.interests)) {
+      formData.interests.forEach((interest) => {
+        formDataToSend.append('interests[]', interest);
+      });
+    }    
     if (formData.creation) formDataToSend.append('creation', formData.creation);
     if (formData.description) formDataToSend.append('description', formData.description);
     if (formData.presentation) formDataToSend.append('presentation', formData.presentation);
     if (formData.logo) formDataToSend.append('logo', formData.logo);
 
     try {
+      setIsLoadingRequest(true);
       console.log(formData);
       console.log(formDataToSend);
       const token = localStorage.getItem('authToken');
@@ -162,11 +173,30 @@ const AssociationPage = () => {
 
     } catch (error) {
       console.error('Erreur lors de la mise à jour du profil:', error);
+    } finally {
+      setIsLoadingRequest(false);
     }
   };
 
   const handleCreateEvent = async () => {
+    let newErrors = {};
+  
+    if (!formDataInputs.eventName) newErrors.eventName = 'Le nom de l\'événement est obligatoire';
+    if (!formDataInputs.description) newErrors.description = 'Une description de l\'événement est obligatoire';
+    if (!formDataInputs.address) newErrors.address = 'Une adresse de l\'événement est obligatoire';
+    if (!formDataInputs.city) newErrors.city = 'Une ville pour l\'événement est obligatoire';
+    if (!formDataInputs.creationdate) newErrors.creationdate = 'La date de l\'événement est obligatoire';
+    if (!formDataInputs.photo) newErrors.photo = 'Une photo pour l\'événement est obligatoire';
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
     try {
+      setIsLoadingRequest(true);
+
       const eventData = new FormData();
       eventData.append('organisator', user._id);
       if (formDataInputs.eventName) eventData.append('eventName', formDataInputs.eventName);
@@ -198,6 +228,8 @@ const AssociationPage = () => {
       window.location.reload();
     } catch (error) {
       console.error('Erreur lors de la création de l\'event:', error);
+    } finally {
+      setIsLoadingRequest(false);
     }
   };
 
@@ -250,25 +282,27 @@ const handleDateChange = (date) => {
 
   const handleLogout = async () => {
     try {
+      setIsLoadingRequest(true);
       const token = localStorage.getItem('authToken');
       await axios.post('https://back-thumbs.vercel.app/auth/logout', {}, {
         headers: {
-          Authorization: `Bearer ${token}`,        }
+          Authorization: `Bearer ${token}`,        
+        }
       });
 
       dispatch(logout());
-
-
-      // window.location.href = '/login';
+      window.location.href = '/login';
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);
     } finally {
-      closeLogoutModal();
+      setIsLoadingRequest(false);
     }
   };
 
   const handleDeleteAccount = async () => {
     try {
+      setIsLoadingRequest(true);
+
       const token = localStorage.getItem('authToken');
       await axios.delete('https://back-thumbs.vercel.app/asso/delete', {
         headers: {
@@ -280,6 +314,7 @@ const handleDateChange = (date) => {
       console.error('Erreur lors de la suppression du compte:', error);
       // Afficher un message d'erreur si nécessaire
     } finally {
+      setIsLoadingRequest(false);
       closeDeleteAccountModal();
     }
   };
@@ -303,6 +338,14 @@ const handleDateChange = (date) => {
 
     fetchEventFromAsso();
   }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="loader"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-[56px]">
@@ -520,13 +563,14 @@ const handleDateChange = (date) => {
        
         <form className="space-y-4">
         <div>
-            <label className="block text-sm font-medium">Nom de l'événement</label>
+            <label className="block text-sm font-medium">Nom de l'événement <span className="text-red-500">*</span></label>
             <input 
               type="text" 
               name="eventName" 
               className="w-full border rounded-lg p-2" 
               onChange={handleEventInputChange}
               />
+              {errors.eventName && <p className="text-red-500">{errors.eventName}</p>}
         </div>
         <div>
             <label className="block text-sm font-medium">Résumé</label>
@@ -537,22 +581,25 @@ const handleDateChange = (date) => {
               />
         </div>
         <div>
-            <label className="block text-sm font-medium">Description</label>
+            <label className="block text-sm font-medium">Description <span className="text-red-500">*</span></label>
             <textarea 
               name="description" 
               className="w-full border rounded-lg p-2" 
               onChange={handleEventInputChange}
               />
+            {errors.description && <p className="text-red-500">{errors.description}</p>}
         </div>
         <div>
-          <label className="block text-sm font-medium">Adresse</label>
+          <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>
           <CitySearch 
               formData={formDataInputs} 
               setFormData={setFormDataInputs}
-            />   
+            />
+            {errors.address && <p className="text-red-500">{errors.address}</p>}
+            {errors.city && <p className="text-red-500">{errors.city}</p>}
         </div>
         <div>
-          <label className="block text-sm font-medium">Date et heure de l'événement</label>
+          <label className="block text-sm font-medium">Date et heure de l'événement <span className="text-red-500">*</span></label>
           <DatePicker
             name="creationdate"
             selected={formDataInputs.creationdate || null}
@@ -564,6 +611,7 @@ const handleDateChange = (date) => {
             locale={fr}
             className="w-full border rounded-lg p-2"
           />
+          {errors.creationdate && <p className="text-red-500">{errors.creationdate}</p>}
         </div>
         <div>
             <label className="block text-sm font-medium">Intérêts</label>
@@ -582,7 +630,7 @@ const handleDateChange = (date) => {
               />
         </div>
         <div>
-            <label className="block text-sm font-medium">Photo</label>
+            <label className="block text-sm font-medium">Photo <span className="text-red-500">*</span></label>
             <input 
               type="file"
               name="photo"
@@ -590,14 +638,20 @@ const handleDateChange = (date) => {
               className="w-full border rounded-lg p-2" 
               onChange={handleEventInputChange} 
             />
+            {errors.photo && <p className="text-red-500">{errors.photo}</p>}
           </div>
         <div className="flex justify-end mt-4">
             <button
               type="button"
               className="px-4 py-2 bg-blue-600 text-white rounded-lg mr-2"
               onClick={handleCreateEvent}
+              disabled={isLoadingRequest}
             >
-              Créer
+              {isLoadingRequest ? (
+                <span>Envoi...</span>
+              ) : (
+                "Créer"
+              )}                 
             </button>
             <button
               type="button"
@@ -730,8 +784,13 @@ const handleDateChange = (date) => {
               type="button"
               className="px-4 py-2 bg-blue-600 text-white rounded-lg mr-2"
               onClick={handleUpdateProfile}
+              disabled={isLoadingRequest}
             >
-              Enregistrer
+              {isLoadingRequest ? (
+                <span>Envoi...</span>
+              ) : (
+                "Enregistrer"
+              )}            
             </button>
             <button
               type="button"
@@ -752,8 +811,13 @@ const handleDateChange = (date) => {
             <button
               className="px-4 py-2 bg-red-600 text-white rounded-lg mr-2"
               onClick={handleLogout}
+              disabled={isLoadingRequest}
             >
-              Déconnexion
+              {isLoadingRequest ? (
+                <span>Déconnexion...</span>
+              ) : (
+                "Déconnexion"
+              )}               
             </button>
             <button
               className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg"
@@ -773,9 +837,14 @@ const handleDateChange = (date) => {
             <button
               className="bg-red-500 text-white px-4 py-2 rounded-lg"
               onClick={handleDeleteAccount}
+              disabled={isLoadingRequest}
             >
-              Supprimer
-            </button>
+              {isLoadingRequest ? (
+                <span>Suppression...</span>
+              ) : (
+                "Supprimer"
+              )}               
+              </button>
             <button
               className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg"
               onClick={closeDeleteAccountModal}
