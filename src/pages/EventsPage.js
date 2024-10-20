@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react";
-import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import EventCard from "../components/EventCard";
 import SearchBar from "../components/Searchbar";
