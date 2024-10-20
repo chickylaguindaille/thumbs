@@ -11,7 +11,7 @@ const EventCard = ({ id, photo, eventName, subdescription, creationdate, interes
       try {
         const token = localStorage.getItem('authToken');
 
-        const response = await axios.get(`https://back-thumbs.vercel.app/asso/getDetails-asso/${organisator}`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/asso/getDetails-asso/${organisator}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           }
@@ -45,9 +45,12 @@ const EventCard = ({ id, photo, eventName, subdescription, creationdate, interes
         <div className="flex justify-between">
           <div>
             <span><p className="text-sm text-gray-500 font-bold">{interests.join(', ')}</p></span>
-            <Link to={`/association/${organisator}`} className="text-sm font-bold text-blue-600 hover:text-blue-400">
+            <span 
+              onClick={() => window.location.href = `/association/${organisator}`} 
+              className="text-sm font-bold text-blue-600 hover:text-blue-400 cursor-pointer"
+            >
               {organisatorName}
-            </Link>
+            </span>
           </div>
           <div className="flex flex-col text-right space-x-1 text-blue-600">
             <span className="text-sm">{city}</span>

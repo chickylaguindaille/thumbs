@@ -7,8 +7,7 @@ import {
   useLocation,
   Navigate,
 } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { checkTokenValidity } from "./authActions";
+import { useSelector } from "react-redux";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import EventsPage from "./pages/EventsPage";
@@ -19,7 +18,6 @@ import ProfilePage from "./pages/ProfilePage";
 import AssociationsPage from "./pages/AssociationsPage";
 import AssociationPage from "./pages/AssociationPage";
 import LoginPage from "./pages/LoginPage";
-import Axeptio from "./components/Axeptio";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import SignupPage from "./pages/SignupPage";

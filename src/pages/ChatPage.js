@@ -64,7 +64,7 @@ const ChatPage = () => {
 
         // Récupérer les messages du contact
         const response = await axios.get(
-          `https://back-thumbs.vercel.app/messages/get/${id}`,
+          `${process.env.REACT_APP_API_URL}/messages/get/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -84,12 +84,12 @@ const ChatPage = () => {
 
         // Adaptez l'URL en fonction du type
         if (type === 'user') {
-          url = `https://back-thumbs.vercel.app/profil/getDetails-user/${id}`;
+          url = `${process.env.REACT_APP_API_URL}/profil/getDetails-user/${id}`;
         } else if (type === 'asso') {
-          url = `https://back-thumbs.vercel.app/asso/getDetails-asso/${id}`;
+          url = `${process.env.REACT_APP_API_URL}/asso/getDetails-asso/${id}`;
         } else {
           // Gérer d'autres types si nécessaire
-          url = `https://back-thumbs.vercel.app/profil/getDetails-user/${id}`; // Valeur par défaut
+          url = `${process.env.REACT_APP_API_URL}/profil/getDetails-user/${id}`;
         }
 
         const response = await axios.get(url,
@@ -100,7 +100,7 @@ const ChatPage = () => {
           }
         );
 
-        console.log(response.data)
+        // console.log(response.data)
 
         if (type === 'user') {
           setContact(response.data.user);
@@ -111,6 +111,12 @@ const ChatPage = () => {
         }
 
       } catch (error) {
+
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem("authToken");
+          window.location.href = '/login';
+        }
+
         console.error(
           "Erreur lors de la récupération des infos de contact:",
           error
@@ -155,7 +161,7 @@ const ChatPage = () => {
       try {
         // Envoyer un nouveau message à l'API
         await axios.post(
-          "https://back-thumbs.vercel.app/messages/send",
+          `${process.env.REACT_APP_API_URL}/messages/send`,
           {
             senderId,
             receiverId: id, // ID du contact

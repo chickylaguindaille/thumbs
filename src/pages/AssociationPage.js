@@ -48,7 +48,7 @@ const AssociationPage = () => {
   //     try {
   //       const token = localStorage.getItem('authToken');
 
-  //       const response = await axios.get('https://back-thumbs.vercel.app/asso/asso-details', {
+  //       const response = await axios.get(`${process.env.REACT_APP_API_URL}/asso/asso-details`, {
   //         headers: {
   //           Authorization: `Bearer ${token}`,
   //         }
@@ -70,7 +70,7 @@ const AssociationPage = () => {
       setLoading(true);
       try {
         const token = localStorage.getItem('authToken');
-        const response = await axios.get(`https://back-thumbs.vercel.app/asso/getDetails-asso/${id}`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/asso/getDetails-asso/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           }
@@ -79,6 +79,12 @@ const AssociationPage = () => {
         setFormData(response.data.asso);
         // console.log(response.data);
       } catch (error) {
+
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem("authToken");
+          window.location.href = '/login';
+        }
+
         console.error('Erreur lors de la récupération du profil asso:', error);
       } finally {
         setLoading(false);
@@ -92,7 +98,7 @@ const AssociationPage = () => {
     const fetchInterests = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        const response = await axios.get('https://back-thumbs.vercel.app/profil/interests', {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/profil/interests`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -150,10 +156,10 @@ const AssociationPage = () => {
 
     try {
       setIsLoadingRequest(true);
-      console.log(formData);
-      console.log(formDataToSend);
+      // console.log(formData);
+      // console.log(formDataToSend);
       const token = localStorage.getItem('authToken');
-      const response = await axios.put('https://back-thumbs.vercel.app/asso/update-asso', formDataToSend, {
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/asso/update-asso`, formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
@@ -214,10 +220,10 @@ const AssociationPage = () => {
       if (formDataInputs.creationdate) eventData.append('creationdate', formDataInputs.creationdate.toISOString());
       if (formDataInputs.photo) eventData.append('photo', formDataInputs.photo);
 
-      console.log(eventData);
+      // console.log(eventData);
 
       const token = localStorage.getItem('authToken');
-      const response = await axios.post('https://back-thumbs.vercel.app/event/create-event', eventData, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/event/create-event`, eventData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
@@ -284,7 +290,7 @@ const handleDateChange = (date) => {
     try {
       setIsLoadingRequest(true);
       const token = localStorage.getItem('authToken');
-      await axios.post('https://back-thumbs.vercel.app/auth/logout', {}, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/auth/logout`, {}, {
         headers: {
           Authorization: `Bearer ${token}`,        
         }
@@ -304,7 +310,7 @@ const handleDateChange = (date) => {
       setIsLoadingRequest(true);
 
       const token = localStorage.getItem('authToken');
-      await axios.delete('https://back-thumbs.vercel.app/asso/delete', {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/asso/delete`, {
         headers: {
             Authorization: `Bearer ${token}`,        
         }
@@ -324,7 +330,7 @@ const handleDateChange = (date) => {
       try {
         const token = localStorage.getItem('authToken');
 
-        const response = await axios.get(`https://back-thumbs.vercel.app/asso/organized-events/${id}`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/asso/organized-events/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           }
@@ -332,7 +338,10 @@ const handleDateChange = (date) => {
         setEventsOrganized(response.data.events);
 
       } catch (error) {
-        console.error('Erreur lors de la récupération du profil asso:', error);
+        if (error.response && error.response.status !== 404) {
+          // Afficher uniquement les erreurs qui ne sont pas 404
+          console.error('Erreur lors de la récupération du profil asso:', error);
+        }
       }
     };
 

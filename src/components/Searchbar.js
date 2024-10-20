@@ -25,7 +25,7 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
     const fetchInterests = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        const response = await axios.get('https://back-thumbs.vercel.app/profil/interests', {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/profil/interests`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -112,9 +112,9 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
       </div>
 
       {/* Dropdowns en dessous du search input */}
-      <div className="mt-4 flex justify-between space-x-4">
+      <div className="mt-4 flex flex-col sm:flex-row justify-between space-x-0 sm:space-x-4">
         {!isAssociationsPage && (
-          <div className="relative w-1/3" ref={sortDropdownRef}>
+          <div className="relative w-full sm:w-1/3" ref={sortDropdownRef}>
             <div
               className="flex items-center justify-between block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 cursor-pointer"
               onClick={() => {
@@ -163,7 +163,7 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
           </div>
         )}
 
-        <div className="relative w-1/3" ref={interestDropdownRef}>
+        <div className="relative w-full sm:w-1/3" ref={interestDropdownRef}>
           <div
             className="flex items-center justify-between block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 cursor-pointer"
             onClick={() => {
@@ -172,7 +172,7 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
               setIsDistanceDropdownOpen(false); // Fermer l'autre dropdown
             }}
           >
-            <span>Choisir des intérêts</span>
+            <span>Intérêts</span>
             <FaChevronDown className={`transform transition-transform ${isInterestDropdownOpen ? 'rotate-180' : 'rotate-0'}`} />
           </div>
           {isInterestDropdownOpen && (
@@ -193,7 +193,7 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
         </div>
 
         {!isAssociationsPage && (
-          <div className="relative w-1/3" ref={distanceDropdownRef}>
+          <div className="relative w-full sm:w-1/3" ref={distanceDropdownRef}>
             <div
               className="flex items-center justify-between block w-full border border-gray-300 p-2 rounded bg-white text-gray-900 cursor-pointer"
               onClick={() => {
@@ -220,9 +220,19 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
                 <label className="flex items-center p-2 cursor-pointer">
                   <input
                     type="radio"
-                    value="10km"
-                    checked={distance === '10km'}
-                    onChange={() => handleDistanceChange('10km')}
+                    value="5"
+                    checked={distance === '5'}
+                    onChange={() => handleDistanceChange('5')}
+                    className="mr-2"
+                  />
+                  5 km
+                </label>
+                <label className="flex items-center p-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    value="10"
+                    checked={distance === '10'}
+                    onChange={() => handleDistanceChange('10')}
                     className="mr-2"
                   />
                   10 km
@@ -230,24 +240,45 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
                 <label className="flex items-center p-2 cursor-pointer">
                   <input
                     type="radio"
-                    value="20km"
-                    checked={distance === '20km'}
-                    onChange={() => handleDistanceChange('20km')}
+                    value="30"
+                    checked={distance === '30'}
+                    onChange={() => handleDistanceChange('30')}
                     className="mr-2"
                   />
-                  20 km
+                  30 km
                 </label>
-                <label className="flex items-center p-2 cursor-pointer">
+                {/* <label className="flex items-center p-2 cursor-pointer">
                   <input
                     type="radio"
-                    value="50km"
-                    checked={distance === '50km'}
+                    value="50"
+                    checked={distance === '50'}
                     onChange={() => handleDistanceChange('50km')}
                     className="mr-2"
                   />
                   50 km
+                </label> */}
+                <label className="flex items-center p-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    value="100"
+                    checked={distance === '100'}
+                    onChange={() => handleDistanceChange('100')}
+                    className="mr-2"
+                  />
+                  100 km
+                </label>
+                <label className="flex items-center p-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    value="1000"
+                    checked={distance === '1000'}
+                    onChange={() => handleDistanceChange('1000')}
+                    className="mr-2"
+                  />
+                  1000 km
                 </label>
               </div>
+              
             )}
           </div>
         )}

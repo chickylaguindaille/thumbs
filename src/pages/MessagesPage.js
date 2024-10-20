@@ -17,7 +17,7 @@ const MessagesPage = () => {
 
         // Récupérer les conversations
         const response = await axios.get(
-          `https://back-thumbs.vercel.app/messages/conversations`,
+          `${process.env.REACT_APP_API_URL}/messages/conversations`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -32,6 +32,12 @@ const MessagesPage = () => {
 
         setConversations(sortedConversations);
       } catch (error) {
+
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem("authToken");
+          window.location.href = '/login';
+        }
+
         console.error("Erreur lors de la récupération des messages:", error);
       } finally {
         setLoading(false);

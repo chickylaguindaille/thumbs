@@ -46,7 +46,7 @@ const ProfilePage = () => {
   //     try {
   //       const token = localStorage.getItem('authToken');
 
-  //       const response = await axios.get('https://back-thumbs.vercel.app/profil/details', {
+  //       const response = await axios.get(`${process.env.REACT_APP_API_URL}/profil/details`, {
   //         headers: {
   //           Authorization: `Bearer ${token}`,
   //         }
@@ -69,7 +69,7 @@ const ProfilePage = () => {
       try {
         const token = localStorage.getItem('authToken');
 
-        const response = await axios.get(`https://back-thumbs.vercel.app/profil/getDetails-user/${id}`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/profil/getDetails-user/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           }
@@ -77,6 +77,12 @@ const ProfilePage = () => {
         setProfile(response.data.user);
         setFormData(response.data.user);
       } catch (error) {
+
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem("authToken");
+          window.location.href = '/login';
+        }
+
         console.error('Erreur lors de la récupération du profil asso:', error);
       } finally {
         setLoading(false);
@@ -90,7 +96,7 @@ const ProfilePage = () => {
     const fetchInterests = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        const response = await axios.get('https://back-thumbs.vercel.app/profil/interests', {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/profil/interests`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -151,7 +157,7 @@ const ProfilePage = () => {
     try {
       setIsLoadingRequest(true);
       const token = localStorage.getItem('authToken');
-      const response = await axios.post('https://back-thumbs.vercel.app/profil/profilupdate', formDataToSend, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/profil/profilupdate`, formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
@@ -181,7 +187,7 @@ const ProfilePage = () => {
       try {
         const token = localStorage.getItem('authToken');
 
-        const response = await axios.get(`https://back-thumbs.vercel.app/event/getUser-event/${id}`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/event/getUser-event/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           }
@@ -211,7 +217,7 @@ const ProfilePage = () => {
     try {
       setIsLoadingRequest(true);
       const token = localStorage.getItem('authToken');
-      await axios.post('https://back-thumbs.vercel.app/auth/logout', {}, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/auth/logout`, {}, {
         headers: {
           Authorization: `Bearer ${token}`,        
         }
@@ -230,7 +236,7 @@ const ProfilePage = () => {
     try {
       setIsLoadingRequest(true);
       const token = localStorage.getItem('authToken');
-      await axios.delete('https://back-thumbs.vercel.app/profil/delete-profil', {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/profil/delete-profil`, {
         headers: {
           Authorization: `Bearer ${token}`,        
         }
@@ -534,7 +540,7 @@ const ProfilePage = () => {
               {isLoadingRequest ? (
                 <span>Envoi...</span>
               ) : (
-                "Créer"
+                "Enregistrer"
               )}                 
             </button>
             <button

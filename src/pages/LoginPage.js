@@ -15,9 +15,9 @@ function LoginPage() {
 
   let url;
   if (role === "asso") {
-    url = "https://back-thumbs.vercel.app/auth-asso/login";
+    url = `${process.env.REACT_APP_API_URL}/auth-asso/login`;
   } else {
-    url = "https://back-thumbs.vercel.app/auth/login";
+    url = `${process.env.REACT_APP_API_URL}/auth/login`;
   }
 
   const handleSubmit = async (event) => {

@@ -14,9 +14,9 @@ function ResetPasswordPage() {
 
   let url;
   if (role === 'asso') {
-    url = `https://back-thumbs.vercel.app/auth-asso/reset-password/${token}`;
+    url = `${process.env.REACT_APP_API_URL}/auth-asso/reset-password/${token}`;
   } else {
-    url = `https://back-thumbs.vercel.app/auth/reset-password/${token}`;
+    url = `${process.env.REACT_APP_API_URL}/auth/reset-password/${token}`;
   }
 
   // Fonction de gestion du formulaire de soumission

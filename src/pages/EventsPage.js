@@ -23,7 +23,7 @@ const EventsPage = () => {
       try {
         const token = localStorage.getItem("authToken");
         const response = await axios.get(
-          "https://back-thumbs.vercel.app/profil/interests",
+          `${process.env.REACT_APP_API_URL}/profil/interests`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -71,7 +71,7 @@ const EventsPage = () => {
         }
 
         const response = await axios.get(
-          "https://back-thumbs.vercel.app/event/filter",
+          `${process.env.REACT_APP_API_URL}/event/filter`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -79,12 +79,28 @@ const EventsPage = () => {
             params: params,
           }
         );
-        setEvents(response.data.events || []);
+
+        // Obtenir la date actuelle
+        const currentDate = new Date();
+
+        // Filtrer les événements pour exclure ceux dont la date est passée
+        const upcomingEvents = response.data.events?.filter(event => {
+          const eventDate = new Date(event.creationdate);
+          return eventDate >= currentDate; // Gardez uniquement les événements à venir
+        }) || [];
+
+        setEvents(upcomingEvents);
         setError(null);
       } catch (error) {
+
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem("authToken");
+          window.location.href = '/login';
+        }
+
         console.error("Erreur lors de la récupération des événements:", error);
         setEvents([]);
-        setError("Aucun événement trouvé.");
+        setError("");
       } finally {
         setLoading(false);
       }

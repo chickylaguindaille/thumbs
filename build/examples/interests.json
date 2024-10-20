@@ -1,256 +1,200 @@
 {
-  "centres_interets": [
-    {
-      "id": 1,
-      "nom": "Football",
-      "thematique": "Sport",
-      "logo": "/build/images/icon-interest/Football_interest.png"
-    },
-    {
-      "id": 2,
-      "nom": "Peinture",
-      "thematique": "Art",
-      "logo": "/build/images/icon-interest/Peinture_interest.png"
-    },
-    {
-      "id": 3,
-      "nom": "Lecture",
-      "thematique": "Loisirs",
-      "logo": "/build/images/icon-interest/Lecture_interest.png"
-    },
-    {
-      "id": 4,
-      "nom": "Yoga",
-      "thematique": "Bien-être",
-      "logo": "/build/images/icon-interest/Yoga_interest.png"
-    },
-    {
-      "id": 5,
-      "nom": "Cuisine",
-      "thematique": "Loisirs",
-      "logo": "/build/images/icon-interest/Cuisine_interest.png"
-    },
-    {
-      "id": 6,
-      "nom": "Escalade",
-      "thematique": "Sport",
-      "logo": "/build/images/icon-interest/Escalade_interest.png"
-    },
-    {
-      "id": 7,
-      "nom": "Photographie",
-      "thematique": "Art",
-      "logo": "/build/images/icon-interest/Photographie_interest.png"
-    },
-    {
-      "id": 8,
-      "nom": "Voyages",
-      "thematique": "Aventure",
-      "logo": "/build/images/icon-interest/Voyages_interest.png"
-    },
-    {
-      "id": 9,
-      "nom": "Programmation",
-      "thematique": "Technologie",
-      "logo": "/build/images/icon-interest/Programmation_interest.png"
-    },
-    {
-      "id": 10,
-      "nom": "Cyclisme",
-      "thematique": "Sport",
-      "logo": "/build/images/icon-interest/Cyclisme_interest.png"
-    },
-    {
-      "id": 11,
-      "nom": "Musique",
-      "thematique": "Art",
-      "logo": "/build/images/icon-interest/Musique_interest.png"
-    },
-    {
-      "id": 12,
-      "nom": "Randonnée",
-      "thematique": "Aventure",
-      "logo": "/build/images/icon-interest/Randonnée_interest.png"
-    },
-    {
-      "id": 13,
-      "nom": "Méditation",
-      "thematique": "Bien-être",
-      "logo": "/build/images/icon-interest/Méditation_interest.png"
-    },
-    {
-      "id": 14,
-      "nom": "Jeux vidéo",
-      "thematique": "Technologie",
-      "logo": "/build/images/icon-interest/Jeux_vidéo_interest.png"
-    },
-    {
-      "id": 15,
-      "nom": "Astronomie",
-      "thematique": "Science",
-      "logo": "/build/images/icon-interest/Astronomie_interest.png"
-    },
-    {
-      "id": 16,
-      "nom": "Dessin",
-      "thematique": "Art",
-      "logo": "/build/images/icon-interest/Dessin_interest.png"
-    },
-    {
-      "id": 17,
-      "nom": "Natation",
-      "thematique": "Sport",
-      "logo": "/build/images/icon-interest/Natation_interest.png"
-    },
-    {
-      "id": 18,
-      "nom": "Théâtre",
-      "thematique": "Art",
-      "logo": "/build/images/icon-interest/Théâtre_interest.png"
-    },
-    {
-      "id": 19,
-      "nom": "Écriture",
-      "thematique": "Littérature",
-      "logo": "/build/images/icon-interest/Écriture_interest.png"
-    },
-    {
-      "id": 20,
-      "nom": "Pêche",
-      "thematique": "Loisirs",
-      "logo": "/build/images/icon-interest/Pêche_interest.png"
-    },
-    {
-      "id": 21,
-      "nom": "Pâtisserie",
-      "thematique": "Loisirs",
-      "logo": "/build/images/icon-interest/Pâtisserie_interest.png"
-    },
-    {
-      "id": 22,
-      "nom": "Danse",
-      "thematique": "Sport",
-      "logo": "/build/images/icon-interest/Danse_interest.png"
-    },
-    {
-      "id": 23,
-      "nom": "Jardinage",
-      "thematique": "Loisirs",
-      "logo": "/build/images/icon-interest/Jardinage_interest.png"
-    },
-    {
-      "id": 24,
-      "nom": "Surf",
-      "thematique": "Sport",
-      "logo": "/build/images/icon-interest/Surf_interest.png"
-    },
-    {
-      "id": 25,
-      "nom": "Arts martiaux",
-      "thematique": "Sport",
-      "logo": "/build/images/icon-interest/Arts_martiaux_interest.png"
-    },
-    {
-      "id": 26,
-      "nom": "Calligraphie",
-      "thematique": "Art",
-      "logo": "/build/images/icon-interest/Calligraphie_interest.png"
-    },
-    {
-      "id": 27,
-      "nom": "Robotiques",
-      "thematique": "Technologie",
-      "logo": "/build/images/icon-interest/Robotiques_interest.png"
-    },
-    {
-      "id": 28,
-      "nom": "Boxe",
-      "thematique": "Sport",
-      "logo": "/build/images/icon-interest/Boxe_interest.png"
-    },
-    {
-      "id": 29,
-      "nom": "Scrapbooking",
-      "thematique": "Loisirs",
-      "logo": "/build/images/icon-interest/Scrapbooking_interest.png"
-    },
-    {
-      "id": 30,
-      "nom": "Vélo tout terrain",
-      "thematique": "Sport",
-      "logo": "/build/images/icon-interest/Vélo_tout_terrain_interest.png"
-    },
-    {
-      "id": 31,
-      "nom": "Céramique",
-      "thematique": "Art",
-      "logo": "/build/images/icon-interest/Céramique_interest.png"
-    },
-    {
-      "id": 32,
-      "nom": "Chant",
-      "thematique": "Art",
-      "logo": "/build/images/icon-interest/Chant_interest.png"
-    },
-    {
-      "id": 33,
-      "nom": "Équitation",
-      "thematique": "Sport",
-      "logo": "/build/images/icon-interest/Équitation_interest.png"
-    },
-    {
-      "id": 34,
-      "nom": "Maquettisme",
-      "thematique": "Loisirs",
-      "logo": "/build/images/icon-interest/Maquettisme_interest.png"
-    },
-    {
-      "id": 35,
-      "nom": "Ébénisterie",
-      "thematique": "Artisanat",
-      "logo": "/build/images/icon-interest/Ébénisterie_interest.png"
-    },
-    {
-      "id": 36,
-      "nom": "Triathlon",
-      "thematique": "Sport",
-      "logo": "/build/images/icon-interest/Triathlon_interest.png"
-    },
-    {
-      "id": 37,
-      "nom": "Plongée sous-marine",
-      "thematique": "Aventure",
-      "logo": "/build/images/icon-interest/Plongée_sous-marine_interest.png"
-    },
-    {
-      "id": 38,
-      "nom": "Décoration intérieure",
-      "thematique": "Art",
-      "logo": "/build/images/icon-interest/Décoration_intérieure_interest.png"
-    },
-    {
-      "id": 39,
-      "nom": "Crossfit",
-      "thematique": "Sport",
-      "logo": "/build/images/icon-interest/Crossfit_interest.png"
-    },
-    {
-      "id": 40,
-      "nom": "Enfants",
-      "thematique": "Social",
-      "logo": "/build/images/icon-interest/Enfants_interest.png"
-    },
-    {
-      "id": 41,
-      "nom": "Animaux",
-      "thematique": "Social",
-      "logo": "/build/images/icon-interest/Animaux_interest.png"
-    },
-    {
-      "id": 42,
-      "nom": "Écologie",
-      "thematique": "Social",
-      "logo": "/build/images/icon-interest/Écologie_interest.png"
-    }
-  ]
-}
+    "centres_interets": [
+      {
+        "id": 1,
+        "nom": "Football",
+        "thematique": "Sport"
+      },
+      {
+        "id": 2,
+        "nom": "Peinture",
+        "thematique": "Art"
+      },
+      {
+        "id": 3,
+        "nom": "Lecture",
+        "thematique": "Loisirs"
+      },
+      {
+        "id": 4,
+        "nom": "Yoga",
+        "thematique": "Bien-être"
+      },
+      {
+        "id": 5,
+        "nom": "Cuisine",
+        "thematique": "Loisirs"
+      },
+      {
+        "id": 6,
+        "nom": "Escalade",
+        "thematique": "Sport"
+      },
+      {
+        "id": 7,
+        "nom": "Photographie",
+        "thematique": "Art"
+      },
+      {
+        "id": 8,
+        "nom": "Voyages",
+        "thematique": "Aventure"
+      },
+      {
+        "id": 9,
+        "nom": "Programmation",
+        "thematique": "Technologie"
+      },
+      {
+        "id": 10,
+        "nom": "Cyclisme",
+        "thematique": "Sport"
+      },
+      {
+        "id": 11,
+        "nom": "Musique",
+        "thematique": "Art"
+      },
+      {
+        "id": 12,
+        "nom": "Randonnée",
+        "thematique": "Aventure"
+      },
+      {
+        "id": 13,
+        "nom": "Méditation",
+        "thematique": "Bien-être"
+      },
+      {
+        "id": 14,
+        "nom": "Jeux vidéo",
+        "thematique": "Technologie"
+      },
+      {
+        "id": 15,
+        "nom": "Astronomie",
+        "thematique": "Science"
+      },
+      {
+        "id": 16,
+        "nom": "Dessin",
+        "thematique": "Art"
+      },
+      {
+        "id": 17,
+        "nom": "Natation",
+        "thematique": "Sport"
+      },
+      {
+        "id": 18,
+        "nom": "Théâtre",
+        "thematique": "Art"
+      },
+      {
+        "id": 19,
+        "nom": "Écriture",
+        "thematique": "Littérature"
+      },
+      {
+        "id": 20,
+        "nom": "Pêche",
+        "thematique": "Loisirs"
+      },
+      {
+        "id": 21,
+        "nom": "Pâtisserie",
+        "thematique": "Loisirs"
+      },
+      {
+        "id": 22,
+        "nom": "Danse",
+        "thematique": "Sport"
+      },
+      {
+        "id": 23,
+        "nom": "Jardinage",
+        "thematique": "Loisirs"
+      },
+      {
+        "id": 24,
+        "nom": "Surf",
+        "thematique": "Sport"
+      },
+      {
+        "id": 25,
+        "nom": "Arts martiaux",
+        "thematique": "Sport"
+      },
+      {
+        "id": 26,
+        "nom": "Calligraphie",
+        "thematique": "Art"
+      },
+      {
+        "id": 27,
+        "nom": "Robotiques",
+        "thematique": "Technologie"
+      },
+      {
+        "id": 28,
+        "nom": "Boxe",
+        "thematique": "Sport"
+      },
+      {
+        "id": 29,
+        "nom": "Scrapbooking",
+        "thematique": "Loisirs"
+      },
+      {
+        "id": 30,
+        "nom": "Vélo tout terrain",
+        "thematique": "Sport"
+      },
+      {
+        "id": 31,
+        "nom": "Céramique",
+        "thematique": "Art"
+      },
+      {
+        "id": 32,
+        "nom": "Chant",
+        "thematique": "Art"
+      },
+      {
+        "id": 33,
+        "nom": "Équitation",
+        "thematique": "Sport"
+      },
+      {
+        "id": 34,
+        "nom": "Maquettisme",
+        "thematique": "Loisirs"
+      },
+      {
+        "id": 35,
+        "nom": "Ébénisterie",
+        "thematique": "Artisanat"
+      },
+      {
+        "id": 36,
+        "nom": "Triathlon",
+        "thematique": "Sport"
+      },
+      {
+        "id": 37,
+        "nom": "Plongée sous-marine",
+        "thematique": "Aventure"
+      },
+      {
+        "id": 38,
+        "nom": "Décoration intérieure",
+        "thematique": "Art"
+      },
+      {
+        "id": 39,
+        "nom": "Crossfit",
+        "thematique": "Sport"
+      }
+    ]
+  }
+  
