@@ -161,7 +161,7 @@ const ChatPage = () => {
       try {
         // Envoyer un nouveau message à l'API
         await axios.post(
-          "${process.env.REACT_APP_API_URL}/messages/send",
+          `${process.env.REACT_APP_API_URL}/messages/send`,
           {
             senderId,
             receiverId: id, // ID du contact
