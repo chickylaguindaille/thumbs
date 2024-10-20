@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 import { FaPaperPlane } from "react-icons/fa";
 import axios from "axios";
 import Header from "../components/Header";
@@ -15,7 +15,8 @@ const MessageBubble = ({ message, isSender }) => {
       className={`flex ${
         isSender ? "justify-end" : "justify-start"
       } mb-4 items-start`}
-    >{message.isSender}
+    >
+      {message.isSender}
       <div
         className={`p-3 rounded-lg max-w-xs ${
           isSender ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
@@ -38,7 +39,9 @@ const ChatPage = () => {
   const messagesEndRef = useRef(null);
 
   // Récupérer l'utilisateur connecté depuis le store Redux
-  const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
+  const user = useSelector((state) =>
+    state.auth.user ? state.auth.user.user : null
+  );
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -105,14 +108,14 @@ const ChatPage = () => {
       try {
         const token = localStorage.getItem("authToken");
         const decodedToken = jwtDecode(token);
-        const senderId = decodedToken.userId;
+        const senderId = decodedToken.userId; // Vérifiez que 'userId' est bien la clé dans votre JWT
 
         // Envoyer un nouveau message
         const response = await axios.post(
           "https://back-thumbs.vercel.app/messages/send",
           {
             senderId,
-            receiverId: id,
+            receiverId: id, // ID du contact
             content: newMessage,
           },
           {
@@ -144,7 +147,6 @@ const ChatPage = () => {
       }
     }
   };
-
   return (
     <div className="flex flex-col h-screen pt-[56px]">
       <Header
@@ -159,8 +161,10 @@ const ChatPage = () => {
             // message={message}
             message={message}
             // Comparer l'ID de l'utilisateur connecté avec l'ID de l'expéditeur du message
-            isSender={message?.sender?.id && user?.id && message.sender.id === user.id}
-            />
+            isSender={
+              message?.sender?.id && user?.id && message.sender.id === user.id
+            }
+          />
         ))}
         <div ref={messagesEndRef} />
       </div>
