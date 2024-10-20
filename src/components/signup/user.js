@@ -79,9 +79,9 @@ const UserForm = ({ onBack, onNext }) => {
     if (!formData.postalcode) newErrors.postalcode = 'Le code postal est obligatoire';
     if (!formData.address) newErrors.address = 'L\'adresse est obligatoire';
     
-    if (step === 2 && !formData.acceptTerms) {
+    if (step === 2) {
       if (!formData.description) newErrors.description = 'La description est obligatoire';
-      newErrors.acceptTerms = "Vous devez accepter les conditions.";
+      if (!formData.acceptTerms) newErrors.acceptTerms = "Vous devez accepter les conditions.";
     }
 
     setErrors(newErrors);
