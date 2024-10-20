@@ -48,11 +48,6 @@ function MainLayout() {
 
   const isPublicRoute = location.pathname === '/login' || location.pathname === '/forgot-password' || location.pathname.startsWith('/reset-password') || location.pathname === '/signup' || location.pathname === '/terms';
 
-  console.log(isSidebarOpen)
-  console.log(isPublicRoute)
-  console.log("test")
-
-
   return (
     <div className="flex flex-col md:flex-row">
       {/* Sidebar */}

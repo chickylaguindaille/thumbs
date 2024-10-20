@@ -101,7 +101,7 @@ const EventPage = () => {
         // console.log(formDataInputs)
 
 
-        const userId = user._id;
+        const userId = user?._id;
         const isUserParticipant = response.data.event.participants.some(participant => participant.userId === userId);
         setIsParticipant(isUserParticipant);
 
@@ -112,7 +112,7 @@ const EventPage = () => {
     };
 
     fetchEvent();
-  }, [id, user._id]);
+  }, [id, user?._id]);
 
   // Mettre participe ou non
   const toggleParticipation = async () => {
