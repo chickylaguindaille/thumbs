@@ -76,6 +76,7 @@ const UserForm = ({ onBack, onNext }) => {
     if (!formData.genre) newErrors.genre = 'Le sexe est obligatoire';
     if (!formData.birthdate) newErrors.birthdate = 'L\'âge est obligatoire';
     if (!formData.city) newErrors.city = 'La ville est obligatoire';
+    if (!formData.postalcode) newErrors.postalcode = 'Le code postal est obligatoire';
     if (!formData.address) newErrors.address = 'L\'adresse est obligatoire';
     
     if (step === 2 && !formData.acceptTerms) {
@@ -265,20 +266,11 @@ const UserForm = ({ onBack, onNext }) => {
                 formData={formData} 
                 setFormData={setFormData} 
                 errors={errors}
-              />              
-              {errors.city && <p className="text-red-500">{errors.city}</p>}
-            </div>
-            {/* <div> 
-              <label className="block text-sm font-medium">Adresse <span className="text-red-500">*</span></label>            
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2"
               />
+              {errors.city && <p className="text-red-500">{errors.city}</p>}
+              {errors.postalcode && <p className="text-red-500">{errors.postalcode}</p>}
               {errors.address && <p className="text-red-500">{errors.address}</p>}
-            </div> */}
+            </div>
           </div>
           <div className="flex justify-between mt-4">
             <button
