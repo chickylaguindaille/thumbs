@@ -69,13 +69,13 @@ const EventPage = () => {
     fetchInterests();
   }, []);
 
-  //Récupérer les infos de l'organisateur
+  // Récupérer les infos de l'organisateur
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("authToken");
         const response = await axios.get(
-          `https://back-thumbs.vercel.app/asso/getDetails-asso/${event.organisator}`,
+          `https://back-thumbs.vercel.app/asso/getDetails-asso/${event?.organisator}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -94,7 +94,7 @@ const EventPage = () => {
       }
     };
 
-    fetchProfile();
+    if (event) fetchProfile();
   }, [event]);
 
   // Récupération des infos de l'event
@@ -158,8 +158,12 @@ const EventPage = () => {
   const closeDeleteEventModal = () => setDeleteEventModalIsOpen(false);
 
   // Modal Participant Event
-  const openModalParticipant = () => setIsModalParticipantOpen(true);
-  const closeModalParticipant = () => setIsModalParticipantOpen(false);
+  const openModalParticipant = () => {
+    setIsModalParticipantOpen(true);
+  };
+  const closeModalParticipant = () => {
+    setIsModalParticipantOpen(false);
+  };
 
   const handleEventInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -204,7 +208,6 @@ const EventPage = () => {
     if (formDataInputs.city) eventData.append("city", formDataInputs.city);
     if (formDataInputs.creationdate)
       eventData.append("creationdate", formDataInputs.creationdate);
-
     if (formDataInputs.photo) eventData.append("photo", formDataInputs.photo);
 
     try {
@@ -237,7 +240,7 @@ const EventPage = () => {
           },
         }
       );
-      window.location.href = "/events";
+      window.location.href = "/events"; // Redirection vers la page des events après la suppression de l'event
     } catch (error) {
       console.error("Erreur lors de la suppression de l'événement:", error);
     }
@@ -251,14 +254,14 @@ const EventPage = () => {
             const interest = interestsData.find(
               (i) => Number(i.id) === Number(interestId)
             );
-            return interest ? `${interest.nom}` : "Inconnu";
+            return interest ? `${interest.nom}` : "Unknown";
           })
           .join(", ")
       : "";
 
   if (!event && !error) {
     return (
-      <div className="pt-[56px] h-screen flex items-center justify-center">
+      <div className="pt-[56px]">
         <p>Chargement de l'événement...</p>
       </div>
     );
@@ -266,7 +269,7 @@ const EventPage = () => {
 
   if (error) {
     return (
-      <div className="pt-[56px] h-screen flex items-center justify-center">
+      <div className="pt-[56px]">
         <p>{error}</p>
       </div>
     );
@@ -274,29 +277,27 @@ const EventPage = () => {
 
   return (
     <div className="pt-[56px]">
-      {/* Bannière de l'événement */}
-      <div className="relative">
+      <div>
         <button
           onClick={() => navigate(-1)}
-          className="absolute top-14 left-4 p-2 bg-gray-100 rounded-full shadow-md z-20"
+          className="absolute top-14 left p-2 shadow-lg z-20"
         >
-          <FaChevronLeft size={24} className="text-gray-700" />
+          <FaChevronLeft size={24} className="text-white" />
         </button>
 
         <div className="relative">
           <img
             src={event.photo}
             alt={event.eventName}
-            className="w-full h-72 md:h-96 object-cover"
+            className="w-full max-h-[200px] object-cover md:max-h-[300px] lg:max-h-[350px]"
           />
         </div>
       </div>
 
-      <div className="px-6 py-8 lg:px-16 space-y-6 max-w-6xl mx-auto">
-        {/* Détails de l'événement */}
-        <div className="flex flex-col lg:flex-row justify-between">
+      <div className="px-4 my-4">
+        <div className="flex justify-between">
           <div>
-            <p className="text-gray-500 font-semibold mb-1">
+            <p className="text-gray-600 text-gray-500 font-bold">
               {eventInterestNames}
             </p>
             <Link
@@ -306,65 +307,261 @@ const EventPage = () => {
               {organisatorName}
             </Link>
           </div>
-          <div className="text-right space-y-2 lg:text-right">
-            <span className="block text-gray-500">{event.address}</span>
-            {event.creationdate && (
-              <span className="block text-gray-500">
-                {new Date(event.creationdate).toLocaleString("fr-FR", {
-                  dateStyle: "medium",
-                  timeStyle: "short",
-                })}
-              </span>
-            )}
-            {event.organisator === user?._id && (
-              <div className="flex flex-col lg:flex-row gap-2">
-                <button
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-                  onClick={openModalModifyEvent}
-                >
-                  Modifier l'événement
-                </button>
-                <button
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg"
-                  onClick={openDeleteEventModal}
-                >
-                  Supprimer l'événement
-                </button>
-              </div>
-            )}
+          <div className="text-right absolute right-4">
+            <div className="space-x-1 text-blue-600">
+              <span className="text-sm">{event.address}</span>
+            </div>
+            {/* Affichage de la date et l'heure */}
+            <div>
+              {event.creationdate ? (
+                <p className="text-gray-600 text-sm">
+                  {new Date(event.creationdate).toLocaleString("fr-FR", {
+                    dateStyle: "medium",
+                    timeStyle: "short",
+                  })}
+                </p>
+              ) : null}
+            </div>
+            <div>
+              {event.organisator === user?._id && (
+                <div>
+                  <div className="space-x-1">
+                    <button
+                      type="button"
+                      className="px-2 py-1 bg-blue-600 text-white rounded-lg mt-2"
+                      onClick={openModalModifyEvent}
+                    >
+                      <span className="text-sm">Modifier l'événement</span>
+                    </button>
+                    <button
+                      type="button"
+                      className="px-2 py-1 bg-red-600 text-white rounded-lg mt-2"
+                      onClick={openDeleteEventModal}
+                    >
+                      Supprimer l'événement
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        <h1 className="text-2xl font-bold mb-4">{event.eventName}</h1>
-        <p className="text-gray-700 mb-4">{event.subdescription}</p>
-        <p className="text-gray-800">{event.description}</p>
+        <h1 className="text-2xl font-bold mb-2">{event.eventName}</h1>
+        <p className="text-gray-600 mb-2 text-gray-500">
+          {event.subdescription}
+        </p>
+        <p>{event.description}</p>
 
-        {/* Boutons de participation */}
-        <div className="flex justify-center items-center space-x-4">
+        {/* Bouton de participation */}
+        <div className="flex items-center justify-center mt-4 space-x-4">
           {user.type === "user" && (
-            <button
-              onClick={toggleParticipation}
-              className={`py-2 px-4 rounded ${
-                isParticipant
-                  ? "bg-red-500 hover:bg-red-600"
-                  : "bg-green-500 hover:bg-green-600"
-              } text-white`}
-            >
-              {isParticipant ? "Se retirer" : "Je participe"}
-            </button>
+            <div>
+              <button
+                onClick={toggleParticipation}
+                className={`py-2 px-4 rounded ${
+                  isParticipant
+                    ? "bg-red-500 hover:bg-red-600"
+                    : "bg-green-500 hover:bg-green-600"
+                } text-white`}
+              >
+                {isParticipant ? "Se retirer" : "Je participe"}
+              </button>
+            </div>
           )}
-          <button
-            onClick={openModalParticipant}
-            className="flex items-center bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition-colors duration-200"
-          >
-            <FaInfoCircle className="mr-2" />
-            Participants: {event.participants.length}
-          </button>
+          <div>
+            <button
+              onClick={openModalParticipant}
+              className="flex items-center bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition-colors duration-200"
+            >
+              <FaInfoCircle className="mr-2" />
+              Nombre de participants: {event.participants.length}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Modals */}
-      {/* ... Reste du code des modals (Modifier l'événement, Supprimer, etc.) */}
+      <Modal
+        isOpen={modalModifyEventIsOpen}
+        onClose={closeModalModifyEvent}
+        size="w-[90%] h-[90%]"
+      >
+        <h2 className="text-xl font-semibold mb-4">Modifier un événement</h2>
+        <form className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium">
+              Nom de l'événement
+            </label>
+            <input
+              type="text"
+              name="eventName"
+              className="w-full border rounded-lg p-2"
+              defaultValue={event.eventName}
+              onChange={handleEventInputChange}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Résumé</label>
+            <textarea
+              name="subdescription"
+              className="w-full border rounded-lg p-2"
+              defaultValue={event.subdescription}
+              onChange={handleEventInputChange}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Description</label>
+            <textarea
+              name="description"
+              className="w-full border rounded-lg p-2"
+              defaultValue={event.description}
+              onChange={handleEventInputChange}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Adresse</label>
+            <CitySearch
+              formData={formDataInputs}
+              setFormData={setFormDataInputs}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">
+              Date et heure de l'événement
+            </label>
+            <DatePicker
+              name="creationdate"
+              selected={
+                formDataInputs.creationdate
+                  ? new Date(formDataInputs.creationdate)
+                  : null
+              }
+              onChange={handleDateChange}
+              showTimeSelect
+              timeFormat="HH:mm"
+              timeIntervals={15}
+              dateFormat="Pp"
+              locale={fr}
+              className="w-full border rounded-lg p-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Intérêts</label>
+            <Select
+              closeMenuOnSelect={false}
+              components={animatedComponents}
+              isMulti
+              options={optionsLoisirs}
+              placeholder=""
+              value={optionsLoisirs.filter((option) =>
+                formDataInputs.interests.includes(option.value)
+              )}
+              onChange={(selectedOptions) =>
+                setFormDataInputs({
+                  ...formDataInputs,
+                  interests: selectedOptions.map((option) => option.value),
+                })
+              }
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Photo</label>
+            <input
+              type="file"
+              name="photo"
+              accept="image/*"
+              className="w-full border rounded-lg p-2"
+              onChange={handleEventInputChange}
+            />
+          </div>
+          <div className="flex justify-end mt-4">
+            <div>
+              <button
+                type="button"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg mr-2"
+                onClick={handleModifyEvent}
+              >
+                Modifier
+              </button>
+              <button
+                type="button"
+                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg"
+                onClick={closeModalModifyEvent}
+              >
+                Annuler
+              </button>
+            </div>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal isOpen={deleteEventModalIsOpen} onClose={closeDeleteEventModal}>
+        <div className="p-4">
+          <h2 className="text-xl font-semibold text-red-500">
+            Supprimer mon événement
+          </h2>
+          <p>
+            Êtes-vous sûr de vouloir supprimer votre événement ? Cette action
+            est irréversible.
+          </p>
+          <div className="mt-4 flex justify-between">
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded-lg"
+              onClick={handleDeleteEvent}
+            >
+              Supprimer
+            </button>
+            <button
+              className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg"
+              onClick={closeDeleteEventModal}
+            >
+              Annuler
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Modal pour afficher la liste des participants */}
+      <Modal
+        isOpen={isModalParticipantOpen}
+        onRequestClose={closeModalParticipant}
+        contentLabel="Participants"
+        className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+      >
+        <h2 className="text-xl font-bold mb-4">Liste des Participants</h2>
+        <ul className="mb-6">
+          {event.participants.length > 0 ? (
+            event.participants.map((participant) => (
+              <Link
+                key={participant.userId}
+                to={`/profile/${participant.userId}`}
+                className="block py-4 px-4 border-b hover:bg-blue-50 transition-colors duration-200 flex items-center"
+              >
+                <img
+                  src={participant.photo}
+                  alt={`${participant.firstName} ${participant.lastName}`}
+                  className="inline-block w-10 h-10 rounded-full mr-4"
+                />
+                <span className="text-black-500 font-bold">
+                  {participant.firstName} {participant.lastName}
+                </span>
+              </Link>
+            ))
+          ) : (
+            <li className="text-gray-500">Aucun participant inscrit.</li>
+          )}
+        </ul>
+        <div className="flex justify-end">
+          <button
+            onClick={closeModalParticipant}
+            className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition-colors duration-200"
+          >
+            <FaTimes className="inline-block mr-2" />
+            Fermer
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
