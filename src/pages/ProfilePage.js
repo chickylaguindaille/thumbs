@@ -540,7 +540,7 @@ const ProfilePage = () => {
               {isLoadingRequest ? (
                 <span>Envoi...</span>
               ) : (
-                "Créer"
+                "Enregistrer"
               )}                 
             </button>
             <button
