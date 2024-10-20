@@ -40,7 +40,7 @@ const MessagesPage = () => {
         <ul>
           {conversations.length > 0 ? (
             conversations.map((conversation, index) => (
-              <Link to={`/messages/${conversation.person.id}`} key={index} className="block">
+              <Link to={`/messages/${conversation.person.id}?type=${conversation.person.type}`} key={index} className="block">
                 <li className={`flex items-center bg-white hover:bg-gray-200 rounded-lg h-16 ${index < conversations.length - 1 ? 'border-b border-gray-300' : ''}`}>
                   <img
                     src={conversation.person.photo || '/images/default-profile.jpg'} // Affiche une image par défaut si pas de photo

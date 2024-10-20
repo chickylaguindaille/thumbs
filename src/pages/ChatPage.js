@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { FaPaperPlane } from "react-icons/fa";
 import axios from "axios";
@@ -30,6 +30,9 @@ const MessageBubble = ({ message, isSender }) => {
 
 const ChatPage = () => {
   const { id } = useParams(); // ID du contact avec qui on parle
+  const location = useLocation(); // Récupérez l'objet de localisation
+  const queryParams = new URLSearchParams(location.search); // Créez une instance de URLSearchParams
+  const type = queryParams.get("type"); // Récupérez le paramètre 'type' de l'URL
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [contact, setContact] = useState(null);
@@ -77,15 +80,36 @@ const ChatPage = () => {
     const fetchContact = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        const response = await axios.get(
-          `https://back-thumbs.vercel.app/profil/getDetails-user/${id}`,
+        let url;
+
+        // Adaptez l'URL en fonction du type
+        if (type === 'user') {
+          url = `https://back-thumbs.vercel.app/profil/getDetails-user/${id}`;
+        } else if (type === 'asso') {
+          url = `https://back-thumbs.vercel.app/asso/getDetails-asso/${id}`;
+        } else {
+          // Gérer d'autres types si nécessaire
+          url = `https://back-thumbs.vercel.app/profil/getDetails-user/${id}`; // Valeur par défaut
+        }
+
+        const response = await axios.get(url,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        setContact(response.data.user);
+
+        console.log(response.data)
+
+        if (type === 'user') {
+          setContact(response.data.user);
+        } else if (type === 'asso') {
+          setContact(response.data.asso);
+        } else {
+          setContact(response.data.user);
+        }
+
       } catch (error) {
         console.error(
           "Erreur lors de la récupération des infos de contact:",
@@ -152,7 +176,15 @@ const ChatPage = () => {
   return (
     <div className="flex flex-col h-screen pt-[56px]">
       <Header
-        contactName={contact ? `${contact.firstName} ${contact.lastName}` : ""}
+        contactName={
+          type === "user"
+            ? contact
+              ? `${contact.firstName} ${contact.lastName}`
+              : ""
+            : contact
+            ? contact.nameasso
+            : ""
+        }        
         showBackButton={true}
         isSidebarOpen={isSidebarOpen}
       />
@@ -163,7 +195,7 @@ const ChatPage = () => {
             key={index}
             // Comparer l'ID de l'utilisateur connecté avec l'ID de l'expéditeur du message
             isSender={
-              message?.sender?.id && user?.id && message.sender.id === user.id
+              message?.sender?._id && user?._id && message.sender._id === user?._id
             }
             message={message}
           />
