@@ -5,9 +5,6 @@ import { FaPaperPlane } from "react-icons/fa";
 import axios from "axios";
 import Header from "../components/Header";
 import { jwtDecode } from "jwt-decode";
-import { io } from "socket.io-client"; // Importer socket.io-client
-
-const socket = io("https://back-thumbs.vercel.app"); // Remplacer par ton URL backend si nécessaire
 
 const MessageBubble = ({ message, isSender }) => {
   return (
@@ -50,11 +47,11 @@ const ChatPage = () => {
         setIsSidebarOpen(true);
       }
     };
-    
+
     handleResize();
-    window.addEventListener('resize', handleResize);
-    
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
@@ -100,21 +97,18 @@ const ChatPage = () => {
     fetchMessages();
     fetchContact();
 
-    // Écouter les nouveaux messages envoyés via Socket.IO
-    socket.on("receive_message", (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
+    // Lancer le polling toutes les 1,5 secondes
+    const pollingInterval = setInterval(() => {
+      fetchMessages(); // Récupérer les messages à chaque intervalle
+    }, 1500);
 
-    return () => {
-      socket.off("receive_message"); // Nettoyer l'écouteur lors de la destruction du composant
-    };
+    return () => clearInterval(pollingInterval); // Nettoyer l'intervalle lors du démontage
   }, [id]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-    // console.log(messages);
   }, [messages]);
 
   const handleSendMessage = async () => {
@@ -149,18 +143,12 @@ const ChatPage = () => {
 
         setMessages([...messages, newMsg]);
         setNewMessage("");
-
-        // Envoyer le message via Socket.IO
-        socket.emit("send_message", {
-          senderId,
-          receiverId: id,
-          content: newMessage,
-        });
       } catch (error) {
         console.error("Erreur lors de l'envoi du message:", error);
       }
     }
   };
+
   return (
     <div className="flex flex-col h-screen pt-[56px]">
       <Header
@@ -173,12 +161,11 @@ const ChatPage = () => {
         {messages.map((message, index) => (
           <MessageBubble
             key={index}
-            // message={message}
-            message={message}
             // Comparer l'ID de l'utilisateur connecté avec l'ID de l'expéditeur du message
             isSender={
               message?.sender?.id && user?.id && message.sender.id === user.id
             }
+            message={message}
           />
         ))}
         <div ref={messagesEndRef} />
