@@ -1,4 +1,4 @@
-{
+[{
   "_id": {
     "$oid": "67149c32155e65c695e6a58a"
   },
@@ -256,4 +256,4 @@
       "logo": "/build/images/icon-interest/Écologie_interest.png"
     }
   ]
-}
+}]

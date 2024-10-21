@@ -247,16 +247,6 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
                   />
                   30 km
                 </label>
-                {/* <label className="flex items-center p-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    value="50"
-                    checked={distance === '50'}
-                    onChange={() => handleDistanceChange('50km')}
-                    className="mr-2"
-                  />
-                  50 km
-                </label> */}
                 <label className="flex items-center p-2 cursor-pointer">
                   <input
                     type="radio"
