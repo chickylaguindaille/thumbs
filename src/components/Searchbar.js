@@ -7,6 +7,7 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
   const user = useSelector(state => state.auth.user ? state.auth.user.user : null);
   const [optionsLoisirs, setOptionsLoisirs] = useState([]);
   const [selectedInterests, setSelectedInterests] = useState([]);
+  const [namesearch, setSearchName] = useState('');
   const [sortOrder, setSortOrder] = useState('');
   const [distance, setDistance] = useState('');
   
@@ -62,11 +63,18 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
     if (onFiltersChange) {
       onFiltersChange({
         interests: selectedInterests,
+        namesearch: namesearch,
         sortOrder: sortOrder,
         distance: distance,
       });
     }
-  }, [selectedInterests, sortOrder, distance, onFiltersChange]);
+  }, [selectedInterests, namesearch, sortOrder, distance, onFiltersChange]);
+
+  // Gérer le changement dans l'input de recherche
+  const handleInputChange = (e) => {
+    setSearchName(e.target.value);
+  };
+
 
   // Gérer le changement de tri (asc/desc)
   const handleSortChange = (value) => {
@@ -108,6 +116,8 @@ const SearchBar = ({ isAssociationsPage, onFiltersChange }) => {
           id="search-input"
           className="border border-gray-300 p-2 rounded w-full text-gray-900"
           placeholder="Rechercher..."
+          value={namesearch}
+          onChange={handleInputChange}
         />
       </div>
 
